@@ -1,38 +1,6 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.pf-c-select__toggle:before {
+  border-top: var(--pf-c-select__toggle--before--BorderTopWidth) solid var(--pf-c-select__toggle--before--BorderTopColor) !important;
+  border-right: var(--pf-c-select__toggle--before--BorderRightWidth) solid var(--pf-c-select__toggle--before--BorderRightColor) !important;
+  border-bottom: var(--pf-c-select__toggle--before--BorderBottomWidth) solid var(--pf-c-select__toggle--before--BorderBottomColor) !important;
+  border-left: var(--pf-c-select__toggle--before--BorderLeftWidth) solid var(--pf-c-select__toggle--before--BorderLeftColor) !important;
 }
