@@ -1,1 +1,0 @@
-export { SidebarApp } from "./sidebar";

@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 import { Nav, PageSidebar, NavList } from "@patternfly/react-core";
 import { css } from "@patternfly/react-styles";
 
-import { LayoutTheme } from "../LayoutUtils";
+import { LayoutTheme } from "./layout-constants";
 
 export const SidebarApp: React.FC = () => {
   const renderPageNav = () => {
