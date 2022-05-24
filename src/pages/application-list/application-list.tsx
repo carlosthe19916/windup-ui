@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   DescriptionList,
   DescriptionListDescription,
@@ -8,10 +8,14 @@ import {
   PageSection,
   PageSectionVariants,
   SearchInput,
+  SelectVariant,
   Split,
   SplitItem,
   Text,
   TextContent,
+  ToolbarChip,
+  ToolbarChipGroup,
+  ToolbarFilter,
   ToolbarGroup,
   ToolbarItem,
 } from "@patternfly/react-core";
@@ -24,12 +28,14 @@ import {
   IRowData,
   sortable,
 } from "@patternfly/react-table";
-import { TagIcon, CircleNotchIcon } from "@patternfly/react-icons";
+import { TagIcon, TaskIcon, FilterIcon } from "@patternfly/react-icons";
 
 import {
   SimpleTableWithToolbar,
   useTable,
   useTableControls,
+  useToolbar,
+  SimpleSelect,
 } from "@project-openubl/lib-ui";
 
 import { useApplicationsQuery } from "queries/applications";
@@ -81,10 +87,6 @@ export const compareByColumnIndex = (
   }
 };
 
-export const filterByText = (filterText: string, item: Application) => {
-  return item.name.toLowerCase().indexOf(filterText.toLowerCase()) !== -1;
-};
-
 const getRow = (rowData: IRowData): Application => {
   return rowData[DataKey];
 };
@@ -95,8 +97,14 @@ const getColumn = (colIndex: number): ColumnKey => {
 
 export const ApplicationList: React.FC = () => {
   const [filterText, setFilterText] = useState("");
+  const { filters, addFilter, setFilter, removeFilter, clearAllFilters } =
+    useToolbar<"name" | "tag", string>();
 
   const applications = useApplicationsQuery();
+  const tags = useMemo(() => {
+    const allTags = (applications.data || []).flatMap((f) => f.tags);
+    return Array.from(new Set(allTags)).sort((a, b) => a.localeCompare(b));
+  }, [applications.data]);
 
   const {
     page: currentPage,
@@ -110,7 +118,23 @@ export const ApplicationList: React.FC = () => {
     currentPage: currentPage,
     currentSortBy: currentSortBy,
     compareToByColumn: compareByColumnIndex,
-    filterItem: (item) => filterByText(filterText, item),
+    filterItem: (item) => {
+      let isFilterTextFilterCompliant = true;
+      if (filterText && filterText.trim().length > 0) {
+        isFilterTextFilterCompliant =
+          item.name.toLowerCase().indexOf(filterText.toLowerCase()) !== -1;
+      }
+
+      let isTagFilterCompliant = true;
+      const selectedTags = filters.get("tag") || [];
+      if (selectedTags.length > 0) {
+        isTagFilterCompliant = selectedTags.some((f) =>
+          item.tags.some((t) => f === t)
+        );
+      }
+
+      return isFilterTextFilterCompliant && isTagFilterCompliant;
+    },
   });
 
   const { isCellSelected, isSomeCellSelected, toggleCellSelected } =
@@ -157,7 +181,7 @@ export const ApplicationList: React.FC = () => {
           {
             title: (
               <>
-                <CircleNotchIcon key="incidents" />{" "}
+                <TaskIcon key="incidents" />{" "}
                 {Object.values(item.incidents).reduce((a, b) => a + b, 0)}
               </>
             ),
@@ -287,13 +311,66 @@ export const ApplicationList: React.FC = () => {
           loadingVariant="skeleton"
           fetchError={applications.isError}
           // Toolbar filters
+          toolbarClearAllFilters={clearAllFilters}
           filtersApplied={filterText.trim().length > 0}
           toolbarToggle={
-            <ToolbarGroup variant="filter-group">
-              <ToolbarItem>
-                <SearchInput value={filterText} onChange={setFilterText} />
+            <>
+              <ToolbarItem variant="search-filter">
+                <SearchInput
+                  value={filterText}
+                  onChange={setFilterText}
+                  onSearch={(value) => {
+                    addFilter("name", value);
+                    setFilterText("");
+                  }}
+                />
               </ToolbarItem>
-            </ToolbarGroup>
+              <ToolbarGroup variant="filter-group">
+                <ToolbarFilter
+                  chips={filters.get("tag")}
+                  deleteChip={(
+                    category: string | ToolbarChipGroup,
+                    chip: ToolbarChip | string
+                  ) => removeFilter("tag", chip)}
+                  deleteChipGroup={() => setFilter("tag", [])}
+                  categoryName={{ key: "tag", name: "Tag" }}
+                >
+                  <SimpleSelect
+                    width={250}
+                    maxHeight={300}
+                    toggleIcon={<FilterIcon />}
+                    variant={SelectVariant.checkbox}
+                    aria-label="tag"
+                    aria-labelledby="tag"
+                    placeholderText="Tag"
+                    value={filters.get("tag")}
+                    options={tags}
+                    onChange={(option) => {
+                      const optionValue = option as string;
+
+                      const elementExists = (filters.get("tag") || []).some(
+                        (f) => f === optionValue
+                      );
+                      let newElements: string[];
+                      if (elementExists) {
+                        newElements = (filters.get("tag") || [])
+                          .filter((f) => f !== optionValue)
+                          .map((f) => f);
+                      } else {
+                        newElements = [
+                          ...(filters.get("tag") || []),
+                          optionValue,
+                        ];
+                      }
+
+                      setFilter("tag", newElements);
+                    }}
+                    hasInlineFilter
+                    onClear={() => setFilter("tag", [])}
+                  />
+                </ToolbarFilter>
+              </ToolbarGroup>
+            </>
           }
         />
       </PageSection>
