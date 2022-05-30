@@ -43,7 +43,6 @@ if (
       "Stateless (SLSB)",
       "Web XML 3.0",
     ],
-    runtimeLabels: ["JWS", "EAP"],
     storyPoints: 45,
     incidents: {
       mandatory: 7,
@@ -71,7 +70,6 @@ if (
       "Stateless (SLSB)",
       "Web XML 2.4",
     ],
-    runtimeLabels: ["JWS"],
     storyPoints: 90,
     incidents: { mandatory: 53, optional: 1, potential: 38, information: 11 },
   };

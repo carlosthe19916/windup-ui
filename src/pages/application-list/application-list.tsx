@@ -1,16 +1,21 @@
 import React, { useMemo, useState } from "react";
 import {
+  Button,
   DescriptionList,
   DescriptionListDescription,
   DescriptionListGroup,
   DescriptionListTerm,
   Label,
+  LabelGroup,
+  Modal,
   PageSection,
   PageSectionVariants,
   SearchInput,
   SelectVariant,
   Split,
   SplitItem,
+  Stack,
+  StackItem,
   Text,
   TextContent,
   ToolbarChip,
@@ -28,7 +33,12 @@ import {
   IRowData,
   sortable,
 } from "@patternfly/react-table";
-import { TagIcon, TaskIcon, FilterIcon } from "@patternfly/react-icons";
+import {
+  TagIcon,
+  TaskIcon,
+  FilterIcon,
+  ExpandIcon,
+} from "@patternfly/react-icons";
 
 import {
   SimpleTableWithToolbar,
@@ -36,11 +46,16 @@ import {
   useTableControls,
   useToolbar,
   SimpleSelect,
+  useModal,
 } from "@project-openubl/lib-ui";
 
 import { useApplicationsQuery } from "queries/applications";
 import { Application } from "api/models";
 import { useCellSelectionState } from "shared/hooks";
+import { useLabelsQuery } from "queries/labels";
+import { evaluateRuntime, RuntimeAssessment } from "utils/label-utils";
+
+import "./application-list.css";
 
 const DataKey = "DataKey";
 
@@ -51,26 +66,26 @@ enum ColumnKey {
 const columnKeys: ColumnKey[] = Object.values(ColumnKey) as ColumnKey[];
 
 const columns: ICell[] = [
-  { title: "Name", transforms: [cellWidth(20), sortable] },
+  { title: "Name", transforms: [cellWidth(30), sortable] },
   {
     title: "Runtime labels",
-    transforms: [cellWidth(20)],
+    transforms: [cellWidth(40)],
   },
   {
     title: "Tags",
-    transforms: [cellWidth(20)],
+    transforms: [cellWidth(10)],
     cellTransforms: [compoundExpand],
     data: ColumnKey.tags,
   },
   {
     title: "Incidents",
-    transforms: [cellWidth(20)],
+    transforms: [cellWidth(10)],
     cellTransforms: [compoundExpand],
     data: ColumnKey.incidents,
   },
   {
     title: "Story points",
-    transforms: [cellWidth(20)],
+    transforms: [cellWidth(10)],
   },
 ];
 
@@ -96,15 +111,37 @@ const getColumn = (colIndex: number): ColumnKey => {
 };
 
 export const ApplicationList: React.FC = () => {
+  const modal = useModal<
+    "showLabel",
+    { application: Application; assessment: RuntimeAssessment }
+  >();
+
   const [filterText, setFilterText] = useState("");
   const { filters, addFilter, setFilter, removeFilter, clearAllFilters } =
     useToolbar<"name" | "tag", string>();
 
+  const labels = useLabelsQuery();
   const applications = useApplicationsQuery();
   const tags = useMemo(() => {
     const allTags = (applications.data || []).flatMap((f) => f.tags);
     return Array.from(new Set(allTags)).sort((a, b) => a.localeCompare(b));
   }, [applications.data]);
+
+  const assessmentByApp = useMemo(() => {
+    const asssessmentsByApp: Map<number, RuntimeAssessment[]> = new Map();
+    if (applications.data && labels.data) {
+      applications.data.forEach((app) => {
+        const assessments = labels.data.map((label) => {
+          return evaluateRuntime(label, app.tags);
+        });
+        asssessmentsByApp.set(app.id, assessments);
+      });
+
+      return asssessmentsByApp;
+    } else {
+      return asssessmentsByApp;
+    }
+  }, [labels.data, applications.data]);
 
   const {
     page: currentPage,
@@ -156,15 +193,52 @@ export const ApplicationList: React.FC = () => {
           {
             title: (
               <>
-                <Split hasGutter isWrappable>
-                  {[...item.runtimeLabels]
-                    .sort((a, b) => a.localeCompare(b))
-                    .map((e, index) => (
-                      <SplitItem key={index}>
-                        <Label isCompact>{e}</Label>
-                      </SplitItem>
+                <Stack>
+                  {[...(assessmentByApp.get(item.id) || [])]
+                    .sort((a, b) =>
+                      a.targetRuntime.name.localeCompare(b.targetRuntime.name)
+                    )
+                    .map((assessment, index) => (
+                      <StackItem key={index}>
+                        <Split>
+                          <SplitItem>
+                            <LabelGroup
+                              categoryName={assessment.assessmentResult}
+                            >
+                              <Label
+                                isCompact
+                                color={
+                                  assessment.assessmentResult === "Supported"
+                                    ? "green"
+                                    : assessment.assessmentResult ===
+                                      "Unsuitable"
+                                    ? "red"
+                                    : "grey"
+                                }
+                              >
+                                {assessment.targetRuntime.name}
+                              </Label>
+                            </LabelGroup>
+                          </SplitItem>
+                          <SplitItem>
+                            <Button
+                              variant="plain"
+                              aria-label="Details"
+                              isSmall
+                              onClick={() =>
+                                modal.open("showLabel", {
+                                  application: item,
+                                  assessment: assessment,
+                                })
+                              }
+                            >
+                              <ExpandIcon />
+                            </Button>
+                          </SplitItem>
+                        </Split>
+                      </StackItem>
                     ))}
-                </Split>
+                </Stack>
               </>
             ),
           },
@@ -279,6 +353,7 @@ export const ApplicationList: React.FC = () => {
       </PageSection>
       <PageSection variant={PageSectionVariants.default}>
         <SimpleTableWithToolbar
+          className="application-list-table"
           hasTopPagination
           hasBottomPagination
           totalCount={filteredItems.length}
@@ -373,6 +448,79 @@ export const ApplicationList: React.FC = () => {
             </>
           }
         />
+
+        <Modal
+          title="Runtime label"
+          isOpen={modal.isOpen}
+          onClose={modal.close}
+          variant="medium"
+        >
+          <DescriptionList>
+            <DescriptionListGroup>
+              <DescriptionListTerm>Application</DescriptionListTerm>
+              <DescriptionListDescription>
+                {modal.data?.application.name}
+              </DescriptionListDescription>
+            </DescriptionListGroup>
+            <DescriptionListGroup>
+              <DescriptionListTerm>Runtime target</DescriptionListTerm>
+              <DescriptionListDescription>
+                {modal.data?.assessment.targetRuntime.name}
+              </DescriptionListDescription>
+            </DescriptionListGroup>
+            <DescriptionListGroup>
+              <DescriptionListTerm>Assessment</DescriptionListTerm>
+              <DescriptionListDescription>
+                {modal.data?.assessment.assessmentResult}
+              </DescriptionListDescription>
+            </DescriptionListGroup>
+
+            <DescriptionListGroup>
+              <DescriptionListTerm>Unsuitable technologies</DescriptionListTerm>
+              <DescriptionListDescription>
+                <Split hasGutter isWrappable>
+                  {[...(modal.data?.assessment.assessedUnsuitableTags || [])]
+                    .sort((a, b) => a.localeCompare(b))
+                    .map((e, index) => (
+                      <SplitItem key={index}>
+                        <Label isCompact color="red">
+                          {e}
+                        </Label>
+                      </SplitItem>
+                    ))}
+                </Split>
+              </DescriptionListDescription>
+            </DescriptionListGroup>
+            <DescriptionListGroup>
+              <DescriptionListTerm>Supported technologies</DescriptionListTerm>
+              <DescriptionListDescription>
+                <Split hasGutter isWrappable>
+                  {[...(modal.data?.assessment.assessedSupportedTags || [])]
+                    .sort((a, b) => a.localeCompare(b))
+                    .map((e, index) => (
+                      <SplitItem key={index}>
+                        <Label isCompact color="green">{e}</Label>
+                      </SplitItem>
+                    ))}
+                </Split>
+              </DescriptionListDescription>
+            </DescriptionListGroup>
+            <DescriptionListGroup>
+              <DescriptionListTerm>Neutral technologies</DescriptionListTerm>
+              <DescriptionListDescription>
+                <Split hasGutter isWrappable>
+                  {[...(modal.data?.assessment.assessedNeutralTags || [])]
+                    .sort((a, b) => a.localeCompare(b))
+                    .map((e, index) => (
+                      <SplitItem key={index}>
+                        <Label isCompact>{e}</Label>
+                      </SplitItem>
+                    ))}
+                </Split>
+              </DescriptionListDescription>
+            </DescriptionListGroup>
+          </DescriptionList>
+        </Modal>
       </PageSection>
     </>
   );
