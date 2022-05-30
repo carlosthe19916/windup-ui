@@ -499,7 +499,9 @@ export const ApplicationList: React.FC = () => {
                     .sort((a, b) => a.localeCompare(b))
                     .map((e, index) => (
                       <SplitItem key={index}>
-                        <Label isCompact color="green">{e}</Label>
+                        <Label isCompact color="green">
+                          {e}
+                        </Label>
                       </SplitItem>
                     ))}
                 </Split>

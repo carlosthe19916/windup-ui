@@ -19,3 +19,20 @@ export interface Label {
   unsuitable: string[];
   neutral: string[];
 }
+
+export interface Issue {
+  name: string;
+  category: "mandatory" | "potential" | "optional" | "information";
+  levelOfEffort: string;
+  incidents: Incident[];
+}
+
+export interface Incident {
+  hint: string;
+  rule: string;
+  storyPoints: number;
+  files: {
+    filename: string;
+    incidentsFound: number;
+  }[];
+}

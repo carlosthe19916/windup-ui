@@ -2,12 +2,27 @@ import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 const ApplicationList = lazy(() => import("./pages/application-list"));
+const IssuesList = lazy(() => import("./pages/issues-list"));
+
+export type ApplicationRoute = {
+  applicationId: string;
+};
 
 export const AppRoutes = () => {
   const routes = [
     {
       Component: ApplicationList,
       path: "/",
+      hasDescendant: false,
+    },
+    {
+      Component: IssuesList,
+      path: "/issues",
+      hasDescendant: false,
+    },
+    {
+      Component: IssuesList,
+      path: "/issues/applications/:applicationId",
       hasDescendant: false,
     },
   ];

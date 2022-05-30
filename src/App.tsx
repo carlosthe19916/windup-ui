@@ -6,8 +6,12 @@ import "./App.css";
 
 import { DefaultLayout } from "./layout";
 import { Theme } from "layout/theme-constants";
+import { useApplicationsQuery } from "queries/applications";
+import { SimpleContextProvider } from "context/simple-context";
 
 const App: React.FC = () => {
+  const applications = useApplicationsQuery();
+
   useEffect(() => {
     document.title = Theme.name;
 
@@ -19,9 +23,16 @@ const App: React.FC = () => {
 
   return (
     <HashRouter>
-      <DefaultLayout>
-        <AppRoutes />
-      </DefaultLayout>
+      <SimpleContextProvider
+        allContexts={(applications.data || []).map((e) => ({
+          key: `${e.id}`,
+          label: e.name,
+        }))}
+      >
+        <DefaultLayout>
+          <AppRoutes />
+        </DefaultLayout>
+      </SimpleContextProvider>
     </HashRouter>
   );
 };
