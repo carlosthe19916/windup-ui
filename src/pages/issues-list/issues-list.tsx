@@ -6,6 +6,7 @@ import remarkGfm from "remark-gfm";
 import "github-markdown-css/github-markdown.css";
 
 import {
+  Badge,
   Bullseye,
   Button,
   Card,
@@ -265,7 +266,7 @@ export const IssuesList: React.FC = () => {
                                     )}
                                   </Td>
                                   <Td dataLabel="Incidents found">
-                                    {file.incidentsFound}
+                                    <Badge isRead>{file.incidentsFound}</Badge>
                                   </Td>
                                 </Tr>
                               ))}
@@ -429,7 +430,7 @@ export const IssuesList: React.FC = () => {
           incidentFileModal.isOpen && incidentFileModal.action === "showFile"
         }
         onClose={incidentFileModal.close}
-        variant="default"
+        variant="large"
       >
         <CodeEditor
           isDarkTheme
