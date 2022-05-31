@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@konveyor/lib-ui": "^8.2.6",
     "@patternfly/patternfly": "^4.192.1",
     "@patternfly/react-core": "^4.206.2",
     "@patternfly/react-table": "^4.75.2",
@@ -15,11 +16,14 @@
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
     "axios": "^0.27.2",
+    "github-markdown-css": "^5.1.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-markdown": "^8.0.3",
     "react-query": "^3.38.1",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
+    "remark-gfm": "^3.0.1",
     "typescript": "^4.6.4",
     "web-vitals": "^2.1.4"
   },

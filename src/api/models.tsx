@@ -24,15 +24,44 @@ export interface Issue {
   name: string;
   category: "mandatory" | "potential" | "optional" | "information";
   levelOfEffort: string;
-  incidents: Incident[];
+  incident: Incident;
 }
 
 export interface Incident {
-  hint: string;
-  rule: string;
   storyPoints: number;
   files: {
-    filename: string;
+    name: string;
     incidentsFound: number;
+    content?: string;
+    comment?: {
+      line: number;
+      title: string;
+      content: string;
+      links: { title: string; href: string }[];
+    };
   }[];
+  hint: {
+    description: string;
+    links: { title: string; href: string }[];
+  };
+  rule: {
+    name: string;
+    content: string;
+    sourceTechnology?: {
+      id: string;
+      versionRange?: string;
+    }[];
+    targetTechnology?: {
+      id: string;
+      versionRange?: string;
+    }[];
+  };
+}
+
+export interface ApplicationIssues {
+  application: {
+    id: number;
+    name: string;
+  };
+  issues: Issue[];
 }
