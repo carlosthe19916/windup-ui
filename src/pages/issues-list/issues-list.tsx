@@ -7,10 +7,9 @@ import "github-markdown-css/github-markdown.css";
 
 import {
   Bullseye,
+  Button,
   Card,
   CardBody,
-  CodeBlock,
-  CodeBlockCode,
   Divider,
   EmptyState,
   EmptyStateBody,
@@ -30,6 +29,7 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarItem,
+  Truncate,
 } from "@patternfly/react-core";
 import {
   cellWidth,
@@ -47,6 +47,7 @@ import {
   Tr,
 } from "@patternfly/react-table";
 import { ArrowUpIcon } from "@patternfly/react-icons";
+import { CodeEditor, Language } from "@patternfly/react-code-editor";
 
 import {
   SimpleTableWithToolbar,
@@ -66,7 +67,7 @@ import {
 import { useApplicationsQuery } from "queries/applications";
 
 import { ApplicationRoute } from "Routes";
-import { Issue } from "api/models";
+import { IncidentFile, Issue } from "api/models";
 
 const DataKey = "DataKey";
 
@@ -117,7 +118,8 @@ export const IssuesList: React.FC = () => {
 
   const context = useSimpleContext();
 
-  const modal = useModal<"showRule", Issue>();
+  const issueModal = useModal<"showRule", Issue>();
+  const incidentFileModal = useModal<"showFile", IncidentFile>();
 
   const applications = useApplicationsQuery();
   const issues = useIssuesQuery();
@@ -245,7 +247,23 @@ export const IssuesList: React.FC = () => {
                             <Tbody>
                               {item.incident.files.map((file) => (
                                 <Tr key={file.name}>
-                                  <Td dataLabel="File">{file.name}</Td>
+                                  <Td dataLabel="File">
+                                    {file.content ? (
+                                      <Button
+                                        variant="link"
+                                        onClick={() =>
+                                          incidentFileModal.open(
+                                            "showFile",
+                                            file
+                                          )
+                                        }
+                                      >
+                                        <Truncate content={file.name} />
+                                      </Button>
+                                    ) : (
+                                      file.name
+                                    )}
+                                  </Td>
                                   <Td dataLabel="Incidents found">
                                     {file.incidentsFound}
                                   </Td>
@@ -291,7 +309,7 @@ export const IssuesList: React.FC = () => {
         extraData: IExtraData
       ) => {
         const row = getRow(rowData);
-        modal.open("showRule", row);
+        issueModal.open("showRule", row);
       },
     },
   ];
@@ -383,14 +401,52 @@ export const IssuesList: React.FC = () => {
       </PageSection>
 
       <Modal
-        title="Rule"
-        isOpen={modal.isOpen}
-        onClose={modal.close}
-        variant="medium"
+        title={`Rule ${issueModal.data?.incident.rule.name}`}
+        isOpen={issueModal.isOpen && issueModal.action === "showRule"}
+        onClose={issueModal.close}
+        variant="large"
       >
-        <CodeBlock>
-          <CodeBlockCode>{modal.data?.incident.rule.content}</CodeBlockCode>
-        </CodeBlock>
+        <CodeEditor
+          isDarkTheme
+          isLineNumbersVisible
+          isReadOnly
+          isMinimapVisible
+          isLanguageLabelVisible
+          isDownloadEnabled
+          code={issueModal.data?.incident.rule.content}
+          language={Language.xml}
+          onEditorDidMount={(editor, monaco) => {
+            editor.layout();
+            editor.focus();
+            monaco.editor.getModels()[0].updateOptions({ tabSize: 5 });
+          }}
+          height="600px"
+        />
+      </Modal>
+      <Modal
+        title={`File ${incidentFileModal.data?.name}`}
+        isOpen={
+          incidentFileModal.isOpen && incidentFileModal.action === "showFile"
+        }
+        onClose={incidentFileModal.close}
+        variant="default"
+      >
+        <CodeEditor
+          isDarkTheme
+          isLineNumbersVisible
+          isReadOnly
+          isMinimapVisible
+          isLanguageLabelVisible
+          isDownloadEnabled
+          code={incidentFileModal.data?.content}
+          language={Language.java}
+          onEditorDidMount={(editor, monaco) => {
+            editor.layout();
+            editor.focus();
+            monaco.editor.getModels()[0].updateOptions({ tabSize: 5 });
+          }}
+          height="600px"
+        />
       </Modal>
     </>
   );

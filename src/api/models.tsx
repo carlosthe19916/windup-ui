@@ -27,19 +27,21 @@ export interface Issue {
   incident: Incident;
 }
 
+export interface IncidentFile {
+  name: string;
+  incidentsFound: number;
+  content?: string;
+  comment?: {
+    line: number;
+    title: string;
+    content: string;
+    links: { title: string; href: string }[];
+  };
+}
+
 export interface Incident {
   storyPoints: number;
-  files: {
-    name: string;
-    incidentsFound: number;
-    content?: string;
-    comment?: {
-      line: number;
-      title: string;
-      content: string;
-      links: { title: string; href: string }[];
-    };
-  }[];
+  files: IncidentFile[];
   hint: {
     description: string;
     links: { title: string; href: string }[];
