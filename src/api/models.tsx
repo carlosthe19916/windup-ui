@@ -34,18 +34,17 @@ export interface Issue {
   rule: { id: string };
 }
 
+export interface Technology {
+  id: string;
+  versionRange?: string;
+}
+
 export interface Rule {
   id: string;
   title: string;
   definition: string;
-  sourceTechnology?: {
-    id: string;
-    versionRange?: string;
-  }[];
-  targetTechnology?: {
-    id: string;
-    versionRange?: string;
-  }[];
+  sourceTechnology?: Technology[];
+  targetTechnology?: Technology[];
   affectedFiles: {
     id: string;
   }[];

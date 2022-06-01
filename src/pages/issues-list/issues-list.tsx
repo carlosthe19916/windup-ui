@@ -1,43 +1,22 @@
 import React, { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import "github-markdown-css/github-markdown.css";
-
 import {
-  Badge,
   Bullseye,
-  Button,
-  Card,
-  CardBody,
   Divider,
-  Drawer,
-  DrawerActions,
-  DrawerCloseButton,
-  DrawerContent,
-  DrawerContentBody,
-  DrawerHead,
-  DrawerPanelContent,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  Grid,
-  GridItem,
-  Label,
   Modal,
   PageSection,
   PageSectionVariants,
   Spinner,
-  Split,
-  SplitItem,
   Text,
   TextContent,
   Title,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
-  Truncate,
 } from "@patternfly/react-core";
 import {
   cellWidth,
@@ -47,15 +26,8 @@ import {
   IRow,
   IRowData,
   sortable,
-  TableComposable,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
 } from "@patternfly/react-table";
 import { ArrowUpIcon } from "@patternfly/react-icons";
-import { CodeEditor, Language } from "@patternfly/react-code-editor";
 
 import {
   SimpleTableWithToolbar,
@@ -77,12 +49,15 @@ import { useApplicationsQuery } from "queries/applications";
 import { ApplicationRoute } from "Routes";
 import { Issue, AppFile } from "api/models";
 import { useRulesQuery } from "queries/rules";
-import { useFilesQuery } from "queries/files";
+import { RuleEditor } from "./components/rule-editor";
+import { Technologies } from "./components/technologies";
+import { IssueOverview } from "./components/issue-overview";
+import { FileEditor } from "./components/file-editor";
 
 const DataKey = "DataKey";
 
 const columns: ICell[] = [
-  { title: "Issue", transforms: [cellWidth(25), sortable] },
+  { title: "Issue", transforms: [cellWidth(20), sortable] },
   {
     title: "Category",
     transforms: [cellWidth(10)],
@@ -97,7 +72,7 @@ const columns: ICell[] = [
   },
   {
     title: "Level of effort",
-    transforms: [cellWidth(20)],
+    transforms: [cellWidth(25)],
   },
   {
     title: "Total storypoints",
@@ -121,29 +96,35 @@ export const IssuesList: React.FC = () => {
   const params = useParams<ApplicationRoute>();
   const navigate = useNavigate();
 
-  const context = useSimpleContext();
+  const appContext = useSimpleContext();
+  const onContextChange = (context: Context) => {
+    navigate("/issues/applications/" + context.key);
+  };
+
+  const allApplications = useApplicationsQuery();
+  const allIssues = useIssuesQuery();
+  const allRules = useRulesQuery();
 
   const issueModal = useModal<"showRule", Issue>();
+  const issueModalRule = useMemo(() => {
+    return allRules.data?.find((rule) => rule.id === issueModal.data?.rule.id);
+  }, [allRules.data, issueModal.data]);
+
   const fileModal = useModal<"showFile", AppFile>();
 
-  const applications = useApplicationsQuery();
-  const issues = useIssuesQuery();
-  const rules = useRulesQuery();
-  const files = useFilesQuery();
-
-  const applicationIssues = useMemo(() => {
+  const issues = useMemo(() => {
     return (
-      issues.data?.find(
-        (f) => `${f.application.id}` === context.currentContext?.key
+      allIssues.data?.find(
+        (f) => `${f.application.id}` === appContext.currentContext?.key
       )?.issues || []
     );
-  }, [issues, context.currentContext]);
+  }, [allIssues, appContext.currentContext]);
 
   const {
-    isItemSelected: isItemExpanded,
-    toggleItemSelected: toggleItemExpanded,
+    isItemSelected: isRowExpanded,
+    toggleItemSelected: toggleRowExpanded,
   } = useSelectionState<Issue>({
-    items: applicationIssues,
+    items: issues,
     isEqual: (a, b) => a.id === b.id,
   });
 
@@ -155,7 +136,7 @@ export const IssuesList: React.FC = () => {
   } = useTableControls();
 
   const { pageItems, filteredItems } = useTable<Issue>({
-    items: applicationIssues,
+    items: issues,
     currentPage: currentPage,
     currentSortBy: currentSortBy,
     compareToByColumn: compareByColumnIndex,
@@ -164,16 +145,12 @@ export const IssuesList: React.FC = () => {
     },
   });
 
-  const onContextChange = (context: Context) => {
-    navigate("/issues/applications/" + context.key);
-  };
-
   const itemsToRow = (items: Issue[]) => {
     const rows: IRow[] = [];
     items.forEach((item) => {
-      const isExpanded = isItemExpanded(item);
+      const isExpanded = isRowExpanded(item);
 
-      const rule = rules.data?.find((e) => e.id === item.rule.id);
+      const rule = allRules.data?.find((rule) => rule.id === item.rule.id);
 
       rows.push({
         [DataKey]: item,
@@ -186,29 +163,13 @@ export const IssuesList: React.FC = () => {
             title: item.category,
           },
           {
-            title: (
-              <Split hasGutter>
-                {rule?.sourceTechnology?.map((f) => (
-                  <SplitItem key={f.id}>
-                    <Label isCompact color="blue">
-                      {f.id}
-                    </Label>
-                  </SplitItem>
-                ))}
-              </Split>
+            title: rule?.sourceTechnology && (
+              <Technologies technologies={rule.sourceTechnology} />
             ),
           },
           {
-            title: (
-              <Split hasGutter>
-                {rule?.targetTechnology?.map((f) => (
-                  <SplitItem key={f.id}>
-                    <Label isCompact color="blue">
-                      {f.id}
-                    </Label>
-                  </SplitItem>
-                ))}
-              </Split>
+            title: rule?.targetTechnology && (
+              <Technologies technologies={rule.targetTechnology} />
             ),
           },
           {
@@ -222,17 +183,6 @@ export const IssuesList: React.FC = () => {
 
       // Expanded area
       if (isExpanded) {
-        const markdown = [
-          rule?.message,
-          rule?.links
-            .map((link, index) => `${index + 1}. [${link.title}](${link.href})`)
-            .join("\n"),
-        ].join("\n");
-
-        const filesPerIncident = (files.data || []).filter((f) => {
-          return f.hints?.some((h) => h.rule.id === item.rule.id);
-        });
-
         rows.push({
           parent: rows.length - 1,
           fullWidth: true,
@@ -240,60 +190,10 @@ export const IssuesList: React.FC = () => {
             {
               title: (
                 <div className="pf-u-m-md">
-                  <Grid hasGutter>
-                    <GridItem md={5}>
-                      <Card isCompact isFullHeight>
-                        <CardBody>
-                          <TableComposable
-                            aria-label="Files table"
-                            variant="compact"
-                          >
-                            <Thead>
-                              <Tr>
-                                <Th>File</Th>
-                                <Th>Incidents found</Th>
-                              </Tr>
-                            </Thead>
-                            <Tbody>
-                              {filesPerIncident.map((file) => (
-                                <Tr key={file.filename}>
-                                  <Td dataLabel="File">
-                                    {file.fileContent ? (
-                                      <Button
-                                        variant="link"
-                                        onClick={() =>
-                                          fileModal.open("showFile", file)
-                                        }
-                                      >
-                                        <Truncate content={file.filename} />
-                                      </Button>
-                                    ) : (
-                                      file.filename
-                                    )}
-                                  </Td>
-                                  <Td dataLabel="Incidents found">
-                                    <Badge isRead>1</Badge>
-                                  </Td>
-                                </Tr>
-                              ))}
-                            </Tbody>
-                          </TableComposable>
-                        </CardBody>
-                      </Card>
-                    </GridItem>
-                    <GridItem md={7}>
-                      <Card isCompact isFullHeight>
-                        <CardBody>
-                          <ReactMarkdown
-                            className="markdown-body"
-                            children={markdown}
-                            remarkPlugins={[remarkGfm]}
-                            linkTarget="_blank"
-                          />
-                        </CardBody>
-                      </Card>
-                    </GridItem>
-                  </Grid>
+                  <IssueOverview
+                    issue={item}
+                    onShowFile={(file) => fileModal.open("showFile", file)}
+                  />
                 </div>
               ),
             },
@@ -330,7 +230,7 @@ export const IssuesList: React.FC = () => {
             <ToolbarItem>
               <SimpleContextSelector
                 contextKeyFromURL={params.applicationId}
-                allContexts={(applications.data || []).map((e) => ({
+                allContexts={(allApplications.data || []).map((e) => ({
                   key: `${e.id}`,
                   label: e.name,
                 }))}
@@ -351,7 +251,7 @@ export const IssuesList: React.FC = () => {
       </PageSection>
       <PageSection variant={PageSectionVariants.default}>
         <ConditionalRender
-          when={applications.isLoading || issues.isLoading}
+          when={allApplications.isLoading || allIssues.isLoading}
           then={
             <Bullseye>
               <Spinner />
@@ -359,7 +259,7 @@ export const IssuesList: React.FC = () => {
           }
         >
           <ConditionalRender
-            when={!context.currentContext}
+            when={!appContext.currentContext}
             then={
               <Bullseye>
                 <EmptyState>
@@ -381,7 +281,7 @@ export const IssuesList: React.FC = () => {
               // Expand
               onCollapse={(_event, _rowIndex, _isOpen, rowData) => {
                 const issue = getRow(rowData);
-                toggleItemExpanded(issue);
+                toggleRowExpanded(issue);
               }}
               // Sorting
               sortBy={
@@ -396,9 +296,9 @@ export const IssuesList: React.FC = () => {
               cells={columns}
               actions={actions}
               // Fech data
-              isLoading={issues.isFetching}
+              isLoading={allIssues.isFetching}
               loadingVariant="skeleton"
-              fetchError={issues.isError}
+              fetchError={allIssues.isError}
               // Toolbar filters
               // toolbarClearAllFilters={clearAllFilters}
               filtersApplied={false}
@@ -413,191 +313,15 @@ export const IssuesList: React.FC = () => {
         onClose={issueModal.close}
         variant="large"
       >
-        <CodeEditor
-          isDarkTheme
-          isLineNumbersVisible
-          isReadOnly
-          isMinimapVisible
-          isLanguageLabelVisible
-          isDownloadEnabled
-          code={
-            rules.data?.find((f) => f.id === issueModal.data?.rule.id)
-              ?.definition
-          }
-          language={Language.xml}
-          onEditorDidMount={(editor, monaco) => {
-            editor.layout();
-            editor.focus();
-            monaco.editor.getModels()[0].updateOptions({ tabSize: 5 });
-          }}
-          height="600px"
-        />
+        {issueModalRule && <RuleEditor rule={issueModalRule} />}
       </Modal>
       <Modal
         title={`File ${fileModal.data?.filename}`}
         isOpen={fileModal.isOpen && fileModal.action === "showFile"}
         onClose={fileModal.close}
-        variant="large"
+        variant="default"
       >
-        <Drawer isExpanded={true} onExpand={() => {}} isInline>
-          <DrawerContent
-            panelContent={
-              <DrawerPanelContent
-                isResizable
-                defaultSize={"500px"}
-                minSize={"150px"}
-              >
-                <DrawerHead>
-                  <span tabIndex={0}>drawer-panel</span>
-                  <DrawerActions>
-                    <DrawerCloseButton onClick={() => {}} />
-                  </DrawerActions>
-                </DrawerHead>
-              </DrawerPanelContent>
-            }
-          >
-            <DrawerContentBody>
-              <CodeEditor
-                isDarkTheme
-                isLineNumbersVisible
-                isReadOnly
-                isMinimapVisible
-                isLanguageLabelVisible
-                isDownloadEnabled
-                code={fileModal.data?.fileContent}
-                language={Language.java}
-                options={{
-                  glyphMargin: true,
-                  "semanticHighlighting.enabled": true,
-                  renderValidationDecorations: "on",
-                }}
-                onEditorDidMount={(editor, monaco) => {
-                  editor.layout();
-                  editor.focus();
-                  monaco.editor.getModels()[0].updateOptions({ tabSize: 5 });
-
-                  let lineToFocus = 1;
-
-                  const model = editor.getModel();
-                  if (model) {
-                    fileModal.data?.hints.forEach((hint, index) => {
-                      const rule = rules.data?.find(
-                        (f) => f.id === hint.rule.id
-                      );
-                      if (rule && hint.line) {
-                        lineToFocus = hint.line;
-
-                        monaco.editor.setModelMarkers(
-                          model,
-                          fileModal.data?.filename || "",
-                          [
-                            {
-                              startLineNumber: hint.line,
-                              startColumn: 0,
-                              endLineNumber: hint.line,
-                              endColumn: 1000,
-                              message: rule.title,
-                              source: rule.id,
-                              severity: monaco.MarkerSeverity.Warning,
-                            },
-                          ]
-                        );
-
-                        const commandId = editor.addCommand(
-                          0,
-                          function () {
-                            // services available in `ctx`
-                            alert("my command is executing!");
-                          },
-                          ""
-                        );
-
-                        monaco.languages.registerHoverProvider("java", {
-                          provideHover: function (model, position) {
-                            if (position.lineNumber !== hint.line) {
-                              return undefined;
-                            }
-
-                            return {
-                              range: new monaco.Range(
-                                hint.line!,
-                                1,
-                                hint.line!,
-                                1
-                              ),
-                              contents: [
-                                {
-                                  value: [
-                                    rule?.message,
-                                    rule?.links
-                                      .map(
-                                        (link, index) =>
-                                          `${index + 1}. [${link.title}](${
-                                            link.href
-                                          })`
-                                      )
-                                      .join("\n"),
-                                  ].join("\n"),
-                                },
-                              ],
-                            };
-                          },
-                        });
-                        monaco.languages.registerCodeLensProvider("java", {
-                          provideCodeLenses: function (model, token) {
-                            return {
-                              lenses: [
-                                {
-                                  range: new monaco.Range(
-                                    hint.line!,
-                                    1,
-                                    hint.line!,
-                                    1
-                                  ),
-                                  id: "First Line",
-                                  command: {
-                                    id: commandId!,
-                                    title: "First Line",
-                                  },
-                                },
-                              ],
-                              dispose: () => {},
-                            };
-                          },
-                          resolveCodeLens: function (model, codeLens, token) {
-                            return codeLens;
-                          },
-                        });
-
-                        editor.deltaDecorations(
-                          [],
-                          [
-                            {
-                              range: new monaco.Range(
-                                hint.line,
-                                1,
-                                hint.line,
-                                1
-                              ),
-                              options: {
-                                isWholeLine: true,
-                                glyphMarginClassName: "windupGlyphMargin",
-                              },
-                            },
-                          ]
-                        );
-                      }
-                    });
-                  }
-
-                  // editor.trigger("anystring", `editor.action.marker.next`, "s");
-                  editor.revealLineInCenter(lineToFocus);
-                }}
-                height="600px"
-              />
-            </DrawerContentBody>
-          </DrawerContent>
-        </Drawer>
+        {fileModal.data && <FileEditor file={fileModal.data} />}
       </Modal>
     </>
   );
