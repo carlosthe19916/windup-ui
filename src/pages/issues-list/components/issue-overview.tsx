@@ -20,12 +20,8 @@ import {
 
 import { useFilesQuery } from "queries/files";
 import { useRulesQuery } from "queries/rules";
-
 import { getMarkdown } from "utils/rule-utils";
-
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import "github-markdown-css/github-markdown.css";
+import { SimpleMarkdown } from "./simple-markdown";
 
 interface IIssueOverviewProps {
   issue: Issue;
@@ -87,12 +83,7 @@ export const IssueOverview: React.FC<IIssueOverviewProps> = ({
         {rule && (
           <Card isCompact isFullHeight>
             <CardBody>
-              <ReactMarkdown
-                className="markdown-body"
-                children={getMarkdown(rule)}
-                remarkPlugins={[remarkGfm]}
-                linkTarget="_blank"
-              />
+              <SimpleMarkdown children={getMarkdown(rule)} />
             </CardBody>
           </Card>
         )}

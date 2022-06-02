@@ -1,15 +1,29 @@
-import React from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import {
   CodeEditor,
   CodeEditorProps,
   Language,
 } from "@patternfly/react-code-editor";
-import { useRulesQuery } from "queries/rules";
-
+import {
+  Card,
+  CardActions,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Drawer,
+  DrawerActions,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerContentBody,
+  DrawerHead,
+  DrawerPanelContent,
+} from "@patternfly/react-core";
 import * as monacoEditor from "monaco-editor/esm/vs/editor/editor.api";
+
+import { useRulesQuery } from "queries/rules";
 import { AppFile, Hint } from "api/models";
 import { getMarkdown } from "utils/rule-utils";
-import { MarkdownPreview } from "./markdown-preview";
+import { SimpleMarkdown } from "./simple-markdown";
 
 interface IFileEditorProps {
   file: AppFile;
@@ -25,6 +39,22 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
   hintToFocus,
 }) => {
   const allRules = useRulesQuery();
+
+  const [hovers, setHovers] = useState<monacoEditor.IDisposable[]>([]);
+  useEffect(() => {
+    return () => {
+      hovers.forEach((element) => {
+        element.dispose();
+      });
+    };
+  }, [hovers]);
+
+  const drawerRef = React.useRef<HTMLDivElement>();
+  const [isExpanded, toggleIsExpanded] = useReducer((state) => !state, false);
+  const [drawerContent, setDrawerContent] = useState("");
+  const onDrawerExpand = () => {
+    drawerRef.current && drawerRef.current.focus();
+  };
 
   /**
    * Adds the left Windup icon to the editor
@@ -58,9 +88,7 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
   const addCodeLens = (
     editor: monacoEditor.editor.IStandaloneCodeEditor,
     monaco: typeof monacoEditor,
-    hint: Hint,
-    setMarkdown: (value: string) => void,
-    toggleIsExpanded: () => void
+    hint: Hint
   ) => {
     const rule = allRules.data?.find((f) => f.id === hint.rule.id);
     if (!rule) {
@@ -72,13 +100,13 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
     const commandId = editor.addCommand(
       0,
       () => {
-        setMarkdown(rule.message);
+        setDrawerContent(rule.message);
         toggleIsExpanded();
       },
       ""
     );
 
-    monaco.languages.registerCodeLensProvider(language, {
+    const codeLens = monaco.languages.registerCodeLensProvider(language, {
       provideCodeLenses: (model, token) => {
         return {
           lenses: [
@@ -91,7 +119,9 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
               },
             },
           ],
-          dispose: () => {},
+          dispose: () => {
+            codeLens.dispose();
+          },
         };
       },
       resolveCodeLens: (model, codeLens, token) => {
@@ -115,7 +145,7 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
 
     const language = monaco.editor.getModels()[0].getLanguageId();
 
-    monaco.languages.registerHoverProvider(language, {
+    const hover = monaco.languages.registerHoverProvider(language, {
       provideHover: (model, position) => {
         if (position.lineNumber !== hint.line) {
           return undefined;
@@ -131,6 +161,8 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
         };
       },
     });
+
+    setHovers([...hovers, hover]);
   };
 
   /**
@@ -166,9 +198,7 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
 
   const onEditorDidMount = (
     editor: monacoEditor.editor.IStandaloneCodeEditor,
-    monaco: typeof monacoEditor,
-    setMarkdown: (value: string) => void,
-    toggleIsExpanded: () => void
+    monaco: typeof monacoEditor
   ) => {
     editor.layout();
     editor.focus();
@@ -178,7 +208,7 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
     file?.hints.forEach((hint, index) => {
       addMarkers(editor, monaco, hint);
       addHover(editor, monaco, hint);
-      addCodeLens(editor, monaco, hint, setMarkdown, toggleIsExpanded);
+      addCodeLens(editor, monaco, hint);
       addDeltaDecorations(editor, monaco, hint);
 
       if (index === 0) {
@@ -196,9 +226,33 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
   };
 
   return (
-    <MarkdownPreview>
-      {({ toggleIsExpanded, setMarkdown }) => {
-        return (
+    <Drawer isExpanded={isExpanded} onExpand={onDrawerExpand} isInline>
+      <DrawerContent
+        panelContent={
+          <DrawerPanelContent
+            isResizable
+            defaultSize={"800px"}
+            minSize={"350px"}
+          >
+            <DrawerHead>
+              <Card isLarge isPlain>
+                <CardHeader>
+                  <CardActions hasNoOffset>
+                    <DrawerActions>
+                      <DrawerCloseButton onClick={toggleIsExpanded} />
+                    </DrawerActions>
+                  </CardActions>
+                  <CardTitle>Hint</CardTitle>
+                </CardHeader>
+                <CardBody>
+                  <SimpleMarkdown children={drawerContent} />
+                </CardBody>
+              </Card>
+            </DrawerHead>
+          </DrawerPanelContent>
+        }
+      >
+        <DrawerContentBody>
           <CodeEditor
             isDarkTheme
             isLineNumbersVisible
@@ -217,13 +271,13 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
               editor: monacoEditor.editor.IStandaloneCodeEditor,
               monaco: typeof monacoEditor
             ) => {
-              onEditorDidMount(editor, monaco, setMarkdown, toggleIsExpanded);
+              onEditorDidMount(editor, monaco);
             }}
-            height="800px"
+            height="700px"
             {...props}
           />
-        );
-      }}
-    </MarkdownPreview>
+        </DrawerContentBody>
+      </DrawerContent>
+    </Drawer>
   );
 };
