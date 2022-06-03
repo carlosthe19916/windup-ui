@@ -115,7 +115,7 @@ export const IssuesList: React.FC = () => {
   const issues = useMemo(() => {
     return (
       allIssues.data?.find(
-        (f) => `${f.application.id}` === appContext.currentContext?.key
+        (f) => f.application.id === appContext.currentContext?.key
       )?.issues || []
     );
   }, [allIssues, appContext.currentContext]);
@@ -231,7 +231,7 @@ export const IssuesList: React.FC = () => {
               <SimpleContextSelector
                 contextKeyFromURL={params.applicationId}
                 allContexts={(allApplications.data || []).map((e) => ({
-                  key: `${e.id}`,
+                  key: e.id,
                   label: e.name,
                 }))}
                 onChange={onContextChange}

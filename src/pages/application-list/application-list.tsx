@@ -128,7 +128,7 @@ export const ApplicationList: React.FC = () => {
   }, [applications.data]);
 
   const assessmentByApp = useMemo(() => {
-    const asssessmentsByApp: Map<number, RuntimeAssessment[]> = new Map();
+    const asssessmentsByApp: Map<string, RuntimeAssessment[]> = new Map();
     if (applications.data && labels.data) {
       applications.data.forEach((app) => {
         const assessments = labels.data.map((label) => {
@@ -175,7 +175,7 @@ export const ApplicationList: React.FC = () => {
   });
 
   const { isCellSelected, isSomeCellSelected, toggleCellSelected } =
-    useCellSelectionState<number, ColumnKey>({
+    useCellSelectionState<string, ColumnKey>({
       rows: pageItems.map((f) => f.id),
       columns: columnKeys,
     });

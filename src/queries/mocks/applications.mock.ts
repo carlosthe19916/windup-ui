@@ -7,7 +7,7 @@ if (
   process.env.REACT_APP_DATA_SOURCE === "mock"
 ) {
   const application1: Application = {
-    id: 1,
+    id: "administracionefectivoear",
     name: "AdministracionEfectivo.ear",
     tags: [
       "Spring XML",
@@ -53,7 +53,7 @@ if (
   };
 
   const application2: Application = {
-    id: 2,
+    id: "jee-example-app-100ear",
     name: "jee-example-app-1.0.0.ear",
     tags: [
       "WebLogic EJB XML",

@@ -4,8 +4,12 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
+import { iniAxios } from "api/axios";
+
 import { QueryClientProvider, QueryClient, QueryCache } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
+
+iniAxios();
 
 const queryCache = new QueryCache();
 const queryClient = new QueryClient({

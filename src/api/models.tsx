@@ -1,5 +1,5 @@
 export interface Application {
-  id: number;
+  id: string;
   name: string;
   tags: string[];
   storyPoints: number;
@@ -22,7 +22,7 @@ export interface Label {
 
 export interface ApplicationIssues {
   application: {
-    id: number;
+    id: string;
   };
   issues: Issue[];
 }

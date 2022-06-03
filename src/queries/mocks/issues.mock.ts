@@ -7,7 +7,7 @@ if (
   process.env.REACT_APP_DATA_SOURCE === "mock"
 ) {
   const issuesApp1: ApplicationIssues = {
-    application: { id: 1 },
+    application: { id: "administracionefectivoear" },
     issues: [
       {
         id: "1",

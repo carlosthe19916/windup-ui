@@ -25,7 +25,7 @@ const App: React.FC = () => {
     <HashRouter>
       <SimpleContextProvider
         allContexts={(applications.data || []).map((e) => ({
-          key: `${e.id}`,
+          key: e.id,
           label: e.name,
         }))}
       >
