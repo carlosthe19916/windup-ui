@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { AppFile, Issue } from "api/models";
+import { Issue } from "api/models";
 import {
   Badge,
   Button,
@@ -7,6 +7,8 @@ import {
   CardBody,
   Grid,
   GridItem,
+  Stack,
+  StackItem,
   Truncate,
 } from "@patternfly/react-core";
 import {
@@ -19,75 +21,91 @@ import {
 } from "@patternfly/react-table";
 
 import { useFilesQuery } from "queries/files";
-import { useRulesQuery } from "queries/rules";
 import { getMarkdown } from "utils/rule-utils";
 import { SimpleMarkdown } from "./simple-markdown";
 
 interface IIssueOverviewProps {
   issue: Issue;
-  onShowFile: (file: AppFile) => void;
+  onShowFile: (fileId: string) => void;
 }
 
 export const IssueOverview: React.FC<IIssueOverviewProps> = ({
   issue,
   onShowFile,
 }) => {
+  return (
+    <Stack>
+      {issue.affectedFiles.map((affectedFile, index) => (
+        <StackItem key={index}>
+          <Grid hasGutter>
+            <GridItem md={5}>
+              <Card isCompact isFullHeight>
+                <CardBody>
+                  <TableComposable aria-label="Files table" variant="compact">
+                    <Thead>
+                      <Tr>
+                        <Th>File</Th>
+                        <Th>Incidents found</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {affectedFile.files.map((file) => (
+                        <Tr key={file.fileId}>
+                          <Td dataLabel="File">
+                            <FileLink
+                              fileId={file.fileId}
+                              onClick={() => onShowFile(file.fileId)}
+                            />
+                          </Td>
+                          <Td dataLabel="Incidents found">
+                            <Badge isRead>{file.occurrences}</Badge>
+                          </Td>
+                        </Tr>
+                      ))}
+                    </Tbody>
+                  </TableComposable>
+                </CardBody>
+              </Card>
+            </GridItem>
+            <GridItem md={7}>
+              <Card isCompact isFullHeight>
+                <CardBody>
+                  <SimpleMarkdown
+                    children={getMarkdown(
+                      affectedFile.description,
+                      issue.links
+                    )}
+                  />
+                </CardBody>
+              </Card>
+            </GridItem>
+          </Grid>
+        </StackItem>
+      ))}
+    </Stack>
+  );
+};
+
+interface IFileLinkProps {
+  fileId: string;
+  onClick: () => void;
+}
+
+export const FileLink: React.FC<IFileLinkProps> = ({ fileId, onClick }) => {
   const allFiles = useFilesQuery();
-  const allRules = useRulesQuery();
-
-  const rule = useMemo(() => {
-    return allRules.data?.find((rule) => rule.id === issue.rule.id);
-  }, [issue, allRules.data]);
-
-  const files = useMemo(() => {
-    return (allFiles.data || []).filter((file) => {
-      return file.hints?.some((hint) => hint.rule.id === issue.rule.id);
-    });
-  }, [issue, allFiles.data]);
+  const file = useMemo(() => {
+    return allFiles.data?.find((e) => e.id === fileId);
+  }, [allFiles.data, fileId]);
 
   return (
-    <Grid hasGutter>
-      <GridItem md={5}>
-        <Card isCompact isFullHeight>
-          <CardBody>
-            <TableComposable aria-label="Files table" variant="compact">
-              <Thead>
-                <Tr>
-                  <Th>File</Th>
-                  <Th>Incidents found</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {files.map((file) => (
-                  <Tr key={file.filename}>
-                    <Td dataLabel="File">
-                      {file.fileContent ? (
-                        <Button variant="link" onClick={() => onShowFile(file)}>
-                          <Truncate content={file.filename} />
-                        </Button>
-                      ) : (
-                        file.filename
-                      )}
-                    </Td>
-                    <Td dataLabel="Incidents found">
-                      <Badge isRead>1</Badge>
-                    </Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </TableComposable>
-          </CardBody>
-        </Card>
-      </GridItem>
-      <GridItem md={7}>
-        {rule && (
-          <Card isCompact isFullHeight>
-            <CardBody>
-              <SimpleMarkdown children={getMarkdown(rule)} />
-            </CardBody>
-          </Card>
-        )}
-      </GridItem>
-    </Grid>
+    <>
+      {file ? (
+        <Button variant="link" onClick={onClick}>
+          <Truncate content={file.prettyPath} />
+        </Button>
+      ) : (
+        file
+      )}
+    </>
   );
 };

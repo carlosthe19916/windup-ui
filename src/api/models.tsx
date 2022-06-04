@@ -21,49 +21,68 @@ export interface Label {
 }
 
 export interface ApplicationIssues {
-  application: {
-    id: string;
+  applicationId: string;
+  issues: {
+    mandatory?: Issue[];
+    optional?: Issue[];
+    potential?: Issue[];
+    information?: Issue[];
   };
-  issues: Issue[];
 }
 
 export interface Issue {
   id: string;
+  name: string;
+  ruleId: string;
   levelOfEffort: string;
-  category: "mandatory" | "potential" | "optional" | "information";
-  rule: { id: string };
+  links: Link[];
+  affectedFiles: IssueAffectedFiles[];
+}
+
+export interface IssueAffectedFiles {
+  description: string;
+  files: IssueFile[];
+}
+
+export interface IssueFile {
+  fileId: string;
+  occurrences: number;
+}
+
+export interface RuleGroup {
+  [key: string]: Rule[];
+}
+
+export interface Rule {
+  id: string;
+  content: string;
+  sourceTechnology?: Technology[];
+  targetTechnology?: Technology[];
+}
+
+export interface AppFile {
+  id: string;
+  fullPath: string;
+  prettyPath: string;
+  sourceType: string;
+  fileContent: string;
+  hints: Hint[];
+}
+
+export interface Hint {
+  line: number;
+  title: string;
+  ruleId: string;
+  content: string;
+  links: Link[];
+}
+
+export interface Link {
+  title: string;
+  href: string;
 }
 
 export interface Technology {
   id: string;
   versionRange?: string;
-}
-
-export interface Rule {
-  id: string;
-  title: string;
-  definition: string;
-  sourceTechnology?: Technology[];
-  targetTechnology?: Technology[];
-  affectedFiles: {
-    id: string;
-  }[];
-
-  message: string;
-  links: {
-    title: string;
-    href: string;
-  }[];
-}
-
-export interface AppFile {
-  id: string;
-  filename: string;
-  fileContent?: string;
-  hints: Hint[];
-}
-
-export interface Hint {
-  line?: number;
-  rule: { id: string };
 }

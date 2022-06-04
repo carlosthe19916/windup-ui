@@ -1,17 +1,27 @@
-import React from "react";
-import { Technology } from "api/models";
+import React, { useMemo } from "react";
 import { Label, Split, SplitItem } from "@patternfly/react-core";
+import { useRulesQuery } from "queries/rules";
 
 interface ITechnologiesProps {
-  technologies: Technology[];
+  variant: "source" | "target";
+  ruleId: string;
 }
 
 export const Technologies: React.FC<ITechnologiesProps> = ({
-  technologies,
+  variant,
+  ruleId,
 }) => {
+  const allRules = useRulesQuery();
+  const rule = useMemo(() => {
+    return allRules.data?.find((e) => e.id === ruleId);
+  }, [allRules.data, ruleId]);
+
   return (
     <Split hasGutter>
-      {technologies.map((technology) => (
+      {(variant === "source"
+        ? rule?.sourceTechnology
+        : rule?.targetTechnology
+      )?.map((technology) => (
         <SplitItem key={technology.id}>
           <Label isCompact color="blue">
             {[technology.id, technology.versionRange]

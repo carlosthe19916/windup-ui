@@ -83,14 +83,14 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
   };
 
   /**
-   * Adds actions on to of the line with a Hint
+   * Adds actions on top of the line with a Hint
    */
   const addCodeLens = (
     editor: monacoEditor.editor.IStandaloneCodeEditor,
     monaco: typeof monacoEditor,
     hint: Hint
   ) => {
-    const rule = allRules.data?.find((f) => f.id === hint.rule.id);
+    const rule = allRules.data?.find((f) => f.id === hint.ruleId);
     if (!rule) {
       return;
     }
@@ -100,8 +100,10 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
     const commandId = editor.addCommand(
       0,
       () => {
-        setDrawerContent(rule.message);
-        toggleIsExpanded();
+        setDrawerContent(hint.content);
+        if (!isExpanded) {
+          toggleIsExpanded();
+        }
       },
       ""
     );
@@ -138,11 +140,6 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
     monaco: typeof monacoEditor,
     hint: Hint
   ) => {
-    const rule = allRules.data?.find((f) => f.id === hint.rule.id);
-    if (!rule) {
-      return;
-    }
-
     const language = monaco.editor.getModels()[0].getLanguageId();
 
     const hover = monaco.languages.registerHoverProvider(language, {
@@ -155,7 +152,7 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
           range: new monaco.Range(hint.line!, 1, hint.line!, 1),
           contents: [
             {
-              value: getMarkdown(rule),
+              value: getMarkdown(hint.content, hint.links),
             },
           ],
         };
@@ -177,7 +174,7 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
       return;
     }
 
-    const rule = allRules.data?.find((f) => f.id === hint.rule.id);
+    const rule = allRules.data?.find((f) => f.id === hint.ruleId);
     if (!rule) {
       return;
     }
@@ -189,7 +186,7 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
         startColumn: 0,
         endLineNumber: hint.line,
         endColumn: 1000,
-        message: rule.title,
+        message: hint.content,
         source: rule.id,
         severity: monaco.MarkerSeverity.Warning,
       },
@@ -204,22 +201,22 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
     editor.focus();
     monaco.editor.getModels()[0].updateOptions({ tabSize: 5 });
 
-    let firstHint;
+    // let firstHint;
     file?.hints.forEach((hint, index) => {
       addMarkers(editor, monaco, hint);
       addHover(editor, monaco, hint);
       addCodeLens(editor, monaco, hint);
       addDeltaDecorations(editor, monaco, hint);
 
-      if (index === 0) {
-        firstHint = hint;
-      }
+      // if (index === 0) {
+      //   firstHint = hint;
+      // }
     });
 
-    const hintTo = hintToFocus || firstHint;
-    if (hintTo && hintTo.line) {
-      editor.revealLineInCenter(hintTo.line);
-    }
+    // const hintTo = hintToFocus || firstHint;
+    // if (hintTo && hintTo.line) {
+    //   editor.revealLineInCenter(hintTo.line);
+    // }
 
     // Open warning programatically
     // editor.trigger("anystring", `editor.action.marker.next`, "s");

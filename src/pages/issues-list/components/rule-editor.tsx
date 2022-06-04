@@ -20,7 +20,7 @@ export const RuleEditor: React.FC<IRuleEditorProps> = ({ rule, props }) => {
       isMinimapVisible
       isLanguageLabelVisible
       isDownloadEnabled
-      code={rule?.definition}
+      code={rule?.content}
       language={Language.xml}
       onEditorDidMount={(editor, monaco) => {
         editor.layout();

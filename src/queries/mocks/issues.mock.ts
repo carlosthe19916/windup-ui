@@ -7,24 +7,72 @@ if (
   process.env.REACT_APP_DATA_SOURCE === "mock"
 ) {
   const issuesApp1: ApplicationIssues = {
-    application: { id: "administracionefectivoear" },
-    issues: [
-      {
-        id: "1",
-        levelOfEffort: "Complex change with documented solution",
-        category: "mandatory",
-        rule: {
-          id: "embedded-framework-libraries-02000",
+    applicationId: "app-1",
+    issues: {
+      mandatory: [
+        {
+          id: "app1-issue-mandatory-1",
+          name: "App1: Issue mandatory 1",
+          levelOfEffort: "Level description",
+          ruleId: "rule-1",
+          links: [
+            { title: "Link1", href: "http://windup1.com" },
+            { title: "Link2", href: "http://windup2.com" },
+          ],
+          affectedFiles: [{ description: "Hint text", files: [] }],
         },
-      },
-      {
-        id: "2",
-        levelOfEffort: "Trivial change or 1-1 library swap",
-        category: "mandatory",
-        rule: { id: "environment-dependent-calls-02000" },
-      },
-    ],
+      ],
+      optional: [
+        {
+          id: "app1-issue-optional-1",
+          name: "App1: Issue optional 1",
+          levelOfEffort: "Level description",
+          ruleId: "rule-2",
+          links: [
+            { title: "Link1", href: "http://windup1.com" },
+            { title: "Link2", href: "http://windup2.com" },
+          ],
+          affectedFiles: [],
+        },
+      ],
+      potential: [],
+      information: [],
+    },
   };
 
-  MOCK_ISSUES = [issuesApp1];
+  const issuesApp2: ApplicationIssues = {
+    applicationId: "app-2",
+    issues: {
+      mandatory: [
+        {
+          id: "app2-issue-mandatory-1",
+          name: "App2: Issue mandatory 1",
+          levelOfEffort: "Level description",
+          ruleId: "rule-1",
+          links: [
+            { title: "Link1", href: "http://windup1.com" },
+            { title: "Link2", href: "http://windup2.com" },
+          ],
+          affectedFiles: [],
+        },
+      ],
+      optional: [
+        {
+          id: "app2-issue-optional-1",
+          name: "Issue optional 1",
+          levelOfEffort: "Level description",
+          ruleId: "rule-2",
+          links: [
+            { title: "Link1", href: "http://windup1.com" },
+            { title: "Link2", href: "http://windup2.com" },
+          ],
+          affectedFiles: [],
+        },
+      ],
+      potential: [],
+      information: [],
+    },
+  };
+
+  MOCK_ISSUES = [issuesApp1, issuesApp2];
 }

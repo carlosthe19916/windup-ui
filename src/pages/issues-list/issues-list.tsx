@@ -38,17 +38,20 @@ import {
 } from "@project-openubl/lib-ui";
 import { useSelectionState } from "@konveyor/lib-ui";
 
-import { useIssuesQuery } from "queries/issues";
 import {
   SimpleContextSelector,
   Context,
   useSimpleContext,
 } from "context/simple-context";
-import { useApplicationsQuery } from "queries/applications";
 
 import { ApplicationRoute } from "Routes";
-import { Issue, AppFile } from "api/models";
+import { IssueProcessed } from "api/processed-models";
+
+import { useApplicationsQuery } from "queries/applications";
 import { useRulesQuery } from "queries/rules";
+import { useFilesQuery } from "queries/files";
+import { useIssuesQuery } from "queries/issues";
+
 import { RuleEditor } from "./components/rule-editor";
 import { Technologies } from "./components/technologies";
 import { IssueOverview } from "./components/issue-overview";
@@ -81,14 +84,14 @@ const columns: ICell[] = [
 ];
 
 export const compareByColumnIndex = (
-  a: Issue,
-  b: Issue,
+  a: IssueProcessed,
+  b: IssueProcessed,
   columnIndex?: number
 ) => {
   return 0;
 };
 
-const getRow = (rowData: IRowData): Issue => {
+const getRow = (rowData: IRowData): IssueProcessed => {
   return rowData[DataKey];
 };
 
@@ -104,18 +107,22 @@ export const IssuesList: React.FC = () => {
   const allApplications = useApplicationsQuery();
   const allIssues = useIssuesQuery();
   const allRules = useRulesQuery();
+  const allFiles = useFilesQuery();
 
-  const issueModal = useModal<"showRule", Issue>();
-  const issueModalRule = useMemo(() => {
-    return allRules.data?.find((rule) => rule.id === issueModal.data?.rule.id);
+  const issueModal = useModal<"showRule", IssueProcessed>();
+  const issueModalMappedRule = useMemo(() => {
+    return allRules.data?.find((rule) => rule.id === issueModal.data?.ruleId);
   }, [allRules.data, issueModal.data]);
 
-  const fileModal = useModal<"showFile", AppFile>();
+  const fileModal = useModal<"showFile", string>();
+  const fileModalMappedFile = useMemo(() => {
+    return allFiles.data?.find((file) => file.id === fileModal.data);
+  }, [allFiles.data, fileModal.data]);
 
   const issues = useMemo(() => {
     return (
       allIssues.data?.find(
-        (f) => f.application.id === appContext.currentContext?.key
+        (f) => f.applicationId === appContext.currentContext?.key
       )?.issues || []
     );
   }, [allIssues, appContext.currentContext]);
@@ -123,7 +130,7 @@ export const IssuesList: React.FC = () => {
   const {
     isItemSelected: isRowExpanded,
     toggleItemSelected: toggleRowExpanded,
-  } = useSelectionState<Issue>({
+  } = useSelectionState<IssueProcessed>({
     items: issues,
     isEqual: (a, b) => a.id === b.id,
   });
@@ -135,7 +142,7 @@ export const IssuesList: React.FC = () => {
     changeSortBy: onChangeSortBy,
   } = useTableControls();
 
-  const { pageItems, filteredItems } = useTable<Issue>({
+  const { pageItems, filteredItems } = useTable<IssueProcessed>({
     items: issues,
     currentPage: currentPage,
     currentSortBy: currentSortBy,
@@ -145,32 +152,26 @@ export const IssuesList: React.FC = () => {
     },
   });
 
-  const itemsToRow = (items: Issue[]) => {
+  const itemsToRow = (items: IssueProcessed[]) => {
     const rows: IRow[] = [];
     items.forEach((item) => {
       const isExpanded = isRowExpanded(item);
-
-      const rule = allRules.data?.find((rule) => rule.id === item.rule.id);
 
       rows.push({
         [DataKey]: item,
         isOpen: isExpanded,
         cells: [
           {
-            title: rule?.title,
+            title: item.name,
           },
           {
             title: item.category,
           },
           {
-            title: rule?.sourceTechnology && (
-              <Technologies technologies={rule.sourceTechnology} />
-            ),
+            title: <Technologies ruleId={item.ruleId} variant="source" />,
           },
           {
-            title: rule?.targetTechnology && (
-              <Technologies technologies={rule.targetTechnology} />
-            ),
+            title: <Technologies ruleId={item.ruleId} variant="target" />,
           },
           {
             title: item.levelOfEffort,
@@ -308,20 +309,20 @@ export const IssuesList: React.FC = () => {
       </PageSection>
 
       <Modal
-        title={`Rule ${issueModal.data?.rule.id}`}
+        title={`Rule: ${issueModalMappedRule?.id}`}
         isOpen={issueModal.isOpen && issueModal.action === "showRule"}
         onClose={issueModal.close}
         variant="large"
       >
-        {issueModalRule && <RuleEditor rule={issueModalRule} />}
+        {issueModalMappedRule && <RuleEditor rule={issueModalMappedRule} />}
       </Modal>
       <Modal
-        title={`File ${fileModal.data?.filename}`}
+        title={`File ${fileModalMappedFile?.prettyPath}`}
         isOpen={fileModal.isOpen && fileModal.action === "showFile"}
         onClose={fileModal.close}
         variant="default"
       >
-        {fileModal.data && <FileEditor file={fileModal.data} />}
+        {fileModalMappedFile && <FileEditor file={fileModalMappedFile} />}
       </Modal>
     </>
   );
