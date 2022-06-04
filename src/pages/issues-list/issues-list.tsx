@@ -26,6 +26,7 @@ import {
   IRow,
   IRowData,
   sortable,
+  truncate,
 } from "@patternfly/react-table";
 import { ArrowUpIcon } from "@patternfly/react-icons";
 
@@ -60,7 +61,11 @@ import { FileEditor } from "./components/file-editor";
 const DataKey = "DataKey";
 
 const columns: ICell[] = [
-  { title: "Issue", transforms: [cellWidth(20), sortable] },
+  {
+    title: "Issue",
+    transforms: [cellWidth(45), sortable],
+    cellTransforms: [],
+  },
   {
     title: "Category",
     transforms: [cellWidth(10)],
@@ -75,7 +80,8 @@ const columns: ICell[] = [
   },
   {
     title: "Level of effort",
-    transforms: [cellWidth(25)],
+    transforms: [cellWidth(15)],
+    cellTransforms: [truncate],
   },
   {
     title: "Total storypoints",

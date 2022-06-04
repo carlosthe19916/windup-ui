@@ -5,7 +5,7 @@ const app = express(),
 
 // const setupProxy = require("./src/setupProxy");
 
-port = 3000;
+port = 8080;
 
 // setupProxy(app);
 expressInstance = express.static(path.join(__dirname, "build"), {

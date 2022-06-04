@@ -34,7 +34,7 @@ export const IssueOverview: React.FC<IIssueOverviewProps> = ({
   onShowFile,
 }) => {
   return (
-    <Stack>
+    <Stack hasGutter>
       {issue.affectedFiles.map((affectedFile, index) => (
         <StackItem key={index}>
           <Grid hasGutter>
@@ -54,6 +54,7 @@ export const IssueOverview: React.FC<IIssueOverviewProps> = ({
                           <Td dataLabel="File">
                             <FileLink
                               fileId={file.fileId}
+                              defaultText={file.fileName}
                               onClick={() => onShowFile(file.fileId)}
                             />
                           </Td>
@@ -88,13 +89,19 @@ export const IssueOverview: React.FC<IIssueOverviewProps> = ({
 
 interface IFileLinkProps {
   fileId: string;
+  defaultText: string;
   onClick: () => void;
 }
 
-export const FileLink: React.FC<IFileLinkProps> = ({ fileId, onClick }) => {
+export const FileLink: React.FC<IFileLinkProps> = ({
+  fileId,
+  defaultText,
+  onClick,
+}) => {
   const allFiles = useFilesQuery();
   const file = useMemo(() => {
-    return allFiles.data?.find((e) => e.id === fileId);
+    const result = allFiles.data?.find((e) => e.id === fileId);
+    return result;
   }, [allFiles.data, fileId]);
 
   return (
@@ -104,7 +111,7 @@ export const FileLink: React.FC<IFileLinkProps> = ({ fileId, onClick }) => {
           <Truncate content={file.prettyPath} />
         </Button>
       ) : (
-        file
+        defaultText
       )}
     </>
   );

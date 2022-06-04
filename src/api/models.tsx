@@ -4,10 +4,10 @@ export interface Application {
   tags: string[];
   storyPoints: number;
   incidents: {
-    mandatory: number;
-    optional: number;
-    potential: number;
-    information: number;
+    mandatory?: number;
+    optional?: number;
+    potential?: number;
+    information?: number;
   };
 }
 
@@ -46,6 +46,7 @@ export interface IssueAffectedFiles {
 
 export interface IssueFile {
   fileId: string;
+  fileName: string;
   occurrences: number;
 }
 

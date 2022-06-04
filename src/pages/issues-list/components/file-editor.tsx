@@ -258,7 +258,9 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
             isLanguageLabelVisible
             isDownloadEnabled
             code={file?.fileContent}
-            language={Language.java}
+            language={Object.values(Language).find(
+              (l) => l === file.sourceType.toLowerCase()
+            )}
             options={{
               glyphMargin: true,
               "semanticHighlighting.enabled": true,
