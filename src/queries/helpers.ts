@@ -1,8 +1,13 @@
 import { useQuery, UseQueryOptions } from "react-query";
 
+const defaultTimeout =
+  process.env.REACT_APP_DATA_SOURCE_TIMEOUT !== undefined
+    ? Number(process.env.REACT_APP_DATA_SOURCE_TIMEOUT)
+    : 1000;
+
 const mockPromise = <TQueryFnData>(
   data: TQueryFnData,
-  timeout = process.env.NODE_ENV === "test" ? 0 : 1000,
+  timeout = defaultTimeout,
   success = true
 ) => {
   return new Promise<TQueryFnData>((resolve, reject) => {

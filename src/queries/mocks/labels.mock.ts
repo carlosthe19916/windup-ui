@@ -143,5 +143,5 @@ if (
     ],
   };
 
-  MOCK_LABELS = [label1, label2];
+  MOCK_LABELS = (window as any)["labels"] || [label1, label2];
 }

@@ -23,5 +23,5 @@ if (
     fileContent: "",
   };
 
-  MOCK_APP_FILES = [file1];
+  MOCK_APP_FILES = (window as any)["files"] || [file1];
 }

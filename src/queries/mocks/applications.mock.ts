@@ -74,5 +74,8 @@ if (
     incidents: { mandatory: 53, optional: 1, potential: 38, information: 11 },
   };
 
-  MOCK_APPLICATIONS = [application1, application2];
+  MOCK_APPLICATIONS = (window as any)["applications"] || [
+    application1,
+    application2,
+  ];
 }

@@ -81,7 +81,7 @@ if (
     targetTechnology: [{ id: "camel3" }],
   };
 
-  MOCK_RULES = {
+  MOCK_RULES = (window as any)["rules"] || {
     phase1: [rule1],
     phase2: [rule2],
   };
