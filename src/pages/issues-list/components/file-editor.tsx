@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   CodeEditor,
   CodeEditorProps,
@@ -17,6 +17,8 @@ import {
   DrawerContentBody,
   DrawerHead,
   DrawerPanelContent,
+  Text,
+  TextContent,
 } from "@patternfly/react-core";
 import * as monacoEditor from "monaco-editor/esm/vs/editor/editor.api";
 
@@ -40,18 +42,29 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
 }) => {
   const allRules = useRulesQuery();
 
-  const [hovers, setHovers] = useState<monacoEditor.IDisposable[]>([]);
+  // Editor
+  const editorRef = useRef<monacoEditor.editor.IStandaloneCodeEditor>();
+  const monacoRef = useRef<typeof monacoEditor>();
   useEffect(() => {
     return () => {
-      hovers.forEach((element) => {
-        element.dispose();
-      });
+      monacoRef.current?.editor.getModels().forEach((model) => model.dispose());
+      editorRef.current?.dispose();
     };
-  }, [hovers]);
+  }, [editorRef, monacoRef]);
 
-  const drawerRef = React.useRef<HTMLDivElement>();
-  const [isExpanded, toggleIsExpanded] = useReducer((state) => !state, false);
-  const [drawerContent, setDrawerContent] = useState("");
+  // Disposables
+  const [disposables, setDisposables] = useState<monacoEditor.IDisposable[]>(
+    []
+  );
+  useEffect(() => {
+    return () => {
+      disposables.forEach((disposable) => disposable && disposable.dispose());
+    };
+  }, [disposables]);
+
+  const drawerRef = React.useRef<any>();
+  const [isDrawerExpanded, setIsDrawerExpanded] = useState(false);
+  const [drawerHint, setDrawerHint] = useState<Hint>();
   const onDrawerExpand = () => {
     drawerRef.current && drawerRef.current.focus();
   };
@@ -62,24 +75,20 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
   const addDeltaDecorations = (
     editor: monacoEditor.editor.IStandaloneCodeEditor,
     monaco: typeof monacoEditor,
-    hint: Hint
+    hints: Hint[]
   ) => {
-    if (hint.line === undefined) {
-      return;
-    }
-
-    editor.deltaDecorations(
-      [],
-      [
-        {
-          range: new monaco.Range(hint.line, 1, hint.line, 1),
-          options: {
-            isWholeLine: true,
-            glyphMarginClassName: "windupGlyphMargin",
-          },
+    const decorations = hints.map((hint) => {
+      const decoration = {
+        range: new monaco.Range(hint.line, 1, hint.line, 1),
+        options: {
+          isWholeLine: true,
+          glyphMarginClassName: "windupGlyphMargin",
         },
-      ]
-    );
+      };
+      return decoration;
+    });
+
+    editor.deltaDecorations([], decorations);
   };
 
   /**
@@ -88,41 +97,33 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
   const addCodeLens = (
     editor: monacoEditor.editor.IStandaloneCodeEditor,
     monaco: typeof monacoEditor,
-    hint: Hint
+    hints: Hint[]
   ) => {
-    const rule = allRules.data?.find((f) => f.id === hint.ruleId);
-    if (!rule) {
-      return;
-    }
+    const lenses = hints.map((hint) => {
+      const lense: monacoEditor.languages.CodeLens = {
+        range: new monaco.Range(hint.line!, 1, hint.line!, 1),
+        id: "view-hint",
+        command: {
+          title: "View Hint",
+          id: editor.addCommand(
+            0,
+            () => {
+              setDrawerHint(hint);
+              setIsDrawerExpanded(true);
+            },
+            ""
+          )!,
+        },
+      };
+      return lense;
+    });
 
-    const language = monaco.editor.getModels()[0].getLanguageId();
-
-    const commandId = editor.addCommand(
-      0,
-      () => {
-        setDrawerContent(hint.content);
-        if (!isExpanded) {
-          toggleIsExpanded();
-        }
-      },
-      ""
-    );
-
-    const codeLens = monaco.languages.registerCodeLensProvider(language, {
+    const codeLens = monaco.languages.registerCodeLensProvider("*", {
       provideCodeLenses: (model, token) => {
         return {
-          lenses: [
-            {
-              range: new monaco.Range(hint.line!, 1, hint.line!, 1),
-              id: "view-hint",
-              command: {
-                id: commandId!,
-                title: "View Hint",
-              },
-            },
-          ],
+          lenses: lenses,
           dispose: () => {
-            codeLens.dispose();
+            // codeLens.dispose();
           },
         };
       },
@@ -130,6 +131,8 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
         return codeLens;
       },
     });
+
+    return codeLens;
   };
 
   /**
@@ -138,28 +141,26 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
   const addHover = (
     editor: monacoEditor.editor.IStandaloneCodeEditor,
     monaco: typeof monacoEditor,
-    hint: Hint
+    hints: Hint[]
   ) => {
-    const language = monaco.editor.getModels()[0].getLanguageId();
+    return hints.map((hint) => {
+      return monaco.languages.registerHoverProvider("*", {
+        provideHover: (model, position) => {
+          if (position.lineNumber !== hint.line) {
+            return undefined;
+          }
 
-    const hover = monaco.languages.registerHoverProvider(language, {
-      provideHover: (model, position) => {
-        if (position.lineNumber !== hint.line) {
-          return undefined;
-        }
-
-        return {
-          range: new monaco.Range(hint.line!, 1, hint.line!, 1),
-          contents: [
-            {
-              value: getMarkdown(hint.content, hint.links),
-            },
-          ],
-        };
-      },
+          return {
+            range: new monaco.Range(hint.line!, 1, hint.line!, 1),
+            contents: [
+              {
+                value: getMarkdown(hint.content, hint.links),
+              },
+            ],
+          };
+        },
+      });
     });
-
-    setHovers([...hovers, hover]);
   };
 
   /**
@@ -168,29 +169,24 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
   const addMarkers = (
     editor: monacoEditor.editor.IStandaloneCodeEditor,
     monaco: typeof monacoEditor,
-    hint: Hint
+    hints: Hint[]
   ) => {
-    if (hint.line === undefined) {
-      return;
-    }
-
-    const rule = allRules.data?.find((f) => f.id === hint.ruleId);
-    if (!rule) {
-      return;
-    }
-
-    const model = monaco.editor.getModels()[0];
-    monaco.editor.setModelMarkers(model, "filename", [
-      {
+    const markers = hints.map((hint) => {
+      const rule = allRules.data?.find((f) => f.id === hint.ruleId);
+      const marker: monacoEditor.editor.IMarkerData = {
         startLineNumber: hint.line,
         startColumn: 0,
         endLineNumber: hint.line,
         endColumn: 1000,
         message: hint.content,
-        source: rule.id,
+        source: rule?.id,
         severity: monaco.MarkerSeverity.Warning,
-      },
-    ]);
+      };
+      return marker;
+    });
+
+    const model = monaco.editor.getModels()[0];
+    monaco.editor.setModelMarkers(model, "*", markers);
   };
 
   const onEditorDidMount = (
@@ -201,17 +197,24 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
     editor.focus();
     monaco.editor.getModels()[0].updateOptions({ tabSize: 5 });
 
-    // let firstHint;
-    file?.hints.forEach((hint, index) => {
-      addMarkers(editor, monaco, hint);
-      addHover(editor, monaco, hint);
-      addCodeLens(editor, monaco, hint);
-      addDeltaDecorations(editor, monaco, hint);
+    const hints = file?.hints || [];
+    let newDisposables: monacoEditor.IDisposable[] = [];
 
-      // if (index === 0) {
-      //   firstHint = hint;
-      // }
-    });
+    // Add markers
+    addMarkers(editor, monaco, file?.hints || []);
+
+    // Add code lenses
+    const codeLens = addCodeLens(editor, monaco, hints);
+    newDisposables.push(codeLens);
+
+    // Add delta decorations
+    addDeltaDecorations(editor, monaco, hints);
+
+    // Add hovers
+    const hovers = addHover(editor, monaco, hints);
+    newDisposables = newDisposables.concat(hovers);
+
+    setDisposables(newDisposables);
 
     // const hintTo = hintToFocus || firstHint;
     // if (hintTo && hintTo.line) {
@@ -220,10 +223,13 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
 
     // Open warning programatically
     // editor.trigger("anystring", `editor.action.marker.next`, "s");
+
+    editorRef.current = editor;
+    monacoRef.current = monaco;
   };
 
   return (
-    <Drawer isExpanded={isExpanded} onExpand={onDrawerExpand} isInline>
+    <Drawer isExpanded={isDrawerExpanded} onExpand={onDrawerExpand} isInline>
       <DrawerContent
         panelContent={
           <DrawerPanelContent
@@ -236,13 +242,22 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
                 <CardHeader>
                   <CardActions hasNoOffset>
                     <DrawerActions>
-                      <DrawerCloseButton onClick={toggleIsExpanded} />
+                      <DrawerCloseButton
+                        onClick={() => setIsDrawerExpanded(false)}
+                      />
                     </DrawerActions>
                   </CardActions>
-                  <CardTitle>Hint</CardTitle>
+                  <CardTitle>
+                    <TextContent>
+                      <Text component="h1">{drawerHint?.title}</Text>
+                      <Text component="small">Line: {drawerHint?.line}</Text>
+                    </TextContent>
+                  </CardTitle>
                 </CardHeader>
                 <CardBody>
-                  <SimpleMarkdown children={drawerContent} />
+                  {drawerHint && (
+                    <SimpleMarkdown children={drawerHint.content} />
+                  )}
                 </CardBody>
               </Card>
             </DrawerHead>
