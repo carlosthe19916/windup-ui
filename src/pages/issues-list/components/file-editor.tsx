@@ -238,7 +238,7 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
             minSize={"350px"}
           >
             <DrawerHead>
-              <Card isLarge isPlain>
+              <Card isLarge>
                 <CardHeader>
                   <CardActions hasNoOffset>
                     <DrawerActions>
@@ -287,7 +287,7 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
             ) => {
               onEditorDidMount(editor, monaco);
             }}
-            height="700px"
+            height={`${window.innerHeight - 300}px`}
             {...props}
           />
         </DrawerContentBody>

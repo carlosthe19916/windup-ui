@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import {
   Bullseye,
+  Button,
   Divider,
   EmptyState,
   EmptyStateBody,
@@ -327,6 +328,13 @@ export const IssuesList: React.FC = () => {
         isOpen={fileModal.isOpen && fileModal.action === "showFile"}
         onClose={fileModal.close}
         variant="default"
+        position="top"
+        disableFocusTrap
+        actions={[
+          <Button key="close" variant="primary" onClick={fileModal.close}>
+            Close
+          </Button>,
+        ]}
       >
         {fileModalMappedFile && <FileEditor file={fileModalMappedFile} />}
       </Modal>
