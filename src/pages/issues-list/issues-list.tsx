@@ -38,7 +38,7 @@ import {
   ConditionalRender,
   useModal,
 } from "@project-openubl/lib-ui";
-import { useSelectionState } from "@konveyor/lib-ui";
+import { useSelectionState } from "@migtools/lib-ui";
 
 import {
   SimpleContextSelector,
