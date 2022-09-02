@@ -24,10 +24,12 @@ const App: React.FC = () => {
   return (
     <HashRouter>
       <SimpleContextProvider
-        allContexts={(applications.data || []).map((e) => ({
-          key: e.id,
-          label: e.name,
-        }))}
+        allContexts={(applications.data || [])
+          .map((e) => ({
+            key: e.id,
+            label: e.name,
+          }))
+          .concat({ key: "", label: "All applications" })}
       >
         <DefaultLayout>
           <AppRoutes />

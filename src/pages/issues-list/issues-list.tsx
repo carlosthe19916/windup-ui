@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useMatch } from "react-router-dom";
 
 import {
   Bullseye,
@@ -46,7 +46,6 @@ import {
   useSimpleContext,
 } from "context/simple-context";
 
-import { ApplicationRoute } from "Routes";
 import { IssueProcessed } from "api/processed-models";
 
 import { useApplicationsQuery } from "queries/applications";
@@ -103,7 +102,16 @@ const getRow = (rowData: IRowData): IssueProcessed => {
 };
 
 export const IssuesList: React.FC = () => {
-  const params = useParams<ApplicationRoute>();
+  const matchIssuesPage = useMatch("/issues");
+  const matchAllApplicationsPage = useMatch("/issues/applications");
+  const matchSingleApplicationPage = useMatch(
+    "/issues/applications/:applicationId"
+  );
+
+  const applicationId = matchAllApplicationsPage
+    ? ""
+    : matchSingleApplicationPage?.params.applicationId;
+
   const navigate = useNavigate();
 
   const appContext = useSimpleContext();
@@ -127,6 +135,10 @@ export const IssuesList: React.FC = () => {
   }, [allFiles.data, fileModal.data]);
 
   const issues = useMemo(() => {
+    if (appContext.currentContext?.key === "") {
+      return [...(allIssues.data || [])].flatMap((e) => e.issues);
+    }
+
     return (
       allIssues.data?.find(
         (f) => f.applicationId === appContext.currentContext?.key
@@ -237,11 +249,7 @@ export const IssuesList: React.FC = () => {
             <ToolbarItem>Application:</ToolbarItem>
             <ToolbarItem>
               <SimpleContextSelector
-                contextKeyFromURL={params.applicationId}
-                allContexts={(allApplications.data || []).map((e) => ({
-                  key: e.id,
-                  label: e.name,
-                }))}
+                contextKeyFromURL={applicationId}
                 onChange={onContextChange}
               />
             </ToolbarItem>
@@ -266,22 +274,19 @@ export const IssuesList: React.FC = () => {
             </Bullseye>
           }
         >
-          <ConditionalRender
-            when={!appContext.currentContext}
-            then={
-              <Bullseye>
-                <EmptyState>
-                  <EmptyStateIcon icon={ArrowUpIcon} />
-                  <Title headingLevel="h4" size="lg">
-                    Select an application
-                  </Title>
-                  <EmptyStateBody>
-                    Select an application whose data you want to get access to.
-                  </EmptyStateBody>
-                </EmptyState>
-              </Bullseye>
-            }
-          >
+          {matchIssuesPage ? (
+            <Bullseye>
+              <EmptyState>
+                <EmptyStateIcon icon={ArrowUpIcon} />
+                <Title headingLevel="h4" size="lg">
+                  Select an application
+                </Title>
+                <EmptyStateBody>
+                  Select an application whose data you want to get access to.
+                </EmptyStateBody>
+              </EmptyState>
+            </Bullseye>
+          ) : (
             <SimpleTableWithToolbar
               hasTopPagination
               hasBottomPagination
@@ -311,7 +316,7 @@ export const IssuesList: React.FC = () => {
               // toolbarClearAllFilters={clearAllFilters}
               filtersApplied={false}
             />
-          </ConditionalRender>
+          )}
         </ConditionalRender>
       </PageSection>
 

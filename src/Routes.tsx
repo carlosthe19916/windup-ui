@@ -22,6 +22,11 @@ export const AppRoutes = () => {
     },
     {
       Component: IssuesList,
+      path: "/issues/applications",
+      hasDescendant: false,
+    },
+    {
+      Component: IssuesList,
       path: "/issues/applications/:applicationId",
       hasDescendant: false,
     },

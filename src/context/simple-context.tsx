@@ -17,11 +17,13 @@ export interface Context {
 }
 
 interface ISimpleContext {
+  allContexts: Context[];
   currentContext?: Context;
   selectContext: (key: string) => void;
 }
 
 const SimpleContext = createContext<ISimpleContext>({
+  allContexts: [],
   currentContext: undefined,
   selectContext: () => undefined,
 });
@@ -39,6 +41,7 @@ export const SimpleContextProvider: React.FunctionComponent<
   return (
     <SimpleContext.Provider
       value={{
+        allContexts,
         currentContext: allContexts.find((f) => f.key === selectedContextKey),
         selectContext: (key: string) => setSelectedContextKey(key),
       }}
@@ -53,7 +56,6 @@ export const useSimpleContext = (): ISimpleContext => useContext(SimpleContext);
 // Helpers components
 
 export interface ISimpleContextSelectorProps {
-  allContexts: Context[];
   contextKeyFromURL?: string;
   props?: Omit<
     ContextSelectorProps,
@@ -67,16 +69,16 @@ export interface ISimpleContextSelectorProps {
 }
 
 export const SimpleContextSelector: React.FC<ISimpleContextSelectorProps> = ({
-  allContexts,
   contextKeyFromURL,
   props,
   onChange,
 }) => {
-  const { currentContext, selectContext } = useSimpleContext();
+  const { allContexts, currentContext, selectContext } = useSimpleContext();
 
   useEffect(() => {
-    const currentContextKey = contextKeyFromURL || currentContext?.key;
-    if (currentContextKey) {
+    const currentContextKey = contextKeyFromURL ?? currentContext?.key;
+
+    if (typeof currentContextKey === "string") {
       selectContext(currentContextKey);
     }
   }, [contextKeyFromURL, currentContext, selectContext]);
