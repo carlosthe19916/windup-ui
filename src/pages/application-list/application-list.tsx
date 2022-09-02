@@ -277,7 +277,7 @@ export const ApplicationList: React.FC = () => {
         cells: [
           {
             title: (
-              <div className="pf-u-m-md">
+              <div className="pf-u-m-lg">
                 <Split hasGutter isWrappable>
                   {[...item.tags]
                     .sort((a, b) => a.localeCompare(b))
@@ -300,7 +300,7 @@ export const ApplicationList: React.FC = () => {
         cells: [
           {
             title: (
-              <div className="pf-u-m-md">
+              <div className="pf-u-m-lg">
                 <DescriptionList isHorizontal isCompact>
                   <DescriptionListGroup>
                     <DescriptionListTerm>Mandatory</DescriptionListTerm>
@@ -450,7 +450,7 @@ export const ApplicationList: React.FC = () => {
         />
 
         <Modal
-          title="Runtime label"
+          title="Runtime label details"
           isOpen={modal.isOpen}
           onClose={modal.close}
           variant="medium"
