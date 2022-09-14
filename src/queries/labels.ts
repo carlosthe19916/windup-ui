@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import axios, { AxiosError } from "axios";
-import { UseQueryResult } from "react-query";
+import { UseQueryResult } from "@tanstack/react-query";
 
 import { Label } from "api/models";
 import { useMockableQuery } from "./helpers";
@@ -13,7 +13,7 @@ export const useLabelsQuery = (): UseQueryResult<Label[], AxiosError> => {
 
   return useMockableQuery<Label[], AxiosError>(
     {
-      queryKey: "labels",
+      queryKey: ["labels"],
       queryFn: async () => (await axios.get<Label[]>("/labels")).data,
       select: sortListCallback,
     },

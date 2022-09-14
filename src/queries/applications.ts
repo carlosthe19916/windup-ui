@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import axios, { AxiosError } from "axios";
-import { UseQueryResult } from "react-query";
+import { UseQueryResult } from "@tanstack/react-query";
 
 import { Application } from "api/models";
 import { useMockableQuery } from "./helpers";
@@ -16,7 +16,7 @@ export const useApplicationsQuery = (): UseQueryResult<
 
   return useMockableQuery<Application[], AxiosError>(
     {
-      queryKey: "applications",
+      queryKey: ["applications"],
       queryFn: async () =>
         (await axios.get<Application[]>("/applications")).data,
       select: sortListCallback,

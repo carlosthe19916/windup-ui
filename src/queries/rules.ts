@@ -24,7 +24,7 @@ export const useRulesQuery = () => {
 
   return useMockableQuery<RuleGroup, AxiosError, RuleProcessed[]>(
     {
-      queryKey: "rules",
+      queryKey: ["rules"],
       queryFn: async () => (await axios.get<RuleGroup>("/rules")).data,
       select: transformCallback,
     },

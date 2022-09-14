@@ -6,8 +6,12 @@ import reportWebVitals from "./reportWebVitals";
 
 import { iniAxios } from "api/axios";
 
-import { QueryClientProvider, QueryClient, QueryCache } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
+import {
+  QueryClientProvider,
+  QueryClient,
+  QueryCache,
+} from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 iniAxios();
 

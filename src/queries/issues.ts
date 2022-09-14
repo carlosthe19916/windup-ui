@@ -49,7 +49,7 @@ export const useIssuesQuery = () => {
     ApplicationIssuesProcessed[]
   >(
     {
-      queryKey: "issues",
+      queryKey: ["issues"],
       queryFn: async () => {
         return (await axios.get<ApplicationIssues[]>("/issues")).data;
       },
