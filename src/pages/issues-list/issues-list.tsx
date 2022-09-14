@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useNavigate, useMatch } from "react-router-dom";
 
 import {
@@ -11,12 +11,18 @@ import {
   Modal,
   PageSection,
   PageSectionVariants,
+  SearchInput,
+  SelectVariant,
   Spinner,
   Text,
   TextContent,
   Title,
   Toolbar,
+  ToolbarChip,
+  ToolbarChipGroup,
   ToolbarContent,
+  ToolbarFilter,
+  ToolbarGroup,
   ToolbarItem,
 } from "@patternfly/react-core";
 import {
@@ -29,7 +35,7 @@ import {
   sortable,
   truncate,
 } from "@patternfly/react-table";
-import { ArrowUpIcon } from "@patternfly/react-icons";
+import { ArrowUpIcon, FilterIcon } from "@patternfly/react-icons";
 
 import {
   SimpleTableWithToolbar,
@@ -37,6 +43,9 @@ import {
   useTableControls,
   ConditionalRender,
   useModal,
+  SimpleSelect,
+  useToolbar,
+  OptionWithValue,
 } from "@project-openubl/lib-ui";
 import { useSelectionState } from "@migtools/lib-ui";
 
@@ -58,12 +67,40 @@ import { Technologies } from "./components/technologies";
 import { IssueOverview } from "./components/issue-overview";
 import { FileEditor } from "./components/file-editor";
 
+type toStringFn = () => string;
+
+const toOptionWithValue = (
+  option: string | ToolbarChip,
+  customToString: toStringFn | null = null
+): OptionWithValue => {
+  if (typeof option === "string") {
+    return {
+      value: option,
+      toString: customToString ? customToString : () => option,
+      compareTo: (other: OptionWithValue) => option === other.value,
+    };
+  } else {
+    return {
+      value: option.key,
+      toString: customToString ? customToString : () => option.node as string,
+      compareTo: (other: OptionWithValue) => option.key === other.value,
+    };
+  }
+};
+
+const toToolbarChip = (option: OptionWithValue): ToolbarChip => {
+  return {
+    key: option.value,
+    node: option.toString(),
+  };
+};
+
 const DataKey = "DataKey";
 
 const columns: ICell[] = [
   {
     title: "Issue",
-    transforms: [cellWidth(45), sortable],
+    transforms: [cellWidth(35), sortable],
     cellTransforms: [],
   },
   {
@@ -84,6 +121,10 @@ const columns: ICell[] = [
     cellTransforms: [truncate],
   },
   {
+    title: "Total incidents",
+    transforms: [cellWidth(10)],
+  },
+  {
     title: "Total storypoints",
     transforms: [cellWidth(10)],
   },
@@ -94,7 +135,12 @@ export const compareByColumnIndex = (
   b: IssueProcessed,
   columnIndex?: number
 ) => {
-  return 0;
+  switch (columnIndex) {
+    case 1: // name
+      return a.name.localeCompare(b.name);
+    default:
+      return 0;
+  }
 };
 
 const getRow = (rowData: IRowData): IssueProcessed => {
@@ -119,11 +165,36 @@ export const IssuesList: React.FC = () => {
     navigate("/issues/applications/" + context.key);
   };
 
+  // Filters
+  const [filterText, setFilterText] = useState("");
+  const { filters, addFilter, setFilter, removeFilter, clearAllFilters } =
+    useToolbar<"name" | "category" | "levelOfEffort", ToolbarChip>();
+
+  // Queries
   const allApplications = useApplicationsQuery();
   const allIssues = useIssuesQuery();
   const allRules = useRulesQuery();
   const allFiles = useFilesQuery();
 
+  const categories = useMemo(() => {
+    const allCategories = (allIssues.data || [])
+      .flatMap((f) => f.issues)
+      .map((e) => e.category);
+    return Array.from(new Set(allCategories)).sort((a, b) =>
+      a.localeCompare(b)
+    );
+  }, [allIssues.data]);
+
+  const levelOfEfforts = useMemo(() => {
+    const allLevelOfEfforts = (allIssues.data || [])
+      .flatMap((f) => f.issues)
+      .map((e) => e.levelOfEffort);
+    return Array.from(new Set(allLevelOfEfforts)).sort((a, b) =>
+      a.localeCompare(b)
+    );
+  }, [allIssues.data]);
+
+  // Modal
   const issueModal = useModal<"showRule", IssueProcessed>();
   const issueModalMappedRule = useMemo(() => {
     return allRules.data?.find((rule) => rule.id === issueModal.data?.ruleId);
@@ -167,7 +238,33 @@ export const IssuesList: React.FC = () => {
     currentSortBy: currentSortBy,
     compareToByColumn: compareByColumnIndex,
     filterItem: (item) => {
-      return true;
+      let isFilterTextFilterCompliant = true;
+      if (filterText && filterText.trim().length > 0) {
+        isFilterTextFilterCompliant =
+          item.name.toLowerCase().indexOf(filterText.toLowerCase()) !== -1;
+      }
+
+      let isCategoryFilterCompliant = true;
+      const selectedCategories = filters.get("category") || [];
+      if (selectedCategories.length > 0) {
+        isCategoryFilterCompliant = selectedCategories.some(
+          (f) => item.category === f.key
+        );
+      }
+
+      let isLevelOfEffortCompliant = true;
+      const selectedLevelOfEfforts = filters.get("levelOfEffort") || [];
+      if (selectedLevelOfEfforts.length > 0) {
+        isLevelOfEffortCompliant = selectedLevelOfEfforts.some(
+          (f) => item.levelOfEffort === f.key
+        );
+      }
+
+      return (
+        isFilterTextFilterCompliant &&
+        isCategoryFilterCompliant &&
+        isLevelOfEffortCompliant
+      );
     },
   });
 
@@ -196,7 +293,10 @@ export const IssuesList: React.FC = () => {
             title: item.levelOfEffort,
           },
           {
-            title: 0,
+            title: "Missing",
+          },
+          {
+            title: "Missing",
           },
         ],
       });
@@ -209,7 +309,7 @@ export const IssuesList: React.FC = () => {
           cells: [
             {
               title: (
-                <div className="pf-u-m-md">
+                <div className="pf-u-m-sm">
                   <IssueOverview
                     issue={item}
                     onShowFile={(file) => fileModal.open("showFile", file)}
@@ -313,8 +413,121 @@ export const IssuesList: React.FC = () => {
               loadingVariant="skeleton"
               fetchError={allIssues.isError}
               // Toolbar filters
-              // toolbarClearAllFilters={clearAllFilters}
-              filtersApplied={false}
+              toolbarClearAllFilters={clearAllFilters}
+              filtersApplied={filterText.trim().length > 0}
+              toolbarToggle={
+                <>
+                  <ToolbarItem variant="search-filter">
+                    <SearchInput
+                      value={filterText}
+                      onChange={setFilterText}
+                      onSearch={(value) => {
+                        addFilter("name", { key: value, node: value });
+                        setFilterText("");
+                      }}
+                    />
+                  </ToolbarItem>
+                  <ToolbarGroup variant="filter-group">
+                    <ToolbarFilter
+                      chips={filters.get("category")}
+                      deleteChip={(
+                        category: string | ToolbarChipGroup,
+                        chip: ToolbarChip | string
+                      ) => removeFilter("category", chip)}
+                      deleteChipGroup={() => setFilter("category", [])}
+                      categoryName={{ key: "category", name: "Category" }}
+                    >
+                      <SimpleSelect
+                        width={250}
+                        maxHeight={300}
+                        toggleIcon={<FilterIcon />}
+                        variant={SelectVariant.checkbox}
+                        aria-label="category"
+                        aria-labelledby="category"
+                        placeholderText="Category"
+                        value={filters
+                          .get("category")
+                          ?.map((chip) => toOptionWithValue(chip))}
+                        options={categories.map((c) => toOptionWithValue(c))}
+                        onChange={(option) => {
+                          const optionValue = option as OptionWithValue<string>;
+
+                          const elementExists = (
+                            filters.get("category") || []
+                          ).some((f) => f.key === optionValue.value);
+                          let newElements: ToolbarChip[];
+                          if (elementExists) {
+                            newElements = (
+                              filters.get("category") || []
+                            ).filter((f) => f.key !== optionValue.value);
+                          } else {
+                            newElements = [
+                              ...(filters.get("category") || []),
+                              toToolbarChip(optionValue),
+                            ];
+                          }
+
+                          setFilter("category", newElements);
+                        }}
+                        hasInlineFilter
+                        onClear={() => setFilter("category", [])}
+                      />
+                    </ToolbarFilter>
+                  </ToolbarGroup>
+                  <ToolbarGroup variant="filter-group">
+                    <ToolbarFilter
+                      chips={filters.get("levelOfEffort")}
+                      deleteChip={(
+                        category: string | ToolbarChipGroup,
+                        chip: ToolbarChip | string
+                      ) => removeFilter("levelOfEffort", chip)}
+                      deleteChipGroup={() => setFilter("levelOfEffort", [])}
+                      categoryName={{
+                        key: "levelOfEffort",
+                        name: "Level of effort",
+                      }}
+                    >
+                      <SimpleSelect
+                        width={250}
+                        maxHeight={300}
+                        toggleIcon={<FilterIcon />}
+                        variant={SelectVariant.checkbox}
+                        aria-label="levelOfEffort"
+                        aria-labelledby="levelOfEffort"
+                        placeholderText="Level effort"
+                        value={filters
+                          .get("levelOfEffort")
+                          ?.map((chip) => toOptionWithValue(chip))}
+                        options={levelOfEfforts.map((e) =>
+                          toOptionWithValue(e)
+                        )}
+                        onChange={(option) => {
+                          const optionValue = option as OptionWithValue<string>;
+
+                          const elementExists = (
+                            filters.get("levelOfEffort") || []
+                          ).some((f) => f.key === optionValue.value);
+                          let newElements: ToolbarChip[];
+                          if (elementExists) {
+                            newElements = (
+                              filters.get("levelOfEffort") || []
+                            ).filter((f) => f.key !== optionValue.value);
+                          } else {
+                            newElements = [
+                              ...(filters.get("levelOfEffort") || []),
+                              toToolbarChip(optionValue),
+                            ];
+                          }
+
+                          setFilter("levelOfEffort", newElements);
+                        }}
+                        hasInlineFilter
+                        onClear={() => setFilter("levelOfEffort", [])}
+                      />
+                    </ToolbarFilter>
+                  </ToolbarGroup>
+                </>
+              }
             />
           )}
         </ConditionalRender>
