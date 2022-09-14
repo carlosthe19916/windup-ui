@@ -35,7 +35,7 @@ import {
   sortable,
   truncate,
 } from "@patternfly/react-table";
-import { ArrowUpIcon, FilterIcon } from "@patternfly/react-icons";
+import { ArrowUpIcon } from "@patternfly/react-icons";
 
 import {
   SimpleTableWithToolbar,
@@ -66,24 +66,31 @@ import { RuleEditor } from "./components/rule-editor";
 import { Technologies } from "./components/technologies";
 import { IssueOverview } from "./components/issue-overview";
 import { FileEditor } from "./components/file-editor";
+import { technologiesToArray } from "utils/rule-utils";
+import { Technology } from "api/models";
 
-type toStringFn = () => string;
-
-const toOptionWithValue = (
-  option: string | ToolbarChip,
-  customToString: toStringFn | null = null
-): OptionWithValue => {
+const toOption = (option: string | ToolbarChip): OptionWithValue => {
   if (typeof option === "string") {
+    const toStringFn = () => option;
     return {
       value: option,
-      toString: customToString ? customToString : () => option,
-      compareTo: (other: OptionWithValue) => option === other.value,
+      toString: toStringFn,
+      compareTo: (other: string | OptionWithValue) => {
+        return typeof other === "string"
+          ? toStringFn().toLowerCase().includes(other.toLocaleLowerCase())
+          : option === other.value;
+      },
     };
   } else {
+    const toStringFn = () => option.node as string;
     return {
       value: option.key,
-      toString: customToString ? customToString : () => option.node as string,
-      compareTo: (other: OptionWithValue) => option.key === other.value,
+      toString: toStringFn,
+      compareTo: (other: string | OptionWithValue) => {
+        return typeof other === "string"
+          ? toStringFn().toLowerCase().includes(other.toLowerCase())
+          : option.key === other.value;
+      },
     };
   }
 };
@@ -168,31 +175,20 @@ export const IssuesList: React.FC = () => {
   // Filters
   const [filterText, setFilterText] = useState("");
   const { filters, addFilter, setFilter, removeFilter, clearAllFilters } =
-    useToolbar<"name" | "category" | "levelOfEffort", ToolbarChip>();
+    useToolbar<
+      | "name"
+      | "category"
+      | "levelOfEffort"
+      | "sourceTechnology"
+      | "targetTechnology",
+      ToolbarChip
+    >();
 
   // Queries
   const allApplications = useApplicationsQuery();
   const allIssues = useIssuesQuery();
   const allRules = useRulesQuery();
   const allFiles = useFilesQuery();
-
-  const categories = useMemo(() => {
-    const allCategories = (allIssues.data || [])
-      .flatMap((f) => f.issues)
-      .map((e) => e.category);
-    return Array.from(new Set(allCategories)).sort((a, b) =>
-      a.localeCompare(b)
-    );
-  }, [allIssues.data]);
-
-  const levelOfEfforts = useMemo(() => {
-    const allLevelOfEfforts = (allIssues.data || [])
-      .flatMap((f) => f.issues)
-      .map((e) => e.levelOfEffort);
-    return Array.from(new Set(allLevelOfEfforts)).sort((a, b) =>
-      a.localeCompare(b)
-    );
-  }, [allIssues.data]);
 
   // Modal
   const issueModal = useModal<"showRule", IssueProcessed>();
@@ -216,6 +212,43 @@ export const IssuesList: React.FC = () => {
       )?.issues || []
     );
   }, [allIssues, appContext.currentContext]);
+
+  //
+  const categories = useMemo(() => {
+    const allCategories = (allIssues.data || [])
+      .flatMap((f) => f.issues)
+      .map((e) => e.category);
+    return Array.from(new Set(allCategories)).sort((a, b) =>
+      a.localeCompare(b)
+    );
+  }, [allIssues.data]);
+
+  const levelOfEfforts = useMemo(() => {
+    const allLevelOfEfforts = (allIssues.data || [])
+      .flatMap((f) => f.issues)
+      .map((e) => e.levelOfEffort);
+    return Array.from(new Set(allLevelOfEfforts)).sort((a, b) =>
+      a.localeCompare(b)
+    );
+  }, [allIssues.data]);
+
+  const technologies = useMemo(() => {
+    const sourceTechnologies = technologiesToArray(
+      (allRules.data || [])
+        .flatMap((e) => e.sourceTechnology)
+        .reduce((prev, current) => {
+          return current ? [...prev, current] : prev;
+        }, [] as Technology[])
+    );
+    const targetTechnologies = technologiesToArray(
+      (allRules.data || [])
+        .flatMap((e) => e.targetTechnology)
+        .reduce((prev, current) => {
+          return current ? [...prev, current] : prev;
+        }, [] as Technology[])
+    );
+    return { sourceTechnologies, targetTechnologies };
+  }, [allRules.data]);
 
   const {
     isItemSelected: isRowExpanded,
@@ -260,10 +293,19 @@ export const IssuesList: React.FC = () => {
         );
       }
 
+      // let isSourceCompliant = true;
+      // const selectedSources = filters.get("sourceTechnology") || [];
+      // if (selectedSources.length > 0) {
+      //   isSourceCompliant = selectedSources.some(
+      //     (f) => item.ruleId === f.key
+      //   );
+      // }
+
       return (
         isFilterTextFilterCompliant &&
         isCategoryFilterCompliant &&
         isLevelOfEffortCompliant
+        // isSourceCompliant
       );
     },
   });
@@ -438,17 +480,13 @@ export const IssuesList: React.FC = () => {
                       categoryName={{ key: "category", name: "Category" }}
                     >
                       <SimpleSelect
-                        width={250}
                         maxHeight={300}
-                        toggleIcon={<FilterIcon />}
                         variant={SelectVariant.checkbox}
                         aria-label="category"
                         aria-labelledby="category"
                         placeholderText="Category"
-                        value={filters
-                          .get("category")
-                          ?.map((chip) => toOptionWithValue(chip))}
-                        options={categories.map((c) => toOptionWithValue(c))}
+                        value={filters.get("category")?.map(toOption)}
+                        options={categories.map(toOption)}
                         onChange={(option) => {
                           const optionValue = option as OptionWithValue<string>;
 
@@ -488,19 +526,13 @@ export const IssuesList: React.FC = () => {
                       }}
                     >
                       <SimpleSelect
-                        width={250}
                         maxHeight={300}
-                        toggleIcon={<FilterIcon />}
                         variant={SelectVariant.checkbox}
                         aria-label="levelOfEffort"
                         aria-labelledby="levelOfEffort"
                         placeholderText="Level effort"
-                        value={filters
-                          .get("levelOfEffort")
-                          ?.map((chip) => toOptionWithValue(chip))}
-                        options={levelOfEfforts.map((e) =>
-                          toOptionWithValue(e)
-                        )}
+                        value={filters.get("levelOfEffort")?.map(toOption)}
+                        options={levelOfEfforts.map(toOption)}
                         onChange={(option) => {
                           const optionValue = option as OptionWithValue<string>;
 
@@ -523,6 +555,96 @@ export const IssuesList: React.FC = () => {
                         }}
                         hasInlineFilter
                         onClear={() => setFilter("levelOfEffort", [])}
+                      />
+                    </ToolbarFilter>
+                  </ToolbarGroup>
+                  <ToolbarGroup variant="filter-group">
+                    <ToolbarFilter
+                      chips={filters.get("sourceTechnology")}
+                      deleteChip={(
+                        category: string | ToolbarChipGroup,
+                        chip: ToolbarChip | string
+                      ) => removeFilter("sourceTechnology", chip)}
+                      deleteChipGroup={() => setFilter("sourceTechnology", [])}
+                      categoryName={{
+                        key: "sourceTechnology",
+                        name: "Source",
+                      }}
+                    >
+                      <SimpleSelect
+                        maxHeight={300}
+                        variant={SelectVariant.checkbox}
+                        aria-label="sourceTechnology"
+                        aria-labelledby="sourceTechnology"
+                        placeholderText="Source"
+                        value={filters.get("sourceTechnology")?.map(toOption)}
+                        options={technologies.sourceTechnologies.map(toOption)}
+                        onChange={(option) => {
+                          const optionValue = option as OptionWithValue<string>;
+
+                          const elementExists = (
+                            filters.get("sourceTechnology") || []
+                          ).some((f) => f.key === optionValue.value);
+                          let newElements: ToolbarChip[];
+                          if (elementExists) {
+                            newElements = (
+                              filters.get("sourceTechnology") || []
+                            ).filter((f) => f.key !== optionValue.value);
+                          } else {
+                            newElements = [
+                              ...(filters.get("sourceTechnology") || []),
+                              toToolbarChip(optionValue),
+                            ];
+                          }
+
+                          setFilter("sourceTechnology", newElements);
+                        }}
+                        hasInlineFilter
+                        onClear={() => setFilter("sourceTechnology", [])}
+                      />
+                    </ToolbarFilter>
+                    <ToolbarFilter
+                      chips={filters.get("targetTechnology")}
+                      deleteChip={(
+                        category: string | ToolbarChipGroup,
+                        chip: ToolbarChip | string
+                      ) => removeFilter("targetTechnology", chip)}
+                      deleteChipGroup={() => setFilter("targetTechnology", [])}
+                      categoryName={{
+                        key: "targetTechnology",
+                        name: "Target",
+                      }}
+                    >
+                      <SimpleSelect
+                        maxHeight={300}
+                        variant={SelectVariant.checkbox}
+                        aria-label="targetTechnology"
+                        aria-labelledby="targetTechnology"
+                        placeholderText="Target"
+                        value={filters.get("targetTechnology")?.map(toOption)}
+                        options={technologies.targetTechnologies.map(toOption)}
+                        onChange={(option) => {
+                          const optionValue = option as OptionWithValue<string>;
+
+                          const elementExists = (
+                            filters.get("targetTechnology") || []
+                          ).some((f) => f.key === optionValue.value);
+                          let newElements: ToolbarChip[];
+                          if (elementExists) {
+                            newElements = (
+                              filters.get("targetTechnology") || []
+                            ).filter((f) => f.key !== optionValue.value);
+                          } else {
+                            newElements = [
+                              ...(filters.get("targetTechnology") || []),
+                              toToolbarChip(optionValue),
+                            ];
+                          }
+
+                          setFilter("targetTechnology", newElements);
+                        }}
+                        hasInlineFilter
+                        onClear={() => setFilter("targetTechnology", [])}
                       />
                     </ToolbarFilter>
                   </ToolbarGroup>
