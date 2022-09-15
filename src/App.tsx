@@ -7,6 +7,8 @@ import "./App.css";
 import { DefaultLayout } from "./layout";
 import { Theme } from "layout/theme-constants";
 import { useApplicationsQuery } from "queries/applications";
+
+import { ProcessedQueriesContextProvider } from "context/processed-queries-context";
 import { SimpleContextProvider } from "context/simple-context";
 
 const App: React.FC = () => {
@@ -23,18 +25,20 @@ const App: React.FC = () => {
 
   return (
     <HashRouter>
-      <SimpleContextProvider
-        allContexts={(applications.data || [])
-          .map((e) => ({
-            key: e.id,
-            label: e.name,
-          }))
-          .concat({ key: "", label: "All applications" })}
-      >
-        <DefaultLayout>
-          <AppRoutes />
-        </DefaultLayout>
-      </SimpleContextProvider>
+      <ProcessedQueriesContextProvider>
+        <SimpleContextProvider
+          allContexts={(applications.data || [])
+            .map((e) => ({
+              key: e.id,
+              label: e.name,
+            }))
+            .concat({ key: "", label: "All applications" })}
+        >
+          <DefaultLayout>
+            <AppRoutes />
+          </DefaultLayout>
+        </SimpleContextProvider>
+      </ProcessedQueriesContextProvider>
     </HashRouter>
   );
 };

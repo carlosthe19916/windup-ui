@@ -58,7 +58,6 @@ import {
 import { IssueProcessed } from "api/processed-models";
 
 import { useApplicationsQuery } from "queries/applications";
-import { useRulesQuery } from "queries/rules";
 import { useFilesQuery } from "queries/files";
 import { useIssuesQuery } from "queries/issues";
 
@@ -67,7 +66,7 @@ import { Technologies } from "./components/technologies";
 import { IssueOverview } from "./components/issue-overview";
 import { FileEditor } from "./components/file-editor";
 import { technologiesToArray } from "utils/rule-utils";
-import { Technology } from "api/models";
+import { useProcessedQueriesContext } from "context/processed-queries-context";
 
 const toOption = (option: string | ToolbarChip): OptionWithValue => {
   if (typeof option === "string") {
@@ -187,14 +186,17 @@ export const IssuesList: React.FC = () => {
   // Queries
   const allApplications = useApplicationsQuery();
   const allIssues = useIssuesQuery();
-  const allRules = useRulesQuery();
   const allFiles = useFilesQuery();
+
+  const { technologies, rulesByIssueId } = useProcessedQueriesContext();
 
   // Modal
   const issueModal = useModal<"showRule", IssueProcessed>();
   const issueModalMappedRule = useMemo(() => {
-    return allRules.data?.find((rule) => rule.id === issueModal.data?.ruleId);
-  }, [allRules.data, issueModal.data]);
+    return issueModal.data != null
+      ? rulesByIssueId.get(issueModal.data.id)
+      : undefined;
+  }, [rulesByIssueId, issueModal.data]);
 
   const fileModal = useModal<"showFile", string>();
   const fileModalMappedFile = useMemo(() => {
@@ -231,24 +233,6 @@ export const IssuesList: React.FC = () => {
       a.localeCompare(b)
     );
   }, [allIssues.data]);
-
-  const technologies = useMemo(() => {
-    const sourceTechnologies = technologiesToArray(
-      (allRules.data || [])
-        .flatMap((e) => e.sourceTechnology)
-        .reduce((prev, current) => {
-          return current ? [...prev, current] : prev;
-        }, [] as Technology[])
-    );
-    const targetTechnologies = technologiesToArray(
-      (allRules.data || [])
-        .flatMap((e) => e.targetTechnology)
-        .reduce((prev, current) => {
-          return current ? [...prev, current] : prev;
-        }, [] as Technology[])
-    );
-    return { sourceTechnologies, targetTechnologies };
-  }, [allRules.data]);
 
   const {
     isItemSelected: isRowExpanded,
@@ -293,19 +277,42 @@ export const IssuesList: React.FC = () => {
         );
       }
 
-      // let isSourceCompliant = true;
-      // const selectedSources = filters.get("sourceTechnology") || [];
-      // if (selectedSources.length > 0) {
-      //   isSourceCompliant = selectedSources.some(
-      //     (f) => item.ruleId === f.key
-      //   );
-      // }
+      let isSourceCompliant = true;
+      const selectedSources = filters.get("sourceTechnology") || [];
+      if (selectedSources.length > 0) {
+        isSourceCompliant = selectedSources.some((f) => {
+          const rule = rulesByIssueId.get(item.id);
+          if (rule) {
+            return technologiesToArray(rule.sourceTechnology || []).includes(
+              f.key
+            );
+          }
+
+          return false;
+        });
+      }
+
+      let isTargetCompliant = true;
+      const selectedTargets = filters.get("targetTechnology") || [];
+      if (selectedTargets.length > 0) {
+        isTargetCompliant = selectedTargets.some((f) => {
+          const rule = rulesByIssueId.get(item.id);
+          if (rule) {
+            return technologiesToArray(rule.targetTechnology || []).includes(
+              f.key
+            );
+          }
+
+          return false;
+        });
+      }
 
       return (
         isFilterTextFilterCompliant &&
         isCategoryFilterCompliant &&
-        isLevelOfEffortCompliant
-        // isSourceCompliant
+        isLevelOfEffortCompliant &&
+        isSourceCompliant &&
+        isTargetCompliant
       );
     },
   });
@@ -335,7 +342,11 @@ export const IssuesList: React.FC = () => {
             title: item.levelOfEffort,
           },
           {
-            title: "Missing",
+            title: item.affectedFiles
+              .flatMap((f) => f.files)
+              .reduce((prev, current) => {
+                return prev + current.occurrences;
+              }, 0),
           },
           {
             title: "Missing",
@@ -578,7 +589,7 @@ export const IssuesList: React.FC = () => {
                         aria-labelledby="sourceTechnology"
                         placeholderText="Source"
                         value={filters.get("sourceTechnology")?.map(toOption)}
-                        options={technologies.sourceTechnologies.map(toOption)}
+                        options={technologies.source.map(toOption)}
                         onChange={(option) => {
                           const optionValue = option as OptionWithValue<string>;
 
@@ -622,7 +633,7 @@ export const IssuesList: React.FC = () => {
                         aria-labelledby="targetTechnology"
                         placeholderText="Target"
                         value={filters.get("targetTechnology")?.map(toOption)}
-                        options={technologies.targetTechnologies.map(toOption)}
+                        options={technologies.target.map(toOption)}
                         onChange={(option) => {
                           const optionValue = option as OptionWithValue<string>;
 
