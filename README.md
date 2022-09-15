@@ -2,6 +2,26 @@
 
 Next generation of Reports for Windup.
 
+## Enable
+
+Execute
+
+```
+npm run build
+```
+
+Copy all api json files to the folder `build/api/`
+
+Execute
+
+```
+node server.js
+```
+
+Open the file `.env.develop` and set `REACT_APP_DATA_SOURCE=""`
+
+start the UI
+
 ## Available Scripts
 
 In the project directory, you can run:

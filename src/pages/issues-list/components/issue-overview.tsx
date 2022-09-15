@@ -58,7 +58,7 @@ export const IssueOverview: React.FC<IIssueOverviewProps> = ({
                               onClick={() => onShowFile(file.fileId)}
                             />
                           </Td>
-                          <Td dataLabel="Incidents found">
+                          <Td dataLabel="Incidents found" width={10}>
                             <Badge isRead>{file.occurrences}</Badge>
                           </Td>
                         </Tr>

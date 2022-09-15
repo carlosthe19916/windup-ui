@@ -8,19 +8,19 @@ if (
 ) {
   const file1: AppFile = {
     id: "file-1",
-    fullPath: "org.jboss.file1.jar",
-    prettyPath: "file1.jar",
+    fullPath: "file.jar",
+    prettyPath: "file.jar",
     sourceType: "binary",
     hints: [
       {
-        line: 37,
+        line: 1,
         title: "Title",
         ruleId: "rule-1",
-        content: "content",
+        content: "hint content",
         links: [],
       },
     ],
-    fileContent: "",
+    fileContent: "file content",
   };
 
   MOCK_APP_FILES = (window as any)["files"] || [file1];
