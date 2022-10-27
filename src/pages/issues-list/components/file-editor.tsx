@@ -26,6 +26,8 @@ import { useRulesQuery } from "queries/rules";
 import { AppFile, Hint } from "api/models";
 import { getMarkdown } from "utils/rule-utils";
 import { SimpleMarkdown } from "./simple-markdown";
+import { useFileQuery } from "queries/files";
+import { ConditionalRender } from "@project-openubl/lib-ui";
 
 interface IFileEditorProps {
   file: AppFile;
@@ -41,6 +43,7 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
   hintToFocus,
 }) => {
   const allRules = useRulesQuery();
+  const fileContent = useFileQuery(file.id);
 
   // Editor
   const editorRef = useRef<monacoEditor.editor.IStandaloneCodeEditor>();
@@ -265,31 +268,36 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
         }
       >
         <DrawerContentBody>
-          <CodeEditor
-            isDarkTheme
-            isLineNumbersVisible
-            isReadOnly
-            isMinimapVisible
-            isLanguageLabelVisible
-            isDownloadEnabled
-            code={file?.fileContent}
-            language={Object.values(Language).find(
-              (l) => l === file.sourceType.toLowerCase()
-            )}
-            options={{
-              glyphMargin: true,
-              "semanticHighlighting.enabled": true,
-              renderValidationDecorations: "on",
-            }}
-            onEditorDidMount={(
-              editor: monacoEditor.editor.IStandaloneCodeEditor,
-              monaco: typeof monacoEditor
-            ) => {
-              onEditorDidMount(editor, monaco);
-            }}
-            height={`${window.innerHeight - 300}px`}
-            {...props}
-          />
+          <ConditionalRender
+            when={fileContent.isLoading}
+            then={<span>Loading...</span>}
+          >
+            <CodeEditor
+              isDarkTheme
+              isLineNumbersVisible
+              isReadOnly
+              isMinimapVisible
+              isLanguageLabelVisible
+              isDownloadEnabled
+              code={fileContent.data?.content}
+              language={Object.values(Language).find(
+                (l) => l === file.sourceType.toLowerCase()
+              )}
+              options={{
+                glyphMargin: true,
+                "semanticHighlighting.enabled": true,
+                renderValidationDecorations: "on",
+              }}
+              onEditorDidMount={(
+                editor: monacoEditor.editor.IStandaloneCodeEditor,
+                monaco: typeof monacoEditor
+              ) => {
+                onEditorDidMount(editor, monaco);
+              }}
+              height={`${window.innerHeight - 300}px`}
+              {...props}
+            />
+          </ConditionalRender>
         </DrawerContentBody>
       </DrawerContent>
     </Drawer>

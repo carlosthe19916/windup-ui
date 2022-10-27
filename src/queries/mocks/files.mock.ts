@@ -1,6 +1,7 @@
-import { AppFile } from "api/models";
+import { AppFile, AppFileContent } from "api/models";
 
 export let MOCK_APP_FILES: AppFile[];
+export let MOCK_APP_FILES_CONTENT: { [id: string]: AppFileContent } = {};
 
 if (
   process.env.NODE_ENV === "test" ||
@@ -20,8 +21,11 @@ if (
         links: [],
       },
     ],
-    fileContent: "file content",
   };
 
   MOCK_APP_FILES = (window as any)["files"] || [file1];
+
+  MOCK_APP_FILES_CONTENT = (window as any)["files_by_id"] || {
+    [file1.id]: { id: file1.id, content: "file content" },
+  };
 }

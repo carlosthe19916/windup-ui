@@ -56,9 +56,13 @@ export interface RuleGroup {
 
 export interface Rule {
   id: string;
-  content: string;
   sourceTechnology?: Technology[];
   targetTechnology?: Technology[];
+}
+
+export interface RuleContent {
+  id: string;
+  content: string;  
 }
 
 export interface AppFile {
@@ -66,8 +70,12 @@ export interface AppFile {
   fullPath: string;
   prettyPath: string;
   sourceType: string;
-  fileContent: string;
   hints: Hint[];
+}
+
+export interface AppFileContent {
+  id: string;
+  content: string;  
 }
 
 export interface Hint {

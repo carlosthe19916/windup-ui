@@ -1,10 +1,10 @@
 import { useCallback } from "react";
 import axios, { AxiosError } from "axios";
 
-import { RuleGroup } from "api/models";
+import { RuleContent, RuleGroup } from "api/models";
 import { RuleProcessed } from "api/processed-models";
 import { useMockableQuery } from "./helpers";
-import { MOCK_RULES } from "./mocks/rules.mock";
+import { MOCK_RULES, MOCK_RULES_CONTENT } from "./mocks/rules.mock";
 
 export const useRulesQuery = () => {
   const transformCallback = useCallback((data: RuleGroup) => {
@@ -29,5 +29,16 @@ export const useRulesQuery = () => {
       select: transformCallback,
     },
     MOCK_RULES
+  );
+};
+
+export const useRuleQuery = (ruleId: string) => {
+  return useMockableQuery<RuleContent, AxiosError, RuleContent>(
+    {
+      queryKey: ["rules", ruleId],
+      queryFn: async () =>
+        (await axios.get<RuleContent>(`/rules/${ruleId}`)).data,
+    },
+    MOCK_RULES_CONTENT[ruleId]
   );
 };
