@@ -108,7 +108,7 @@ export const FileLink: React.FC<IFileLinkProps> = ({
     <>
       {file ? (
         <Button variant="link" onClick={onClick}>
-          <Truncate content={file.prettyPath} />
+          <Truncate content={defaultText || file.prettyPath} />
         </Button>
       ) : (
         defaultText
