@@ -14,6 +14,7 @@ if (
           id: "app1-issue-1",
           name: "Issue name",
           levelOfEffort: "Level description",
+          totalStoryPoints: 1,
           ruleId: "rule-1",
           links: [
             { title: "Link1", href: "http://windup1.com" },
@@ -38,6 +39,7 @@ if (
           id: "app2-issue-1",
           name: "Issue name",
           levelOfEffort: "Level description",
+          totalStoryPoints: 2,
           ruleId: "rule-2",
           links: [
             { title: "Link1", href: "http://windup1.com" },

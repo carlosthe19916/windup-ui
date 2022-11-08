@@ -349,7 +349,7 @@ export const IssuesList: React.FC = () => {
               }, 0),
           },
           {
-            title: "Missing",
+            title: item.totalStoryPoints,
           },
         ],
       });

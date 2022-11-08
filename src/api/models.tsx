@@ -35,6 +35,7 @@ export interface Issue {
   name: string;
   ruleId: string;
   levelOfEffort: string;
+  totalStoryPoints: number;
   links: Link[];
   affectedFiles: IssueAffectedFiles[];
 }
