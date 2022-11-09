@@ -63,7 +63,7 @@ export interface Rule {
 
 export interface RuleContent {
   id: string;
-  content: string;  
+  content: string;
 }
 
 export interface AppFile {
@@ -76,7 +76,7 @@ export interface AppFile {
 
 export interface AppFileContent {
   id: string;
-  content: string;  
+  content: string;
 }
 
 export interface Hint {
@@ -95,4 +95,18 @@ export interface Link {
 export interface Technology {
   id: string;
   versionRange?: string;
+}
+
+export interface Dependency {
+  name: string;
+  mavenIdentifier?: string;
+  sha1?: string;
+  version: string;
+  organization?: string;
+  foundPaths: string[];
+}
+
+export interface DependencyApplication {
+  applicationId: string;
+  dependencies: Dependency[];
 }

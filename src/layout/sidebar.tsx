@@ -37,6 +37,20 @@ export const SidebarApp: React.FC = () => {
             Issues
           </NavLink>
         </NavList>
+        <NavList>
+          <NavLink
+            to={
+              !currentContext
+                ? "/dependencies"
+                : "/dependencies/applications/" + currentContext.key
+            }
+            className={({ isActive }) =>
+              css("pf-c-nav__link", isActive ? "pf-m-current" : "")
+            }
+          >
+            Dependencies
+          </NavLink>
+        </NavList>
       </Nav>
     );
   };

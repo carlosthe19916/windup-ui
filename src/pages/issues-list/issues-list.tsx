@@ -213,7 +213,7 @@ export const IssuesList: React.FC = () => {
         (f) => f.applicationId === appContext.currentContext?.key
       )?.issues || []
     );
-  }, [allIssues, appContext.currentContext]);
+  }, [allIssues.data, appContext.currentContext]);
 
   //
   const categories = useMemo(() => {
