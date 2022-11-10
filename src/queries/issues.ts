@@ -36,7 +36,9 @@ export const useIssuesQuery = () => {
 
         const result: ApplicationIssuesProcessed = {
           applicationId: e.applicationId,
-          issues: mandatory.concat(optional, potential, information),
+          issues: mandatory
+            .concat(optional, potential, information)
+            .sort((a, b) => a.name.localeCompare(b.name)),
         };
         return result;
       }),

@@ -11,7 +11,7 @@ export const useApplicationsQuery = (): UseQueryResult<
   AxiosError
 > => {
   const sortListCallback = useCallback((data: Application[]): Application[] => {
-    return data.sort((a, b) => b.name.localeCompare(a.name));
+    return data.sort((a, b) => a.name.localeCompare(b.name));
   }, []);
 
   return useMockableQuery<Application[], AxiosError>(

@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 const ApplicationList = lazy(() => import("./pages/application-list"));
 const IssuesList = lazy(() => import("./pages/issues-list"));
+const TechnologiesList = lazy(() => import("./pages/technologies-list"));
 const DependenciesList = lazy(() => import("./pages/dependencies-list"));
 
 export type ApplicationRoute = {
@@ -30,6 +31,22 @@ export const AppRoutes = () => {
     {
       Component: IssuesList,
       path: "/issues/applications/:applicationId",
+      hasDescendant: false,
+    },
+    // Technologies
+    {
+      Component: TechnologiesList,
+      path: "/technologies",
+      hasDescendant: false,
+    },
+    {
+      Component: TechnologiesList,
+      path: "/technologies/applications",
+      hasDescendant: false,
+    },
+    {
+      Component: TechnologiesList,
+      path: "/technologies/applications/:applicationId",
       hasDescendant: false,
     },
     // Dependencies
