@@ -16,7 +16,6 @@ import {
   TextContent,
   Title,
   Toolbar,
-  ToolbarChip,
   ToolbarContent,
   ToolbarFilter,
   ToolbarGroup,
@@ -45,23 +44,10 @@ import {
   OptionWithValue,
 } from "@project-openubl/lib-ui";
 
-import {
-  SimpleContextSelector,
-  Context,
-  useSimpleContext,
-} from "context/simple-context";
+import { SimpleContextSelector, Context } from "context/simple-context";
 
-import { useTechnologiesQuery } from "queries/technologies";
-import { useApplicationsQuery } from "queries/applications";
-
-import { useCellSelectionState } from "shared/hooks";
-
-import {
-  ALL_TECHNOLOGY_GROUPS,
-  Application,
-  TechnologyDetails,
-  TechnologyGroup,
-} from "api/models";
+import { useCellSelectionState, useTechnologiesData } from "shared/hooks";
+import { Application, TechnologyDetails, TechnologyGroup } from "api/models";
 
 interface RowData {
   application: Application;
@@ -85,13 +71,14 @@ export const TechnologiesList: React.FC = () => {
     "/technologies/applications/:applicationId"
   );
 
-  const applicationId = matchAllTechnologiesPage
+  const applicationId = matchTechnologiesPage
+    ? undefined
+    : matchAllTechnologiesPage
     ? ""
     : matchSingleTechnologyPage?.params.applicationId;
 
   const navigate = useNavigate();
 
-  const appContext = useSimpleContext();
   const onContextChange = (context: Context) => {
     navigate("/technologies/applications/" + context.key);
   };
@@ -101,70 +88,11 @@ export const TechnologiesList: React.FC = () => {
   const [technologyGroup, setTechnologyGroup] =
     useState<TechnologyGroup>("View");
 
-  // Queries
-  const allApplications = useApplicationsQuery();
-  const allTechnologies = useTechnologiesQuery();
-
-  const applications = useMemo(() => {
-    const toRowData = (appsToMap: Application[]) => {
-      return appsToMap.reduce((prev, current) => {
-        const applicationTechnologies = allTechnologies.data?.find(
-          (appTech) => appTech.applicationId === current.id
-        );
-
-        if (applicationTechnologies) {
-          const rowData: RowData = {
-            application: current,
-            technologyGroups: applicationTechnologies.technologyGroups,
-          };
-          return [...prev, rowData];
-        } else {
-          return prev;
-        }
-      }, [] as RowData[]);
-    };
-
-    if (appContext.currentContext?.key === "") {
-      return toRowData(allApplications.data || []);
-    } else {
-      const selectedApplication = allApplications.data?.find(
-        (f) => f.id === appContext.currentContext?.key
-      );
-
-      return toRowData(selectedApplication ? [selectedApplication] : []);
-    }
-  }, [allApplications.data, allTechnologies.data, appContext.currentContext]);
-
-  // Category Select filter
-  const toOption = useCallback((option: ToolbarChip) => {
-    const toStringFn = () => option.node as string;
-    return {
-      value: option.key,
-      toString: toStringFn,
-      compareTo: (other: string | OptionWithValue) => {
-        return typeof other === "string"
-          ? toStringFn().toLowerCase().includes(other.toLowerCase())
-          : option.key === other.value;
-      },
-    };
-  }, []);
-
-  const allCategoryOptions = useMemo(() => {
-    if (applications.length > 0) {
-      return ALL_TECHNOLOGY_GROUPS.map((group) => {
-        const technologies = applications[0].technologyGroups[group];
-        const numberOfTechnologies = Object.keys(technologies).length;
-        return toOption({
-          key: group,
-          node: `${group} (${numberOfTechnologies})`,
-        });
-      });
-    } else {
-      return ALL_TECHNOLOGY_GROUPS.map((elem) =>
-        toOption({ key: elem, node: elem })
-      );
-    }
-  }, [applications, toOption]);
+  // Data
+  const { applications, categoryOptions, allApplications, allTechnologies } =
+    useTechnologiesData({
+      applicationId: applicationId,
+    });
 
   // Columns
   const columnKeys: string[] = useMemo(() => {
@@ -389,7 +317,7 @@ export const TechnologiesList: React.FC = () => {
             </Bullseye>
           }
         >
-          {matchTechnologiesPage ? (
+          {applicationId === undefined ? (
             <Bullseye>
               <EmptyState>
                 <EmptyStateIcon icon={ArrowUpIcon} />
@@ -453,10 +381,10 @@ export const TechnologiesList: React.FC = () => {
                         aria-label="category"
                         aria-labelledby="category"
                         placeholderText="Category"
-                        value={allCategoryOptions.find(
+                        value={categoryOptions.find(
                           (e) => e.value === technologyGroup
                         )}
-                        options={allCategoryOptions}
+                        options={categoryOptions}
                         onChange={(option) => {
                           const optionValue =
                             option as OptionWithValue<TechnologyGroup>;

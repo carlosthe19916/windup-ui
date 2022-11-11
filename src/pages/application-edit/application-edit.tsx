@@ -75,9 +75,7 @@ export const ApplicationEdit: React.FC = () => {
           ))}
         </Tabs>
       </PageSection>
-      <PageSection>
-        <Outlet context={application} />
-      </PageSection>
+      <Outlet context={application} />
     </>
   );
 };
