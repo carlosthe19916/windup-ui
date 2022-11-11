@@ -12,13 +12,14 @@ export const useTechnologiesQuery = () => {
         ([groupName, groupValue]) => {
           Object.entries(groupValue).forEach(
             ([technologyName, technologyValue]) => {
-              const total = Object.entries(technologyValue).reduce(
+              const { total, ...rest } = technologyValue;
+              const totalSum = Object.entries(rest).reduce(
                 (prev, [tagName, tagValue]) => {
                   return prev + tagValue;
                 },
                 0
               );
-              technologyValue.total = total;
+              technologyValue.total = totalSum;
             }
           );
         }
