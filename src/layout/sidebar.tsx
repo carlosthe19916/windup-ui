@@ -15,7 +15,7 @@ export const SidebarApp: React.FC = () => {
       <Nav id="nav-sidebar" aria-label="Nav" theme={LayoutTheme}>
         <NavList>
           <NavLink
-            to="/"
+            to="/applications"
             className={({ isActive }) =>
               css("pf-c-nav__link", isActive ? "pf-m-current" : "")
             }

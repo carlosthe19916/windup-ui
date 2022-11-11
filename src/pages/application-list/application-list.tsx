@@ -56,6 +56,7 @@ import { useLabelsQuery } from "queries/labels";
 import { evaluateRuntime, RuntimeAssessment } from "utils/label-utils";
 
 import "./application-list.css";
+import { Link } from "react-router-dom";
 
 const DataKey = "DataKey";
 
@@ -188,7 +189,7 @@ export const ApplicationList: React.FC = () => {
         isOpen: isSomeCellSelected(item.id, columnKeys),
         cells: [
           {
-            title: item.name,
+            title: <Link to={`/applications/${item.id}`}>{item.name}</Link>,
           },
           {
             title: (
