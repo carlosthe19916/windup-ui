@@ -257,7 +257,11 @@ export const DependenciesTable: React.FC<IDependenciesTableProps> = ({
           toolbarToggle={
             <>
               <ToolbarItem variant="search-filter">
-                <SearchInput value={filterText} onChange={setFilterText} />
+                <SearchInput
+                  value={filterText}
+                  onChange={setFilterText}
+                  onClear={() => setFilterText("")}
+                />
               </ToolbarItem>
             </>
           }

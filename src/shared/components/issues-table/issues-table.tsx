@@ -146,15 +146,10 @@ export interface IIssuesTableProps {
 export const IssuesTable: React.FC<IIssuesTableProps> = ({ applicationId }) => {
   // Filters
   const [filterText, setFilterText] = useState("");
-  const { filters, addFilter, setFilter, removeFilter, clearAllFilters } =
-    useToolbar<
-      | "name"
-      | "category"
-      | "levelOfEffort"
-      | "sourceTechnology"
-      | "targetTechnology",
-      ToolbarChip
-    >();
+  const { filters, setFilter, removeFilter, clearAllFilters } = useToolbar<
+    "category" | "levelOfEffort" | "sourceTechnology" | "targetTechnology",
+    ToolbarChip
+  >();
 
   // Queries
   const allApplications = useApplicationsQuery();
@@ -423,10 +418,7 @@ export const IssuesTable: React.FC<IIssuesTableProps> = ({ applicationId }) => {
                   <SearchInput
                     value={filterText}
                     onChange={setFilterText}
-                    onSearch={(value) => {
-                      addFilter("name", { key: value, node: value });
-                      setFilterText("");
-                    }}
+                    onClear={() => setFilterText("")}
                   />
                 </ToolbarItem>
                 <ToolbarGroup variant="filter-group">

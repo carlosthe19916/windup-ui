@@ -373,7 +373,11 @@ export const TechnologiesList: React.FC = () => {
               toolbarToggle={
                 <>
                   <ToolbarItem variant="search-filter">
-                    <SearchInput value={filterText} onChange={setFilterText} />
+                    <SearchInput
+                      value={filterText}
+                      onChange={setFilterText}
+                      onClear={() => setFilterText("")}
+                    />
                   </ToolbarItem>
                   <ToolbarGroup variant="filter-group">
                     <ToolbarFilter categoryName="Category">

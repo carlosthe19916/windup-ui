@@ -118,8 +118,10 @@ export const ApplicationList: React.FC = () => {
   >();
 
   const [filterText, setFilterText] = useState("");
-  const { filters, addFilter, setFilter, removeFilter, clearAllFilters } =
-    useToolbar<"name" | "tag", string>();
+  const { filters, setFilter, removeFilter, clearAllFilters } = useToolbar<
+    "tag",
+    string
+  >();
 
   const labels = useLabelsQuery();
   const applications = useApplicationsQuery();
@@ -395,8 +397,7 @@ export const ApplicationList: React.FC = () => {
                 <SearchInput
                   value={filterText}
                   onChange={setFilterText}
-                  onSearch={(value) => {
-                    addFilter("name", value);
+                  onClear={() => {
                     setFilterText("");
                   }}
                 />
