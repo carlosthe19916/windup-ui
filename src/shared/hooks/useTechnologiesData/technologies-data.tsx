@@ -6,16 +6,12 @@ import { OptionWithValue } from "@project-openubl/lib-ui";
 import { useTechnologiesQuery } from "queries/technologies";
 import { useApplicationsQuery } from "queries/applications";
 
-import {
-  ALL_TECHNOLOGY_GROUPS,
-  Application,
-  TechnologyDetails,
-  TechnologyGroup,
-} from "api/models";
+import { ALL_TECHNOLOGY_GROUPS, Application } from "api/models";
+import { TechnologyGroupsProcessed } from "api/processed-models";
 
 interface RowData {
   application: Application;
-  technologyGroups: { [key in TechnologyGroup]: TechnologyDetails };
+  technologyGroups: TechnologyGroupsProcessed;
 }
 
 export interface ITechnologiesProps {
@@ -82,9 +78,7 @@ export const useTechnologiesData = ({
         const numberOfTechnologies = Object.keys(technologies).length;
 
         const sumOfTechnologiesTotal = Object.entries(technologies)
-          .map(([technologyName, technologyValue]) => {
-            return technologyValue.total as number;
-          })
+          .map(([technologyName, { total }]) => total)
           .reduce((prev, current) => prev + current, 0);
 
         return sumOfTechnologiesTotal > 0 || !hideEmptyCategoryOptions

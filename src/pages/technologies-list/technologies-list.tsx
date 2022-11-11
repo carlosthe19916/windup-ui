@@ -47,14 +47,18 @@ import {
 import { SimpleContextSelector, Context } from "context/simple-context";
 
 import { useCellSelectionState, useTechnologiesData } from "shared/hooks";
-import { Application, TechnologyDetails, TechnologyGroup } from "api/models";
+import { Application, TechnologyGroup } from "api/models";
+import {
+  TechnologyGroupsProcessed,
+  TechnologyGroupValueProcessed,
+} from "api/processed-models";
 
 interface RowData {
   application: Application;
-  technologyGroups: { [key in TechnologyGroup]: TechnologyDetails };
+  technologyGroups: TechnologyGroupsProcessed;
 }
 
-const getTechnologyEntriesSorted = (val: TechnologyDetails) => {
+const getTechnologyEntriesSorted = (val: TechnologyGroupValueProcessed) => {
   return Object.entries(val).sort(([a], [b]) => a.localeCompare(b));
 };
 
@@ -233,7 +237,7 @@ export const TechnologiesList: React.FC = () => {
       const parentIndex = rows.length - 1;
 
       // Expanded area
-      technologies.forEach(([technologyName, { total, ...rest }], index) => {
+      technologies.forEach(([technologyName, { total, tags }], index) => {
         rows.push({
           parent: parentIndex,
           compoundParent: 1 + index,
@@ -247,7 +251,7 @@ export const TechnologiesList: React.FC = () => {
                     isStriped
                   >
                     <Tbody>
-                      {Object.entries(rest).map(([k, v], index) => (
+                      {Object.entries(tags).map(([k, v], index) => (
                         <Tr key={index}>
                           <Td width={30} dataLabel={`key-${index}`}>
                             {k}

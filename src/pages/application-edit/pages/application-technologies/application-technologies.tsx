@@ -85,7 +85,7 @@ export const ApplicationTechnologies: React.FC = () => {
           .map(([groupName, groupValue]) => {
             return Object.entries(groupValue).map(
               ([technologyName, technologyValue]) => {
-                const { total, ...tags } = technologyValue;
+                const { total, tags } = technologyValue;
                 const cardData: CardData = {
                   groupName: groupName as TechnologyGroup,
                   technologyName: technologyName,
@@ -123,7 +123,7 @@ export const ApplicationTechnologies: React.FC = () => {
 
   return (
     <>
-      <PageSection variant="light">
+      <PageSection variant="light" type="nav">
         <Toolbar>
           <ToolbarContent>
             {/* <ToolbarItem variant="search-filter">
