@@ -15,6 +15,9 @@ const ApplicationEditTechnologies = lazy(
 const ApplicationEditDependencies = lazy(
   () => import("./pages/application-edit/pages/application-dependencies")
 );
+const ApplicationEditIgnoredFiles = lazy(
+  () => import("./pages/application-edit/pages/application-ignored-files")
+);
 
 export type ApplicationRoute = {
   applicationId: string;
@@ -95,6 +98,10 @@ export const AppRoutes = () => {
         {
           Component: ApplicationEditDependencies,
           path: "dependencies",
+        },
+        {
+          Component: ApplicationEditIgnoredFiles,
+          path: "ignored-files",
         },
       ],
     },

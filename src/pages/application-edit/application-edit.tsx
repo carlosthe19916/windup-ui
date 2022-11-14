@@ -44,6 +44,10 @@ export const ApplicationEdit: React.FC = () => {
       title: "Dependencies",
       path: `/applications/${application?.id}/dependencies`,
     },
+    {
+      title: "Ignored files",
+      path: `/applications/${application?.id}/ignored-files`,
+    },
   ];
 
   return (

@@ -130,3 +130,14 @@ export interface ApplicationTechnologies {
   applicationId: string;
   technologyGroups: { [key in TechnologyGroup]: TechnologyDetails };
 }
+
+export interface ApplicationIgnoredFiles {
+  applicationId: string;
+  ignoredFiles: IgnoredFile[];
+}
+
+export interface IgnoredFile {
+  fileName: string;
+  filePath: string;
+  reason: string;
+}
