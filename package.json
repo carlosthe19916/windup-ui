@@ -5,6 +5,7 @@
   "dependencies": {
     "@migtools/lib-ui": "^8.4.1",
     "@patternfly/patternfly": "4.206.3",
+    "@patternfly/react-charts": "6.94.11",
     "@patternfly/react-code-editor": "4.72.8",
     "@patternfly/react-core": "4.231.8",
     "@patternfly/react-table": "4.100.8",

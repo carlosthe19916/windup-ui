@@ -14,6 +14,7 @@ if (
           id: "app1-issue-1",
           name: "Issue name",
           levelOfEffort: "Level description",
+          totalIncidents: 1,
           totalStoryPoints: 1,
           ruleId: "rule-1",
           links: [
@@ -39,6 +40,7 @@ if (
           id: "app2-issue-1",
           name: "Issue name",
           levelOfEffort: "Level description",
+          totalIncidents: 1,
           totalStoryPoints: 2,
           ruleId: "rule-2",
           links: [

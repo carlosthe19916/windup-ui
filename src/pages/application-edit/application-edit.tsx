@@ -33,6 +33,10 @@ export const ApplicationEdit: React.FC = () => {
 
   const tabItems: { title: string; path: string }[] = [
     {
+      title: "Dashboard",
+      path: `/applications/${application?.id}/dashboard`,
+    },
+    {
       title: "Issues",
       path: `/applications/${application?.id}/issues`,
     },

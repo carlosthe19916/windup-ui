@@ -309,11 +309,7 @@ export const IssuesTable: React.FC<IIssuesTableProps> = ({ applicationId }) => {
             title: item.levelOfEffort,
           },
           {
-            title: item.affectedFiles
-              .flatMap((f) => f.files)
-              .reduce((prev, current) => {
-                return prev + current.occurrences;
-              }, 0),
+            title: item.totalIncidents,
           },
           {
             title: item.totalStoryPoints,

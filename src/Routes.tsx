@@ -6,6 +6,9 @@ const IssuesList = lazy(() => import("./pages/issues-list"));
 const TechnologiesList = lazy(() => import("./pages/technologies-list"));
 const DependenciesList = lazy(() => import("./pages/dependencies-list"));
 const ApplicationEdit = lazy(() => import("./pages/application-edit"));
+const ApplicationEditDashboard = lazy(
+  () => import("./pages/application-edit/pages/application-dashboard")
+);
 const ApplicationEditIssues = lazy(
   () => import("./pages/application-edit/pages/application-issues")
 );
@@ -84,8 +87,12 @@ export const AppRoutes = () => {
       path: "/applications/:projectId",
       children: [
         {
-          Component: () => <Navigate to="issues" replace />,
+          Component: () => <Navigate to="dashboard" replace />,
           path: "",
+        },
+        {
+          Component: ApplicationEditDashboard,
+          path: "dashboard",
         },
         {
           Component: ApplicationEditIssues,
