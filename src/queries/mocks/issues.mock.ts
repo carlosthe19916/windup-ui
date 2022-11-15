@@ -9,6 +9,9 @@ if (
   const issuesApp1: ApplicationIssues = {
     applicationId: "app-1",
     issues: {
+      optional: [],
+      potential: [],
+      information: [],
       mandatory: [
         {
           id: "app1-issue-1",
@@ -29,6 +32,8 @@ if (
           ],
         },
       ],
+      "cloud-mandatory": [],
+      "cloud-optional": [],
     },
   };
 
@@ -57,6 +62,9 @@ if (
       ],
       potential: [],
       information: [],
+      mandatory: [],
+      "cloud-mandatory": [],
+      "cloud-optional": [],
     },
   };
 

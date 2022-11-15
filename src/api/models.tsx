@@ -1,13 +1,20 @@
+export const ALL_SUPPORTED_ISSUE_CATEGORY = [
+  "mandatory",
+  "optional",
+  "potential",
+  "information",
+  "cloud-mandatory",
+  "cloud-optional",
+] as const;
+export type IssueCategoryType = typeof ALL_SUPPORTED_ISSUE_CATEGORY[number];
+
 export interface Application {
   id: string;
   name: string;
   tags: string[];
   storyPoints: number;
   incidents: {
-    mandatory?: number;
-    optional?: number;
-    potential?: number;
-    information?: number;
+    [category in IssueCategoryType]: number;
   };
 }
 
@@ -23,10 +30,7 @@ export interface Label {
 export interface ApplicationIssues {
   applicationId: string;
   issues: {
-    mandatory?: Issue[];
-    optional?: Issue[];
-    potential?: Issue[];
-    information?: Issue[];
+    [category in IssueCategoryType]: Issue[];
   };
 }
 

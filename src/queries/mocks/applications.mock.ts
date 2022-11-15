@@ -16,6 +16,8 @@ if (
       optional: 27,
       potential: 5,
       information: 68,
+      "cloud-mandatory": 0,
+      "cloud-optional": 0,
     },
   };
 
@@ -24,7 +26,14 @@ if (
     name: "app2.jar",
     tags: ["tag1", "tag2"],
     storyPoints: 90,
-    incidents: { mandatory: 53, optional: 1, potential: 38, information: 11 },
+    incidents: {
+      mandatory: 53,
+      optional: 1,
+      potential: 38,
+      information: 11,
+      "cloud-mandatory": 0,
+      "cloud-optional": 0,
+    },
   };
 
   MOCK_APPLICATIONS = (window as any)["applications"] || [
