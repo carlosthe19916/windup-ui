@@ -1,4 +1,4 @@
-import { Issue, Rule, TechnologyGroup } from "./models";
+import { Issue, IssueCategoryType, Rule, TechnologyGroup } from "./models";
 
 export interface ApplicationIssuesProcessed {
   applicationId: string;
@@ -6,7 +6,7 @@ export interface ApplicationIssuesProcessed {
 }
 
 export interface IssueProcessed extends Issue {
-  category: "mandatory" | "optional" | "potential" | "information";
+  category: IssueCategoryType;
 }
 
 export interface RuleProcessed extends Rule {

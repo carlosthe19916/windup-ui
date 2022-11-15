@@ -8,6 +8,16 @@ export const ALL_SUPPORTED_ISSUE_CATEGORY = [
 ] as const;
 export type IssueCategoryType = typeof ALL_SUPPORTED_ISSUE_CATEGORY[number];
 
+export const ALL_LEVEL_OF_EFFORTS = [
+  "Info",
+  "Trivial",
+  "Complex",
+  "Redesign",
+  "Architectural",
+  "Unknown",
+] as const;
+export type LevelOfEffortType = typeof ALL_LEVEL_OF_EFFORTS[number];
+
 export interface Application {
   id: string;
   name: string;
@@ -38,7 +48,11 @@ export interface Issue {
   id: string;
   name: string;
   ruleId: string;
-  levelOfEffort: string;
+  effort: {
+    type: LevelOfEffortType;
+    points: number;
+    description: string;
+  };
   totalIncidents: number;
   totalStoryPoints: number;
   links: Link[];

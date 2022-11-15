@@ -25,23 +25,24 @@ import {
 import { useIssuesQuery } from "queries/issues";
 
 import {
-  ALL_SUPPORTED_ISSUE_CATEGORY,
+  ALL_LEVEL_OF_EFFORTS,
   Application,
-  IssueCategoryType,
+  LevelOfEffortType,
 } from "api/models";
 
 interface IncidentsData {
-  category: IssueCategoryType;
+  effort: LevelOfEffortType;
   totalIncidents: number;
   totalStoryPoints: number;
 }
 
-const DEFAULT_INCIDENTS_DATA: IncidentsData[] =
-  ALL_SUPPORTED_ISSUE_CATEGORY.map((e) => ({
-    category: e,
+const DEFAULT_INCIDENTS_DATA: IncidentsData[] = ALL_LEVEL_OF_EFFORTS.map(
+  (e) => ({
+    effort: e,
     totalIncidents: 0,
     totalStoryPoints: 0,
-  }));
+  })
+);
 
 type IncidentsChart = {
   [key in "IncidentsBar" | "StoryPointsBar"]: {
@@ -65,19 +66,19 @@ const INCIDENTS_CHART: IncidentsChart = {
 };
 
 const sortIncidentsData = (data: IncidentsData[]) => {
-  const getCategoryPriority = (category: IssueCategoryType) => {
-    switch (category) {
-      case "mandatory":
+  const getEffortPriority = (effortType: LevelOfEffortType) => {
+    switch (effortType) {
+      case "Info":
         return 1;
-      case "optional":
+      case "Trivial":
         return 2;
-      case "potential":
+      case "Complex":
         return 3;
-      case "cloud-mandatory":
+      case "Redesign":
         return 4;
-      case "cloud-optional":
+      case "Architectural":
         return 5;
-      case "information":
+      case "Unknown":
         return 6;
       default:
         return 0;
@@ -85,15 +86,15 @@ const sortIncidentsData = (data: IncidentsData[]) => {
   };
 
   return data.sort(
-    (a, b) => getCategoryPriority(a.category) - getCategoryPriority(b.category)
+    (a, b) => getEffortPriority(a.effort) - getEffortPriority(b.effort)
   );
 };
 
-export interface IIncidentsSectionProps {
+export interface IEffortsSectionProps {
   application: Application;
 }
 
-export const IncidentsSection: React.FC<IIncidentsSectionProps> = ({
+export const EffortsSection: React.FC<IEffortsSectionProps> = ({
   application,
 }) => {
   const allIssues = useIssuesQuery();
@@ -104,55 +105,57 @@ export const IncidentsSection: React.FC<IIncidentsSectionProps> = ({
 
   // Incidents Chart
   const incidents = useMemo(() => {
-    return (applicationIssues?.issues || []).reduce((prev, current) => {
-      const prevVal: IncidentsData | undefined = prev.find(
-        (e) => e.category === current.category
-      );
+    return (applicationIssues?.issues || [])
+      .filter((e) => e.category === "mandatory")
+      .reduce((prev, current) => {
+        const prevVal: IncidentsData | undefined = prev.find(
+          (e) => e.effort === current.effort.type
+        );
 
-      let result: IncidentsData[];
-      if (prevVal) {
-        result = [
-          ...prev.filter((e) => e.category !== current.category),
-          {
-            category: current.category,
-            totalIncidents: prevVal.totalIncidents + current.totalIncidents,
-            totalStoryPoints:
-              prevVal.totalStoryPoints + current.totalStoryPoints,
-          },
-        ];
-      } else {
-        result = [
-          ...prev,
-          {
-            category: current.category,
-            totalIncidents: 0,
-            totalStoryPoints: 0,
-          },
-        ];
-      }
+        let result: IncidentsData[];
+        if (prevVal) {
+          result = [
+            ...prev.filter((e) => e.effort !== current.effort.type),
+            {
+              effort: current.effort.type,
+              totalIncidents: prevVal.totalIncidents + current.totalIncidents,
+              totalStoryPoints:
+                prevVal.totalStoryPoints + current.totalStoryPoints,
+            },
+          ];
+        } else {
+          result = [
+            ...prev,
+            {
+              effort: current.effort.type,
+              totalIncidents: 0,
+              totalStoryPoints: 0,
+            },
+          ];
+        }
 
-      return sortIncidentsData(result);
-    }, DEFAULT_INCIDENTS_DATA);
+        return sortIncidentsData(result);
+      }, DEFAULT_INCIDENTS_DATA);
   }, [applicationIssues]);
 
   return (
     <Grid md={6}>
       <GridItem>
         <Card isFullHeight>
-          <CardTitle>Incidents</CardTitle>
+          <CardTitle>Mandatory incidents</CardTitle>
           <CardBody>
             <TableComposable variant="compact">
               <Thead>
                 <Tr>
-                  <Th width={40}>Category</Th>
+                  <Th width={40}>Type</Th>
                   <Th>Incidents</Th>
                   <Th>Total Story Points</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {incidents.map((incident) => (
-                  <Tr key={incident.category}>
-                    <Td>{incident.category}</Td>
+                  <Tr key={incident.effort}>
+                    <Td>{incident.effort}</Td>
                     <Td>{incident.totalIncidents}</Td>
                     <Td>{incident.totalStoryPoints}</Td>
                   </Tr>
@@ -164,7 +167,7 @@ export const IncidentsSection: React.FC<IIncidentsSectionProps> = ({
       </GridItem>
       <GridItem>
         <Card isFullHeight>
-          <CardTitle>Incidents and Story Points</CardTitle>
+          <CardTitle>Mandatory incidents and Story Points</CardTitle>
           <CardBody>
             <Chart
               themeColor={ChartThemeColor.multiOrdered}
@@ -186,7 +189,7 @@ export const IncidentsSection: React.FC<IIncidentsSectionProps> = ({
                     key={barName}
                     data={incidents.map((incident) => ({
                       name: barName,
-                      x: incident.category,
+                      x: incident.effort,
                       y: barConfig.getY(incident),
                       label: barConfig.getTooltip,
                     }))}

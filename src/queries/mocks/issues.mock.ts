@@ -16,7 +16,11 @@ if (
         {
           id: "app1-issue-1",
           name: "Issue name",
-          levelOfEffort: "Level description",
+          effort: {
+            type: "Architectural",
+            points: 10,
+            description: "Level description"
+          },
           totalIncidents: 1,
           totalStoryPoints: 1,
           ruleId: "rule-1",
@@ -44,7 +48,11 @@ if (
         {
           id: "app2-issue-1",
           name: "Issue name",
-          levelOfEffort: "Level description",
+          effort: {
+            type: "Complex",
+            points: 10,
+            description: "Level description"
+          },
           totalIncidents: 1,
           totalStoryPoints: 2,
           ruleId: "rule-2",

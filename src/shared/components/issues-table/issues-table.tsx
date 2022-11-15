@@ -195,7 +195,7 @@ export const IssuesTable: React.FC<IIssuesTableProps> = ({ applicationId }) => {
   const levelOfEfforts = useMemo(() => {
     const allLevelOfEfforts = (allIssues.data || [])
       .flatMap((f) => f.issues)
-      .map((e) => e.levelOfEffort);
+      .map((e) => e.effort.description);
     return Array.from(new Set(allLevelOfEfforts)).sort((a, b) =>
       a.localeCompare(b)
     );
@@ -240,7 +240,7 @@ export const IssuesTable: React.FC<IIssuesTableProps> = ({ applicationId }) => {
       const selectedLevelOfEfforts = filters.get("levelOfEffort") || [];
       if (selectedLevelOfEfforts.length > 0) {
         isLevelOfEffortCompliant = selectedLevelOfEfforts.some(
-          (f) => item.levelOfEffort === f.key
+          (f) => item.effort.description === f.key
         );
       }
 
@@ -306,7 +306,7 @@ export const IssuesTable: React.FC<IIssuesTableProps> = ({ applicationId }) => {
             title: <Technologies ruleId={item.ruleId} variant="target" />,
           },
           {
-            title: item.levelOfEffort,
+            title: item.effort.description,
           },
           {
             title: item.totalIncidents,
