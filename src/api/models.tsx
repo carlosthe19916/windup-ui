@@ -160,3 +160,8 @@ export interface IgnoredFile {
   filePath: string;
   reason: string;
 }
+
+export interface ApplicationPackageIncidents {
+  applicationId: string;
+  packages: { [key: string]: number };
+}
