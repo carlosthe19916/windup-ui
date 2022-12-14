@@ -12,6 +12,9 @@ const ApplicationEditDashboard = lazy(
 const ApplicationEditIssues = lazy(
   () => import("./pages/application-edit/pages/application-issues")
 );
+const ApplicationEditDetails = lazy(
+  () => import("./pages/application-edit/pages/application-details")
+);
 const ApplicationEditTechnologies = lazy(
   () => import("./pages/application-edit/pages/application-technologies")
 );
@@ -97,6 +100,10 @@ export const AppRoutes = () => {
         {
           Component: ApplicationEditIssues,
           path: "issues",
+        },
+        {
+          Component: ApplicationEditDetails,
+          path: "details",
         },
         {
           Component: ApplicationEditTechnologies,

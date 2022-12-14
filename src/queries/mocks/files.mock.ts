@@ -11,7 +11,9 @@ if (
     id: "file-1",
     fullPath: "file.jar",
     prettyPath: "file.jar",
+    prettyFileName: "file.jar",
     sourceType: "binary",
+    storyPoints: 1,
     hints: [
       {
         line: 1,
@@ -21,6 +23,8 @@ if (
         links: [],
       },
     ],
+    tags: [],
+    classificationsAndHintsTags: [],
   };
 
   MOCK_APP_FILES = (window as any)["files"] || [file1];

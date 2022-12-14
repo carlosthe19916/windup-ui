@@ -11,11 +11,11 @@ interface ChartData {
   packageCount: number;
 }
 
-export interface IPackagesSectionProps {
+export interface IJavaIncidentsByPackageProps {
   application: Application;
 }
 
-export const PackagesSection: React.FC<IPackagesSectionProps> = ({
+export const JavaIncidentsByPackage: React.FC<IJavaIncidentsByPackageProps> = ({
   application,
 }) => {
   const allPackagesIncidents = usePackagesIncidentsQuery();
@@ -79,7 +79,7 @@ export const PackagesSection: React.FC<IPackagesSectionProps> = ({
               .toString()}
             themeColor={ChartThemeColor.multiOrdered}
             width={400}
-            height={300}
+            height={400}
             innerRadius={100}
           />
         </Bullseye>

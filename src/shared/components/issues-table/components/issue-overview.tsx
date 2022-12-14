@@ -19,10 +19,10 @@ import {
   Thead,
   Tr,
 } from "@patternfly/react-table";
+import { SimpleMarkdown } from "shared/components";
 
 import { useFilesQuery } from "queries/files";
 import { getMarkdown } from "utils/rule-utils";
-import { SimpleMarkdown } from "./simple-markdown";
 
 interface IIssueOverviewProps {
   issue: Issue;

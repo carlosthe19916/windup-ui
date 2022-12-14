@@ -47,12 +47,13 @@ import { useApplicationsQuery } from "queries/applications";
 import { useFilesQuery } from "queries/files";
 import { useIssuesQuery } from "queries/issues";
 
-import { RuleEditor } from "./components/rule-editor";
-import { Technologies } from "./components/technologies";
-import { IssueOverview } from "./components/issue-overview";
-import { FileEditor } from "./components/file-editor";
 import { technologiesToArray } from "utils/rule-utils";
 import { useProcessedQueriesContext } from "context/processed-queries-context";
+
+import { RuleEditor, FileEditor } from "shared/components";
+
+import { Technologies } from "./components/technologies";
+import { IssueOverview } from "./components/issue-overview";
 
 const toOption = (option: string | ToolbarChip): OptionWithValue => {
   if (typeof option === "string") {
@@ -608,7 +609,9 @@ export const IssuesTable: React.FC<IIssuesTableProps> = ({ applicationId }) => {
         onClose={issueModal.close}
         variant="large"
       >
-        {issueModalMappedRule && <RuleEditor rule={issueModalMappedRule} />}
+        {issueModalMappedRule && (
+          <RuleEditor ruleId={issueModalMappedRule.id} />
+        )}
       </Modal>
       <Modal
         title={`File ${fileModalMappedFile?.prettyPath}`}

@@ -4,19 +4,18 @@ import {
   CodeEditorProps,
   Language,
 } from "@patternfly/react-code-editor";
-import { Rule } from "api/models";
 
 import * as monacoEditor from "monaco-editor/esm/vs/editor/editor.api";
 import { useRuleQuery } from "queries/rules";
 import { ConditionalRender } from "@project-openubl/lib-ui";
 
 interface IRuleEditorProps {
-  rule: Rule;
+  ruleId: string;
   props?: Partial<Omit<CodeEditorProps, "ref" | "code">>;
 }
 
-export const RuleEditor: React.FC<IRuleEditorProps> = ({ rule, props }) => {
-  const ruleQuery = useRuleQuery(rule.id);
+export const RuleEditor: React.FC<IRuleEditorProps> = ({ ruleId, props }) => {
+  const ruleQuery = useRuleQuery(ruleId);
 
   const editorRef = useRef<monacoEditor.editor.IStandaloneCodeEditor>();
   const monacoRef = useRef<typeof monacoEditor>();
@@ -32,7 +31,7 @@ export const RuleEditor: React.FC<IRuleEditorProps> = ({ rule, props }) => {
       then={<span>Loading...</span>}
     >
       <CodeEditor
-        key={rule.id}
+        key={ruleId}
         isDarkTheme
         isLineNumbersVisible
         isReadOnly

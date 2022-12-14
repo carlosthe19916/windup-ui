@@ -41,6 +41,10 @@ export const ApplicationEdit: React.FC = () => {
       path: `/applications/${application?.id}/issues`,
     },
     {
+      title: "Details",
+      path: `/applications/${application?.id}/details`,
+    },
+    {
       title: "Technologies",
       path: `/applications/${application?.id}/technologies`,
     },

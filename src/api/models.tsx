@@ -89,8 +89,12 @@ export interface AppFile {
   id: string;
   fullPath: string;
   prettyPath: string;
+  prettyFileName: string;
   sourceType: string;
+  storyPoints: number;
   hints: Hint[];
+  tags: Tag[];
+  classificationsAndHintsTags: string[];
 }
 
 export interface AppFileContent {
@@ -104,6 +108,12 @@ export interface Hint {
   ruleId: string;
   content: string;
   links: Link[];
+}
+
+export interface Tag {
+  name: string;
+  version: string;
+  level: "IMPORTANT" | "INFORMATIONAL";
 }
 
 export interface Link {
@@ -164,4 +174,31 @@ export interface IgnoredFile {
 export interface ApplicationPackageIncidents {
   applicationId: string;
   packages: { [key: string]: number };
+}
+
+export interface ApplicationDetails {
+  applicationId: string;
+  messages: {
+    value: string;
+    ruleId: string;
+  }[];
+  applicationFiles: ApplicationFiles[];
+}
+
+export interface ApplicationFiles {
+  fileId: string;
+  fileName: string;
+  rootPath: string;
+  storyPoints: number;
+  maven: {
+    name: string;
+    mavenIdentifier: string;
+    projectSite?: string;
+    sha1: string;
+    version: string;
+    description: string;
+    organizations?: string[];
+    duplicatePaths?: string[];
+  };
+  childrenFileIds: string[];
 }
