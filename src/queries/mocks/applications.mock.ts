@@ -1,12 +1,12 @@
-import { Application } from "api/models";
+import { ApplicationDto } from "api/application";
 
-export let MOCK_APPLICATIONS: Application[];
+export let MOCK_APPLICATIONS: ApplicationDto[];
 
 if (
   process.env.NODE_ENV === "test" ||
   process.env.REACT_APP_DATA_SOURCE === "mock"
 ) {
-  const application1: Application = {
+  const application1: ApplicationDto = {
     id: "app-1",
     name: "app1.jar",
     tags: ["tag1", "tag2"],
@@ -21,7 +21,7 @@ if (
     },
   };
 
-  const application2: Application = {
+  const application2: ApplicationDto = {
     id: "app-2",
     name: "app2.jar",
     tags: ["tag1", "tag2"],

@@ -24,7 +24,8 @@ import { FileEditor } from "shared/components";
 import { useProcessedQueriesContext } from "context/processed-queries-context";
 import { useFilesQuery } from "queries/files";
 
-import { AppFile, ApplicationFiles } from "api/models";
+import { FileDto } from "api/file";
+import { ApplicationFileDto } from "api/application-details";
 
 const DataKey = "DataKey";
 
@@ -52,13 +53,13 @@ const columns: ICell[] = [
 ];
 
 export interface IApplicationFilesChildrenTableProps {
-  applicationFile: ApplicationFiles;
+  applicationFile: ApplicationFileDto;
 }
 
 export const ApplicationFilesChildrenTable: React.FC<
   IApplicationFilesChildrenTableProps
 > = ({ applicationFile }) => {
-  const fileModal = useModal<"showFile", AppFile>();
+  const fileModal = useModal<"showFile", FileDto>();
 
   // Filters
   const [filterText] = useState("");
@@ -66,9 +67,9 @@ export const ApplicationFilesChildrenTable: React.FC<
   //
   const { issuesByFileId } = useProcessedQueriesContext();
   const allFilesQuery = useFilesQuery();
-  const applicationFiles: AppFile[] = useMemo(() => {
+  const applicationFiles: FileDto[] = useMemo(() => {
     return applicationFile.childrenFileIds.map((childFileId) => {
-      const defaultFile: AppFile = {
+      const defaultFile: FileDto = {
         id: childFileId,
         fullPath: "",
         prettyPath: "",
@@ -79,7 +80,7 @@ export const ApplicationFilesChildrenTable: React.FC<
         sourceType: "",
         storyPoints: -1,
       };
-      const file: AppFile | undefined = allFilesQuery.data?.find(
+      const file: FileDto | undefined = allFilesQuery.data?.find(
         (file) => file.id === childFileId
       );
       return { ...defaultFile, ...file };
@@ -94,7 +95,7 @@ export const ApplicationFilesChildrenTable: React.FC<
     changeSortBy: onChangeSortBy,
   } = useTableControls();
 
-  const { pageItems, filteredItems } = useTable<AppFile>({
+  const { pageItems, filteredItems } = useTable<FileDto>({
     items: applicationFiles,
     currentPage: currentPage,
     currentSortBy: currentSortBy,
@@ -102,7 +103,7 @@ export const ApplicationFilesChildrenTable: React.FC<
     filterItem: (item) => true,
   });
 
-  const itemsToRow = (items: AppFile[]) => {
+  const itemsToRow = (items: FileDto[]) => {
     const rows: IRow[] = [];
     items.forEach((item) => {
       const issues = issuesByFileId.get(item.id) || [];

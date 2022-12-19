@@ -6,11 +6,12 @@ import { OptionWithValue } from "@project-openubl/lib-ui";
 import { useTechnologiesQuery } from "queries/technologies";
 import { useApplicationsQuery } from "queries/applications";
 
-import { ALL_TECHNOLOGY_GROUPS, Application } from "api/models";
-import { TechnologyGroupsProcessed } from "api/processed-models";
+import { ALL_TECHNOLOGY_GROUPS } from "api/application-technologies";
+import { ApplicationDto } from "api/application";
+import { TechnologyGroupsProcessed } from "models/api-enriched";
 
 interface RowData {
-  application: Application;
+  application: ApplicationDto;
   technologyGroups: TechnologyGroupsProcessed;
 }
 
@@ -28,7 +29,7 @@ export const useTechnologiesData = ({
   const allTechnologies = useTechnologiesQuery();
 
   const applications = useMemo(() => {
-    const toRowData = (appsToMap: Application[]) => {
+    const toRowData = (appsToMap: ApplicationDto[]) => {
       return appsToMap.reduce((prev, current) => {
         const applicationTechnologies = allTechnologies.data?.find(
           (appTech) => appTech.applicationId === current.id

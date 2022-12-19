@@ -1,4 +1,4 @@
-import { Label } from "api/models";
+import { LabelDto } from "api/label";
 
 /**
  * Takes an array of strings and convert all
@@ -55,7 +55,7 @@ const getMatchedTexts = (array: string[], texts: string[]) => {
 };
 
 export interface RuntimeAssessment {
-  targetRuntime: Label;
+  targetRuntime: LabelDto;
   assessmentResult: "Unsuitable" | "Supported" | "Partially supported";
   assessedSupportedTags: string[];
   assessedNeutralTags: string[];
@@ -63,7 +63,7 @@ export interface RuntimeAssessment {
 }
 
 export const evaluateRuntime = (
-  label: Label,
+  label: LabelDto,
   tags: string[]
 ): RuntimeAssessment => {
   var supportedTags = getMatchedTexts(label.supported, tags);

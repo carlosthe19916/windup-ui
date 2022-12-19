@@ -1,15 +1,17 @@
-import { Issue, IssueCategoryType, Rule, TechnologyGroup } from "./models";
+import { RuleDto } from "../api/rule";
+import { IssueDto, IssueCategoryType } from "../api/application-issues";
+import { TechnologyGroup } from "../api/application-technologies";
 
 export interface ApplicationIssuesProcessed {
   applicationId: string;
   issues: IssueProcessed[];
 }
 
-export interface IssueProcessed extends Issue {
+export interface IssueProcessed extends IssueDto {
   category: IssueCategoryType;
 }
 
-export interface RuleProcessed extends Rule {
+export interface RuleProcessed extends RuleDto {
   phase: string;
 }
 

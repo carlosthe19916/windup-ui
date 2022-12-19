@@ -1,12 +1,12 @@
-import { ApplicationIssues } from "api/models";
+import { ApplicationIssuesDto } from "api/application-issues";
 
-export let MOCK_ISSUES: ApplicationIssues[];
+export let MOCK_ISSUES: ApplicationIssuesDto[];
 
 if (
   process.env.NODE_ENV === "test" ||
   process.env.REACT_APP_DATA_SOURCE === "mock"
 ) {
-  const issuesApp1: ApplicationIssues = {
+  const issuesApp1: ApplicationIssuesDto = {
     applicationId: "app-1",
     issues: {
       optional: [],
@@ -19,7 +19,7 @@ if (
           effort: {
             type: "Architectural",
             points: 10,
-            description: "Level description"
+            description: "Level description",
           },
           totalIncidents: 1,
           totalStoryPoints: 1,
@@ -41,7 +41,7 @@ if (
     },
   };
 
-  const issuesApp2: ApplicationIssues = {
+  const issuesApp2: ApplicationIssuesDto = {
     applicationId: "app-2",
     issues: {
       optional: [
@@ -51,7 +51,7 @@ if (
           effort: {
             type: "Complex",
             points: 10,
-            description: "Level description"
+            description: "Level description",
           },
           totalIncidents: 1,
           totalStoryPoints: 2,

@@ -1,14 +1,14 @@
 import axios, { AxiosError } from "axios";
 
-import { SystemTag } from "api/models";
+import { TagDto } from "api/tag";
 import { useMockableQuery } from "./helpers";
 import { MOCK_TAGS } from "./mocks/tags.mock";
 
 export const useTagsQuery = () => {
-  return useMockableQuery<SystemTag[], AxiosError>(
+  return useMockableQuery<TagDto[], AxiosError>(
     {
       queryKey: ["tags"],
-      queryFn: async () => (await axios.get<SystemTag[]>("/tags")).data,
+      queryFn: async () => (await axios.get<TagDto[]>("/tags")).data,
     },
     MOCK_TAGS
   );

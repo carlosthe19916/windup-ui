@@ -35,7 +35,7 @@ import {
 } from "@project-openubl/lib-ui";
 import { useSelectionState } from "@migtools/lib-ui";
 
-import { Dependency } from "api/models";
+import { DependencyDto } from "api/application-dependency";
 import { useDependenciesQuery } from "queries/dependencies";
 
 const DataKey = "DataKey";
@@ -49,8 +49,8 @@ const columns: ICell[] = [
 ];
 
 const compareByColumnIndex = (
-  a: Dependency,
-  b: Dependency,
+  a: DependencyDto,
+  b: DependencyDto,
   columnIndex?: number
 ) => {
   switch (columnIndex) {
@@ -61,7 +61,7 @@ const compareByColumnIndex = (
   }
 };
 
-const getRow = (rowData: IRowData): Dependency => {
+const getRow = (rowData: IRowData): DependencyDto => {
   return rowData[DataKey];
 };
 
@@ -93,7 +93,7 @@ export const DependenciesTable: React.FC<IDependenciesTableProps> = ({
   const {
     isItemSelected: isRowExpanded,
     toggleItemSelected: toggleRowExpanded,
-  } = useSelectionState<Dependency>({
+  } = useSelectionState<DependencyDto>({
     items: dependencies,
     isEqual: (a, b) => a.name === b.name,
   });
@@ -105,7 +105,7 @@ export const DependenciesTable: React.FC<IDependenciesTableProps> = ({
     changeSortBy: onChangeSortBy,
   } = useTableControls();
 
-  const { pageItems, filteredItems } = useTable<Dependency>({
+  const { pageItems, filteredItems } = useTable<DependencyDto>({
     items: dependencies,
     currentPage: currentPage,
     currentSortBy: currentSortBy,
@@ -121,7 +121,7 @@ export const DependenciesTable: React.FC<IDependenciesTableProps> = ({
     },
   });
 
-  const itemsToRow = (items: Dependency[]) => {
+  const itemsToRow = (items: DependencyDto[]) => {
     const rows: IRow[] = [];
     items.forEach((item) => {
       const isExpanded = isRowExpanded(item);

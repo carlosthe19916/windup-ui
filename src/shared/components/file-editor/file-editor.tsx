@@ -28,12 +28,12 @@ import { SimpleMarkdown } from "shared/components";
 import { useRulesQuery } from "queries/rules";
 import { useFileQuery } from "queries/files";
 
-import { AppFile, Hint } from "api/models";
+import { FileDto, HintDto } from "api/file";
 import { getMarkdown } from "utils/rule-utils";
 
 interface IFileEditorProps {
-  file: AppFile;
-  hintToFocus?: Hint;
+  file: FileDto;
+  hintToFocus?: HintDto;
   props?: Partial<
     Omit<CodeEditorProps, "ref" | "code" | "options" | "onEditorDidMount">
   >;
@@ -69,7 +69,7 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
 
   const drawerRef = React.useRef<any>();
   const [isDrawerExpanded, setIsDrawerExpanded] = useState(false);
-  const [drawerHint, setDrawerHint] = useState<Hint>();
+  const [drawerHint, setDrawerHint] = useState<HintDto>();
   const onDrawerExpand = () => {
     drawerRef.current && drawerRef.current.focus();
   };
@@ -80,7 +80,7 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
   const addDeltaDecorations = (
     editor: monacoEditor.editor.IStandaloneCodeEditor,
     monaco: typeof monacoEditor,
-    hints: Hint[]
+    hints: HintDto[]
   ) => {
     const decorations = hints.map((hint) => {
       const decoration = {
@@ -102,7 +102,7 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
   const addCodeLens = (
     editor: monacoEditor.editor.IStandaloneCodeEditor,
     monaco: typeof monacoEditor,
-    hints: Hint[]
+    hints: HintDto[]
   ) => {
     const lenses = hints.map((hint) => {
       const lense: monacoEditor.languages.CodeLens = {
@@ -146,7 +146,7 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
   const addHover = (
     editor: monacoEditor.editor.IStandaloneCodeEditor,
     monaco: typeof monacoEditor,
-    hints: Hint[]
+    hints: HintDto[]
   ) => {
     return hints.map((hint) => {
       return monaco.languages.registerHoverProvider("*", {
@@ -174,7 +174,7 @@ export const FileEditor: React.FC<IFileEditorProps> = ({
   const addMarkers = (
     editor: monacoEditor.editor.IStandaloneCodeEditor,
     monaco: typeof monacoEditor,
-    hints: Hint[]
+    hints: HintDto[]
   ) => {
     const markers = hints.map((hint) => {
       const rule = allRules.data?.find((f) => f.id === hint.ruleId);

@@ -49,10 +49,12 @@ import {
   useModal,
 } from "@project-openubl/lib-ui";
 
-import { useApplicationsQuery } from "queries/applications";
-import { Application } from "api/models";
 import { useCellSelectionState } from "shared/hooks";
+
+import { useApplicationsQuery } from "queries/applications";
 import { useLabelsQuery } from "queries/labels";
+
+import { ApplicationDto } from "api/application";
 import { evaluateRuntime, RuntimeAssessment } from "utils/label-utils";
 
 import "./application-list.css";
@@ -91,8 +93,8 @@ const columns: ICell[] = [
 ];
 
 export const compareByColumnIndex = (
-  a: Application,
-  b: Application,
+  a: ApplicationDto,
+  b: ApplicationDto,
   columnIndex?: number
 ) => {
   switch (columnIndex) {
@@ -103,7 +105,7 @@ export const compareByColumnIndex = (
   }
 };
 
-const getRow = (rowData: IRowData): Application => {
+const getRow = (rowData: IRowData): ApplicationDto => {
   return rowData[DataKey];
 };
 
@@ -114,7 +116,7 @@ const getColumn = (colIndex: number): ColumnKey => {
 export const ApplicationList: React.FC = () => {
   const modal = useModal<
     "showLabel",
-    { application: Application; assessment: RuntimeAssessment }
+    { application: ApplicationDto; assessment: RuntimeAssessment }
   >();
 
   const [filterText, setFilterText] = useState("");
@@ -153,7 +155,7 @@ export const ApplicationList: React.FC = () => {
     changeSortBy: onChangeSortBy,
   } = useTableControls();
 
-  const { pageItems, filteredItems } = useTable<Application>({
+  const { pageItems, filteredItems } = useTable<ApplicationDto>({
     items: applications.data || [],
     currentPage: currentPage,
     currentSortBy: currentSortBy,
@@ -183,7 +185,7 @@ export const ApplicationList: React.FC = () => {
       columns: columnKeys,
     });
 
-  const itemsToRow = (items: Application[]) => {
+  const itemsToRow = (items: ApplicationDto[]) => {
     const rows: IRow[] = [];
     items.forEach((item) => {
       rows.push({

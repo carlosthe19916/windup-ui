@@ -1,26 +1,28 @@
 import axios, { AxiosError } from "axios";
 import { UseQueryResult } from "@tanstack/react-query";
 
-import { AppFile, AppFileContent } from "api/models";
+import { FileDto } from "api/file";
+import { FileContentDto } from "api/file-content";
+
 import { useMockableQuery } from "./helpers";
 import { MOCK_APP_FILES, MOCK_APP_FILES_CONTENT } from "./mocks/files.mock";
 
-export const useFilesQuery = (): UseQueryResult<AppFile[], AxiosError> => {
-  return useMockableQuery<AppFile[], AxiosError>(
+export const useFilesQuery = (): UseQueryResult<FileDto[], AxiosError> => {
+  return useMockableQuery<FileDto[], AxiosError>(
     {
       queryKey: ["files"],
-      queryFn: async () => (await axios.get<AppFile[]>("/files")).data,
+      queryFn: async () => (await axios.get<FileDto[]>("/files")).data,
     },
     MOCK_APP_FILES
   );
 };
 
 export const useFileQuery = (fileId: string) => {
-  return useMockableQuery<AppFileContent, AxiosError, AppFileContent>(
+  return useMockableQuery<FileContentDto, AxiosError, FileContentDto>(
     {
       queryKey: ["files", fileId],
       queryFn: async () =>
-        (await axios.get<AppFileContent>(`/files/${fileId}`)).data,
+        (await axios.get<FileContentDto>(`/files/${fileId}`)).data,
     },
     MOCK_APP_FILES_CONTENT[fileId]
   );

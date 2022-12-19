@@ -1,17 +1,17 @@
 import { useCallback } from "react";
 import axios, { AxiosError } from "axios";
 
-import { ApplicationIssues } from "api/models";
+import { ApplicationIssuesDto } from "api/application-issues";
 import {
   ApplicationIssuesProcessed,
   IssueProcessed,
-} from "api/processed-models";
+} from "models/api-enriched";
 import { useMockableQuery } from "./helpers";
 import { MOCK_ISSUES } from "./mocks/issues.mock";
 
 export const useIssuesQuery = () => {
   const transformCallback = useCallback(
-    (data: ApplicationIssues[]) =>
+    (data: ApplicationIssuesDto[]) =>
       data.map((e) => {
         const mandatory: IssueProcessed[] =
           e.issues.mandatory?.map((e) => ({
@@ -46,14 +46,14 @@ export const useIssuesQuery = () => {
   );
 
   return useMockableQuery<
-    ApplicationIssues[],
+    ApplicationIssuesDto[],
     AxiosError,
     ApplicationIssuesProcessed[]
   >(
     {
       queryKey: ["issues"],
       queryFn: async () => {
-        return (await axios.get<ApplicationIssues[]>("/issues")).data;
+        return (await axios.get<ApplicationIssuesDto[]>("/issues")).data;
       },
       select: transformCallback,
     },

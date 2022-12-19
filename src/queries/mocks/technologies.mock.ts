@@ -1,12 +1,12 @@
-import { ApplicationTechnologies } from "api/models";
+import { ApplicationTechnologiesDto } from "api/application-technologies";
 
-export let MOCK_TECHNOLOGIES: ApplicationTechnologies[];
+export let MOCK_TECHNOLOGIES: ApplicationTechnologiesDto[];
 
 if (
   process.env.NODE_ENV === "test" ||
   process.env.REACT_APP_DATA_SOURCE === "mock"
 ) {
-  const application1Deps: ApplicationTechnologies = {
+  const application1Deps: ApplicationTechnologiesDto = {
     applicationId: "app-1",
     technologyGroups: {
       View: {
@@ -23,7 +23,7 @@ if (
     },
   };
 
-  const application2Deps: ApplicationTechnologies = {
+  const application2Deps: ApplicationTechnologiesDto = {
     applicationId: "app-2",
     technologyGroups: {
       View: {},

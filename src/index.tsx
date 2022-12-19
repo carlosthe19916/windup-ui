@@ -4,7 +4,7 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
-import { iniAxios } from "api/axios";
+import { iniAxios } from "./utils/axios";
 
 import {
   QueryClientProvider,

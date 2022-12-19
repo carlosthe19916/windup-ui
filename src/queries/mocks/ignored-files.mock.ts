@@ -1,12 +1,12 @@
-import { ApplicationIgnoredFiles } from "api/models";
+import { ApplicationIgnoredFilesDto } from "api/application-ignored-files";
 
-export let MOCK_IGNORED_FILES: ApplicationIgnoredFiles[];
+export let MOCK_IGNORED_FILES: ApplicationIgnoredFilesDto[];
 
 if (
   process.env.NODE_ENV === "test" ||
   process.env.REACT_APP_DATA_SOURCE === "mock"
 ) {
-  const application1Deps: ApplicationIgnoredFiles = {
+  const application1Deps: ApplicationIgnoredFilesDto = {
     applicationId: "app-1",
     ignoredFiles: [
       {
@@ -17,7 +17,7 @@ if (
     ],
   };
 
-  const application2Deps: ApplicationIgnoredFiles = {
+  const application2Deps: ApplicationIgnoredFilesDto = {
     applicationId: "app-2",
     ignoredFiles: [
       {

@@ -1,12 +1,12 @@
-import { Label } from "api/models";
+import { LabelDto } from "api/label";
 
-export let MOCK_LABELS: Label[];
+export let MOCK_LABELS: LabelDto[];
 
 if (
   process.env.NODE_ENV === "test" ||
   process.env.REACT_APP_DATA_SOURCE === "mock"
 ) {
-  const label1: Label = {
+  const label1: LabelDto = {
     id: "label1",
     name: "Label1",
     description: "Label description",

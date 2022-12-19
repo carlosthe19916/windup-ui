@@ -4,8 +4,8 @@ import { useIssuesQuery } from "queries/issues";
 import { useRulesQuery } from "queries/rules";
 import { useFilesQuery } from "queries/files";
 
-import { Technology } from "api/models";
-import { IssueProcessed, RuleProcessed } from "api/processed-models";
+import { TechnologyDto } from "api/rule";
+import { IssueProcessed, RuleProcessed } from "models/api-enriched";
 import { technologiesToArray } from "utils/rule-utils";
 
 interface IProcessedQueriesContext {
@@ -34,14 +34,14 @@ export const ProcessedQueriesContextProvider: React.FC = ({ children }) => {
         .flatMap((e) => e.sourceTechnology)
         .reduce((prev, current) => {
           return current ? [...prev, current] : prev;
-        }, [] as Technology[])
+        }, [] as TechnologyDto[])
     );
     const target = technologiesToArray(
       (allRules.data || [])
         .flatMap((e) => e.targetTechnology)
         .reduce((prev, current) => {
           return current ? [...prev, current] : prev;
-        }, [] as Technology[])
+        }, [] as TechnologyDto[])
     );
     return { source, target };
   }, [allRules.data]);

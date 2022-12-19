@@ -1,18 +1,20 @@
 import { useCallback } from "react";
 import axios, { AxiosError } from "axios";
 
-import { ApplicationTechnologies } from "api/models";
+import { ApplicationTechnologiesDto } from "api/application-technologies";
 import { useMockableQuery } from "./helpers";
 import { MOCK_TECHNOLOGIES } from "./mocks/technologies.mock";
 import {
   ApplicationTechnologiesProcessed,
   TechnologyGroupsProcessed,
   TechnologyValueProcessed,
-} from "api/processed-models";
+} from "models/api-enriched";
 
 export const useTechnologiesQuery = () => {
   const transformCallback = useCallback(
-    (data: ApplicationTechnologies[]): ApplicationTechnologiesProcessed[] => {
+    (
+      data: ApplicationTechnologiesDto[]
+    ): ApplicationTechnologiesProcessed[] => {
       const result = data.map((appTech) => {
         const technologyGroupsMapped = Object.entries(appTech.technologyGroups)
           .map(([groupName, groupValue]) => {
@@ -58,7 +60,7 @@ export const useTechnologiesQuery = () => {
   );
 
   return useMockableQuery<
-    ApplicationTechnologies[],
+    ApplicationTechnologiesDto[],
     AxiosError,
     ApplicationTechnologiesProcessed[]
   >(
@@ -66,7 +68,7 @@ export const useTechnologiesQuery = () => {
       queryKey: ["technologies"],
       queryFn: async () => {
         const url = "/technologies";
-        return (await axios.get<ApplicationTechnologies[]>(url)).data;
+        return (await axios.get<ApplicationTechnologiesDto[]>(url)).data;
       },
       select: transformCallback,
     },

@@ -11,14 +11,14 @@ import {
 
 import { JavaIncidentsByPackage } from "shared/components";
 
-import { Application } from "api/models";
+import { ApplicationDto } from "api/application";
 import { MessagesCard } from "./components/messages-card";
 import { ApplicationFilesTable } from "./components/application-files-table";
 import { TagsChart } from "./components/tags-chart";
 import { useApplicationsDetailsQuery } from "queries/applications-details";
 
 export const ApplicationDetails: React.FC = () => {
-  const application = useOutletContext<Application | null>();
+  const application = useOutletContext<ApplicationDto | null>();
 
   const applicationsDetailsQuery = useApplicationsDetailsQuery();
   const applicationFiles = useMemo(() => {

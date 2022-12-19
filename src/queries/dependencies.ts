@@ -2,16 +2,16 @@ import { useCallback } from "react";
 import axios, { AxiosError } from "axios";
 import { UseQueryResult } from "@tanstack/react-query";
 
-import { ApplicationDependencies } from "api/models";
+import { ApplicationDependenciesDto } from "api/application-dependency";
 import { useMockableQuery } from "./helpers";
 import { MOCK_DEPENDENCIES } from "./mocks/dependencies.mock";
 
 export const useDependenciesQuery = (): UseQueryResult<
-  ApplicationDependencies[],
+  ApplicationDependenciesDto[],
   AxiosError
 > => {
   const mapCallback = useCallback(
-    (data: ApplicationDependencies[]): ApplicationDependencies[] => {
+    (data: ApplicationDependenciesDto[]): ApplicationDependenciesDto[] => {
       return data.map((app) => ({
         ...app,
         dependencies: app.dependencies.sort((a, b) =>
@@ -23,15 +23,15 @@ export const useDependenciesQuery = (): UseQueryResult<
   );
 
   return useMockableQuery<
-    ApplicationDependencies[],
+    ApplicationDependenciesDto[],
     AxiosError,
-    ApplicationDependencies[]
+    ApplicationDependenciesDto[]
   >(
     {
       queryKey: ["dependencies"],
       queryFn: async () => {
         const url = "/dependencies";
-        return (await axios.get<ApplicationDependencies[]>(url)).data;
+        return (await axios.get<ApplicationDependenciesDto[]>(url)).data;
       },
       select: mapCallback,
     },

@@ -1,12 +1,12 @@
-import { ApplicationDetails } from "api/models";
+import { ApplicationDetailsDto } from "api/application-details";
 
-export let MOCK_APPLICATIONS_DETAILS: ApplicationDetails[];
+export let MOCK_APPLICATIONS_DETAILS: ApplicationDetailsDto[];
 
 if (
   process.env.NODE_ENV === "test" ||
   process.env.REACT_APP_DATA_SOURCE === "mock"
 ) {
-  const application1Details: ApplicationDetails = {
+  const application1Details: ApplicationDetailsDto = {
     applicationId: "app-1",
     messages: [
       {
@@ -34,7 +34,7 @@ if (
     ],
   };
 
-  const application2Details: ApplicationDetails = {
+  const application2Details: ApplicationDetailsDto = {
     applicationId: "app-2",
     messages: [
       {

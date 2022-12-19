@@ -26,9 +26,9 @@ import { useIssuesQuery } from "queries/issues";
 
 import {
   ALL_SUPPORTED_ISSUE_CATEGORY,
-  Application,
   IssueCategoryType,
-} from "api/models";
+} from "api/application-issues";
+import { ApplicationDto } from "api/application";
 
 interface IncidentsData {
   category: IssueCategoryType;
@@ -90,7 +90,7 @@ const sortIncidentsData = (data: IncidentsData[]) => {
 };
 
 export interface IIncidentsSectionProps {
-  application: Application;
+  application: ApplicationDto;
 }
 
 export const IncidentsSection: React.FC<IIncidentsSectionProps> = ({

@@ -47,14 +47,15 @@ import {
 import { SimpleContextSelector, Context } from "context/simple-context";
 
 import { useCellSelectionState, useTechnologiesData } from "shared/hooks";
-import { Application, TechnologyGroup } from "api/models";
+import { TechnologyGroup } from "api/application-technologies";
+import { ApplicationDto } from "api/application";
 import {
   TechnologyGroupsProcessed,
   TechnologyGroupValueProcessed,
-} from "api/processed-models";
+} from "models/api-enriched";
 
 interface RowData {
-  application: Application;
+  application: ApplicationDto;
   technologyGroups: TechnologyGroupsProcessed;
 }
 

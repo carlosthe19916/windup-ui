@@ -26,8 +26,8 @@ import {
   ConditionalRender,
 } from "@project-openubl/lib-ui";
 
-import { IgnoredFile } from "api/models";
 import { useIgnoredFilesQuery } from "queries/ignored-files";
+import { IgnoredFileDto } from "api/application-ignored-files";
 
 const DataKey = "DataKey";
 
@@ -50,8 +50,8 @@ const columns: ICell[] = [
 ];
 
 const compareByColumnIndex = (
-  a: IgnoredFile,
-  b: IgnoredFile,
+  a: IgnoredFileDto,
+  b: IgnoredFileDto,
   columnIndex?: number
 ) => {
   switch (columnIndex) {
@@ -94,7 +94,7 @@ export const IgnoredFilesTable: React.FC<IIgnoredFilesTableProps> = ({
     changeSortBy: onChangeSortBy,
   } = useTableControls();
 
-  const { pageItems, filteredItems } = useTable<IgnoredFile>({
+  const { pageItems, filteredItems } = useTable<IgnoredFileDto>({
     items: dependencies,
     currentPage: currentPage,
     currentSortBy: currentSortBy,
@@ -110,7 +110,7 @@ export const IgnoredFilesTable: React.FC<IIgnoredFilesTableProps> = ({
     },
   });
 
-  const itemsToRow = (items: IgnoredFile[]) => {
+  const itemsToRow = (items: IgnoredFileDto[]) => {
     const rows: IRow[] = [];
     items.forEach((item) => {
       rows.push({

@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { Bullseye, Card, CardBody, CardTitle } from "@patternfly/react-core";
 import { ChartDonut, ChartThemeColor } from "@patternfly/react-charts";
 import { usePackagesIncidentsQuery } from "queries/packages-incidents";
-import { Application } from "api/models";
+import { ApplicationDto } from "api/application";
 
 const MAX_PACKAGES_SHOW = 9;
 
@@ -12,7 +12,7 @@ interface ChartData {
 }
 
 export interface IJavaIncidentsByPackageProps {
-  application: Application;
+  application: ApplicationDto;
 }
 
 export const JavaIncidentsByPackage: React.FC<IJavaIncidentsByPackageProps> = ({

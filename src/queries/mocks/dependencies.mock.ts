@@ -1,12 +1,12 @@
-import { ApplicationDependencies } from "api/models";
+import { ApplicationDependenciesDto } from "api/application-dependency";
 
-export let MOCK_DEPENDENCIES: ApplicationDependencies[];
+export let MOCK_DEPENDENCIES: ApplicationDependenciesDto[];
 
 if (
   process.env.NODE_ENV === "test" ||
   process.env.REACT_APP_DATA_SOURCE === "mock"
 ) {
-  const application1Deps: ApplicationDependencies = {
+  const application1Deps: ApplicationDependenciesDto = {
     applicationId: "app-1",
     dependencies: [
       {
@@ -18,7 +18,7 @@ if (
     ],
   };
 
-  const application2Deps: ApplicationDependencies = {
+  const application2Deps: ApplicationDependenciesDto = {
     applicationId: "app-2",
     dependencies: [
       {

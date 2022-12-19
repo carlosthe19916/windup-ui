@@ -11,11 +11,11 @@ import { useModal } from "@project-openubl/lib-ui";
 
 import { useApplicationsDetailsQuery } from "queries/applications-details";
 
-import { Application } from "api/models";
+import { ApplicationDto } from "api/application";
 import { RuleEditor } from "shared/components";
 
 export interface IMessagesCardProps {
-  application: Application;
+  application: ApplicationDto;
 }
 
 export const MessagesCard: React.FC<IMessagesCardProps> = ({ application }) => {

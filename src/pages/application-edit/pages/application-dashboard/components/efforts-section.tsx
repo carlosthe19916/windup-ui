@@ -26,9 +26,9 @@ import { useIssuesQuery } from "queries/issues";
 
 import {
   ALL_LEVEL_OF_EFFORTS,
-  Application,
   LevelOfEffortType,
-} from "api/models";
+} from "api/application-issues";
+import { ApplicationDto } from "api/application";
 
 interface IncidentsData {
   effort: LevelOfEffortType;
@@ -91,7 +91,7 @@ const sortIncidentsData = (data: IncidentsData[]) => {
 };
 
 export interface IEffortsSectionProps {
-  application: Application;
+  application: ApplicationDto;
 }
 
 export const EffortsSection: React.FC<IEffortsSectionProps> = ({

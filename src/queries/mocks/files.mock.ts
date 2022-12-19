@@ -1,13 +1,14 @@
-import { AppFile, AppFileContent } from "api/models";
+import { FileDto } from "api/file";
+import { FileContentDto } from "api/file-content";
 
-export let MOCK_APP_FILES: AppFile[];
-export let MOCK_APP_FILES_CONTENT: { [id: string]: AppFileContent } = {};
+export let MOCK_APP_FILES: FileDto[];
+export let MOCK_APP_FILES_CONTENT: { [id: string]: FileContentDto } = {};
 
 if (
   process.env.NODE_ENV === "test" ||
   process.env.REACT_APP_DATA_SOURCE === "mock"
 ) {
-  const file1: AppFile = {
+  const file1: FileDto = {
     id: "file-1",
     fullPath: "file.jar",
     prettyPath: "file.jar",

@@ -1,12 +1,12 @@
-import { SystemTag } from "api/models";
+import { TagDto } from "api/tag";
 
-export let MOCK_TAGS: SystemTag[];
+export let MOCK_TAGS: TagDto[];
 
 if (
   process.env.NODE_ENV === "test" ||
   process.env.REACT_APP_DATA_SOURCE === "mock"
 ) {
-  const tag1: SystemTag = {
+  const tag1: TagDto = {
     name: "tag1",
     title: "Tag1",
     isRoot: true,

@@ -1,13 +1,14 @@
-import { Rule, RuleContent, RuleGroup } from "api/models";
+import { RuleGroupDto, RuleDto } from "api/rule";
+import { RuleContentDto } from "api/rule-content";
 
-export let MOCK_RULES: RuleGroup;
-export let MOCK_RULES_CONTENT: { [id: string]: RuleContent } = {};
+export let MOCK_RULES: RuleGroupDto;
+export let MOCK_RULES_CONTENT: { [id: string]: RuleContentDto } = {};
 
 if (
   process.env.NODE_ENV === "test" ||
   process.env.REACT_APP_DATA_SOURCE === "mock"
 ) {
-  const rule1: Rule = {
+  const rule1: RuleDto = {
     id: "rule-1",
     sourceTechnology: [{ id: "source1" }],
     targetTechnology: [
@@ -16,7 +17,7 @@ if (
     ],
   };
 
-  const rule2: Rule = {
+  const rule2: RuleDto = {
     id: "rule-2",
     targetTechnology: [{ id: "target3" }],
   };

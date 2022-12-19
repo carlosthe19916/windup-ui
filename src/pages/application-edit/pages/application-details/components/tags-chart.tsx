@@ -7,18 +7,21 @@ import {
   ChartVoronoiContainer,
 } from "@patternfly/react-charts";
 
-import { AppFile, ApplicationFiles, SystemTag } from "api/models";
 import { useFilesQuery } from "queries/files";
 import { useTagsQuery } from "queries/tags";
 
-const getNearestRoots = (tags: SystemTag[], tagName: string) => {
+import { FileDto } from "api/file";
+import { TagDto } from "api/tag";
+import { ApplicationFileDto } from "api/application-details";
+
+const getNearestRoots = (tags: TagDto[], tagName: string) => {
   const tag = tags.find((t) => t.name === tagName);
   if (!tag) {
     return null;
   }
 
   let currentSet = [tag];
-  let nextSet: SystemTag[] = [];
+  let nextSet: TagDto[] = [];
   const visitedParents = [tagName];
   const roots = tag.isRoot ? [tag] : [];
 
@@ -50,18 +53,18 @@ const getNearestRoots = (tags: SystemTag[], tagName: string) => {
 };
 
 export interface ITagsChartProps {
-  applicationFile: ApplicationFiles[];
+  applicationFile: ApplicationFileDto[];
 }
 
 export const TagsChart: React.FC<ITagsChartProps> = ({ applicationFile }) => {
   const tagsQuery = useTagsQuery();
   const allFilesQuery = useFilesQuery();
 
-  const applicationFiles: AppFile[] = useMemo(() => {
+  const applicationFiles: FileDto[] = useMemo(() => {
     return applicationFile
       .flatMap((f) => f.childrenFileIds)
       .map((childFileId) => {
-        const defaultFile: AppFile = {
+        const defaultFile: FileDto = {
           id: childFileId,
           fullPath: "",
           prettyPath: "",
@@ -72,7 +75,7 @@ export const TagsChart: React.FC<ITagsChartProps> = ({ applicationFile }) => {
           sourceType: "",
           storyPoints: -1,
         };
-        const file: AppFile | undefined = allFilesQuery.data?.find(
+        const file: FileDto | undefined = allFilesQuery.data?.find(
           (file) => file.id === childFileId
         );
         return { ...defaultFile, ...file };

@@ -23,7 +23,9 @@ import { FilterIcon, InfoAltIcon } from "@patternfly/react-icons";
 import { OptionWithValue, SimpleSelect } from "@project-openubl/lib-ui";
 
 import { useTechnologiesData } from "shared/hooks";
-import { Application, TechnologyGroup } from "api/models";
+
+import { TechnologyGroup } from "api/application-technologies";
+import { ApplicationDto } from "api/application";
 
 type TechnologyGroupEnricherType = {
   [key in TechnologyGroup]: {
@@ -65,7 +67,7 @@ interface CardData {
 }
 
 export const ApplicationTechnologies: React.FC = () => {
-  const application = useOutletContext<Application | null>();
+  const application = useOutletContext<ApplicationDto | null>();
 
   // Filters
   const [filterText] = useState("");

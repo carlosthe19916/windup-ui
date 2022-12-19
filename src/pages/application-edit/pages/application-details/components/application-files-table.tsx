@@ -33,7 +33,8 @@ import {
 import { useSelectionState } from "@migtools/lib-ui";
 
 import { useApplicationsDetailsQuery } from "queries/applications-details";
-import { Application, ApplicationFiles } from "api/models";
+import { ApplicationDto } from "api/application";
+import { ApplicationFileDto } from "api/application-details";
 
 import { ApplicationFilesChildrenTable } from "./application-files-children-table";
 import { TagsChart } from "./tags-chart";
@@ -53,12 +54,12 @@ const columns: ICell[] = [
   },
 ];
 
-const getRow = (rowData: IRowData): ApplicationFiles => {
+const getRow = (rowData: IRowData): ApplicationFileDto => {
   return rowData[DataKey];
 };
 
 export interface IApplicationFilesTableProps {
-  application: Application;
+  application: ApplicationDto;
 }
 
 export const ApplicationFilesTable: React.FC<IApplicationFilesTableProps> = ({
@@ -83,7 +84,7 @@ export const ApplicationFilesTable: React.FC<IApplicationFilesTableProps> = ({
     toggleItemSelected: toggleRowExpanded,
     selectAll: expandAllRows,
     setSelectedItems: setExpandedRows,
-  } = useSelectionState<ApplicationFiles>({
+  } = useSelectionState<ApplicationFileDto>({
     items: applicationFiles,
     isEqual: (a, b) => a.fileId === b.fileId,
   });
@@ -95,7 +96,7 @@ export const ApplicationFilesTable: React.FC<IApplicationFilesTableProps> = ({
     changeSortBy: onChangeSortBy,
   } = useTableControls();
 
-  const { pageItems, filteredItems } = useTable<ApplicationFiles>({
+  const { pageItems, filteredItems } = useTable<ApplicationFileDto>({
     items: applicationFiles,
     currentPage: currentPage,
     currentSortBy: currentSortBy,
@@ -103,7 +104,7 @@ export const ApplicationFilesTable: React.FC<IApplicationFilesTableProps> = ({
     filterItem: (item) => true,
   });
 
-  const itemsToRow = (items: ApplicationFiles[]) => {
+  const itemsToRow = (items: ApplicationFileDto[]) => {
     const rows: IRow[] = [];
     items.forEach((item) => {
       const isExpanded = isRowExpanded(item);

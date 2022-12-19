@@ -1,5 +1,4 @@
 import React, { useMemo } from "react";
-import { Issue } from "api/models";
 import {
   Badge,
   Button,
@@ -20,12 +19,13 @@ import {
   Tr,
 } from "@patternfly/react-table";
 import { SimpleMarkdown } from "shared/components";
-
 import { useFilesQuery } from "queries/files";
+
+import { IssueDto } from "api/application-issues";
 import { getMarkdown } from "utils/rule-utils";
 
 interface IIssueOverviewProps {
-  issue: Issue;
+  issue: IssueDto;
   onShowFile: (fileId: string) => void;
 }
 

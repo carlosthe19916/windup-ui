@@ -41,7 +41,7 @@ import {
 } from "@project-openubl/lib-ui";
 import { useSelectionState } from "@migtools/lib-ui";
 
-import { IssueProcessed } from "api/processed-models";
+import { IssueProcessed } from "models/api-enriched";
 
 import { useApplicationsQuery } from "queries/applications";
 import { useFilesQuery } from "queries/files";

@@ -2,23 +2,26 @@ import { useCallback } from "react";
 import axios, { AxiosError } from "axios";
 import { UseQueryResult } from "@tanstack/react-query";
 
-import { Application } from "api/models";
+import { ApplicationDto } from "api/application";
 import { useMockableQuery } from "./helpers";
 import { MOCK_APPLICATIONS } from "./mocks/applications.mock";
 
 export const useApplicationsQuery = (): UseQueryResult<
-  Application[],
+  ApplicationDto[],
   AxiosError
 > => {
-  const sortListCallback = useCallback((data: Application[]): Application[] => {
-    return data.sort((a, b) => a.name.localeCompare(b.name));
-  }, []);
+  const sortListCallback = useCallback(
+    (data: ApplicationDto[]): ApplicationDto[] => {
+      return data.sort((a, b) => a.name.localeCompare(b.name));
+    },
+    []
+  );
 
-  return useMockableQuery<Application[], AxiosError>(
+  return useMockableQuery<ApplicationDto[], AxiosError>(
     {
       queryKey: ["applications"],
       queryFn: async () =>
-        (await axios.get<Application[]>("/applications")).data,
+        (await axios.get<ApplicationDto[]>("/applications")).data,
       select: sortListCallback,
     },
     MOCK_APPLICATIONS

@@ -1,13 +1,14 @@
 import { useCallback } from "react";
 import axios, { AxiosError } from "axios";
 
-import { RuleContent, RuleGroup } from "api/models";
-import { RuleProcessed } from "api/processed-models";
+import { RuleGroupDto } from "api/rule";
+import { RuleContentDto } from "api/rule-content";
+import { RuleProcessed } from "models/api-enriched";
 import { useMockableQuery } from "./helpers";
 import { MOCK_RULES, MOCK_RULES_CONTENT } from "./mocks/rules.mock";
 
 export const useRulesQuery = () => {
-  const transformCallback = useCallback((data: RuleGroup) => {
+  const transformCallback = useCallback((data: RuleGroupDto) => {
     let result: RuleProcessed[] = [];
 
     for (const [key, value] of Object.entries(data)) {
@@ -22,10 +23,10 @@ export const useRulesQuery = () => {
     return result;
   }, []);
 
-  return useMockableQuery<RuleGroup, AxiosError, RuleProcessed[]>(
+  return useMockableQuery<RuleGroupDto, AxiosError, RuleProcessed[]>(
     {
       queryKey: ["rules"],
-      queryFn: async () => (await axios.get<RuleGroup>("/rules")).data,
+      queryFn: async () => (await axios.get<RuleGroupDto>("/rules")).data,
       select: transformCallback,
     },
     MOCK_RULES
@@ -33,11 +34,11 @@ export const useRulesQuery = () => {
 };
 
 export const useRuleQuery = (ruleId: string) => {
-  return useMockableQuery<RuleContent, AxiosError, RuleContent>(
+  return useMockableQuery<RuleContentDto, AxiosError, RuleContentDto>(
     {
       queryKey: ["rules", ruleId],
       queryFn: async () =>
-        (await axios.get<RuleContent>(`/rules/${ruleId}`)).data,
+        (await axios.get<RuleContentDto>(`/rules/${ruleId}`)).data,
     },
     MOCK_RULES_CONTENT[ruleId]
   );

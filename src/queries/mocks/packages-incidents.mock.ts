@@ -1,12 +1,12 @@
-import { ApplicationPackageIncidents as ApplicationPackagesIncidents } from "api/models";
+import { ApplicationPackageIncidentsDto } from "api/application-package-incidents";
 
-export let MOCK_PACKAGES: ApplicationPackagesIncidents[];
+export let MOCK_PACKAGES: ApplicationPackageIncidentsDto[];
 
 if (
   process.env.NODE_ENV === "test" ||
   process.env.REACT_APP_DATA_SOURCE === "mock"
 ) {
-  const application1Deps: ApplicationPackagesIncidents = {
+  const application1Deps: ApplicationPackageIncidentsDto = {
     applicationId: "app-1",
     packages: {
       package1: 1,
@@ -14,7 +14,7 @@ if (
     },
   };
 
-  const application2Deps: ApplicationPackagesIncidents = {
+  const application2Deps: ApplicationPackageIncidentsDto = {
     applicationId: "app-2",
     packages: {
       package1: 1,

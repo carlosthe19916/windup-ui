@@ -2,16 +2,16 @@ import { useCallback } from "react";
 import axios, { AxiosError } from "axios";
 import { UseQueryResult } from "@tanstack/react-query";
 
-import { ApplicationIgnoredFiles } from "api/models";
+import { ApplicationIgnoredFilesDto } from "api/application-ignored-files";
 import { useMockableQuery } from "./helpers";
 import { MOCK_IGNORED_FILES } from "./mocks/ignored-files.mock";
 
 export const useIgnoredFilesQuery = (): UseQueryResult<
-  ApplicationIgnoredFiles[],
+  ApplicationIgnoredFilesDto[],
   AxiosError
 > => {
   const mapCallback = useCallback(
-    (data: ApplicationIgnoredFiles[]): ApplicationIgnoredFiles[] => {
+    (data: ApplicationIgnoredFilesDto[]): ApplicationIgnoredFilesDto[] => {
       return data.map((app) => ({
         ...app,
         ignoredFiles: app.ignoredFiles.sort((a, b) =>
@@ -23,15 +23,15 @@ export const useIgnoredFilesQuery = (): UseQueryResult<
   );
 
   return useMockableQuery<
-    ApplicationIgnoredFiles[],
+    ApplicationIgnoredFilesDto[],
     AxiosError,
-    ApplicationIgnoredFiles[]
+    ApplicationIgnoredFilesDto[]
   >(
     {
       queryKey: ["ignored-files"],
       queryFn: async () => {
         const url = "/ignored-files";
-        return (await axios.get<ApplicationIgnoredFiles[]>(url)).data;
+        return (await axios.get<ApplicationIgnoredFilesDto[]>(url)).data;
       },
       select: mapCallback,
     },
