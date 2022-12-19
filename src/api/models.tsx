@@ -37,6 +37,15 @@ export interface Label {
   neutral: string[];
 }
 
+
+export interface SystemTag {
+  name: string;
+  title: string;
+  isRoot: boolean;
+  isPseudo: boolean;
+  parentsTagNames: string[];
+}
+
 export interface ApplicationIssues {
   applicationId: string;
   issues: {

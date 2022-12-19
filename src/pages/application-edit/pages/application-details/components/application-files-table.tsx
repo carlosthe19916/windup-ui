@@ -30,12 +30,13 @@ import {
   useTable,
   useTableControls,
 } from "@project-openubl/lib-ui";
+import { useSelectionState } from "@migtools/lib-ui";
 
 import { useApplicationsDetailsQuery } from "queries/applications-details";
-
 import { Application, ApplicationFiles } from "api/models";
-import { useSelectionState } from "@migtools/lib-ui";
+
 import { ApplicationFilesChildrenTable } from "./application-files-children-table";
+import { TagsChart } from "./tags-chart";
 
 const DataKey = "DataKey";
 
@@ -215,6 +216,14 @@ export const ApplicationFilesTable: React.FC<IApplicationFilesTableProps> = ({
                               </DescriptionListDescription>
                             </DescriptionListGroup>
                           </DescriptionList>
+                        </GridItem>
+                        <GridItem>
+                          <Card isPlain isCompact>
+                            <CardTitle>Tags found - Occurrence found</CardTitle>
+                            <CardBody>
+                              <TagsChart applicationFile={[item]} />
+                            </CardBody>
+                          </Card>
                         </GridItem>
                       </Grid>
                     </StackItem>
