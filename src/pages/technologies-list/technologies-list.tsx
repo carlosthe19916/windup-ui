@@ -45,6 +45,7 @@ import {
 
 import { ApplicationDto } from "@app/api/application";
 import { TechnologyGroup } from "@app/api/application-technologies";
+import { ALL_APPLICATIONS_ID } from "@app/Constants";
 import { Context, SimpleContextSelector } from "@app/context/simple-context";
 import {
   TechnologyGroupValueProcessed,
@@ -77,7 +78,7 @@ export const TechnologiesList: React.FC = () => {
   const applicationId = matchTechnologiesPage
     ? undefined
     : matchAllTechnologiesPage
-    ? ""
+    ? ALL_APPLICATIONS_ID
     : matchSingleTechnologyPage?.params.applicationId;
 
   const navigate = useNavigate();

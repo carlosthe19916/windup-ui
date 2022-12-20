@@ -124,8 +124,8 @@ export const ApplicationFilesChildrenTable: React.FC<
           {
             title: (
               <Flex>
-                {item.tags.map((t, index) => (
-                  <FlexItem key={index} spacer={{ default: "spacerXs" }}>
+                {item.tags.map((t) => (
+                  <FlexItem key={t.name} spacer={{ default: "spacerXs" }}>
                     <Label
                       color={t.level === "IMPORTANT" ? "red" : "grey"}
                       isCompact
@@ -134,8 +134,8 @@ export const ApplicationFilesChildrenTable: React.FC<
                     </Label>
                   </FlexItem>
                 ))}
-                {item.classificationsAndHintsTags.map((t, index) => (
-                  <FlexItem key={index} spacer={{ default: "spacerXs" }}>
+                {item.classificationsAndHintsTags.map((t) => (
+                  <FlexItem key={t} spacer={{ default: "spacerXs" }}>
                     <Label color="grey" isCompact>
                       {t}
                     </Label>
@@ -154,7 +154,7 @@ export const ApplicationFilesChildrenTable: React.FC<
                     .reduce((prev, current) => prev + current.occurrences, 0);
 
                   return (
-                    <ListItem key={index}>
+                    <ListItem key={f.name}>
                       {f.name} <Badge isRead>{totalOcurrences}</Badge>
                     </ListItem>
                   );

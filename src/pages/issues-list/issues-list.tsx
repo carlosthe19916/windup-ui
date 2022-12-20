@@ -12,6 +12,7 @@ import {
   ToolbarItem,
 } from "@patternfly/react-core";
 
+import { ALL_APPLICATIONS_ID } from "@app/Constants";
 import { Context, SimpleContextSelector } from "@app/context/simple-context";
 import { IssuesTable } from "@app/shared/components";
 
@@ -25,7 +26,7 @@ export const IssuesList: React.FC = () => {
   const applicationId = matchIssuesPage
     ? undefined
     : matchAllApplicationsPage
-    ? ""
+    ? ALL_APPLICATIONS_ID
     : matchSingleApplicationPage?.params.applicationId;
 
   const navigate = useNavigate();

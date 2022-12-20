@@ -1,6 +1,4 @@
-
-
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { useSelectionState } from "@migtools/lib-ui";
 import {
@@ -42,6 +40,7 @@ import {
   useToolbar,
 } from "@project-openubl/lib-ui";
 
+import { ALL_APPLICATIONS_ID } from "@app/Constants";
 import { useProcessedQueriesContext } from "@app/context/processed-queries-context";
 import { IssueProcessed } from "@app/models/api-enriched";
 import { useApplicationsQuery } from "@app/queries/applications";
@@ -171,7 +170,7 @@ export const IssuesTable: React.FC<IIssuesTableProps> = ({ applicationId }) => {
   }, [allFiles.data, fileModal.data]);
 
   const issues = useMemo(() => {
-    if (applicationId === "") {
+    if (applicationId === ALL_APPLICATIONS_ID) {
       return [...(allIssues.data || [])].flatMap((e) => e.issues);
     }
 
@@ -355,6 +354,11 @@ export const IssuesTable: React.FC<IIssuesTableProps> = ({ applicationId }) => {
       },
     },
   ];
+
+  // Reset pagination when application change
+  useEffect(() => {
+    onPageChange({ page: 1 });
+  }, [applicationId, filters, onPageChange]);
 
   return (
     <>

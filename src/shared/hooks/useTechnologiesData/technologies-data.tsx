@@ -1,6 +1,3 @@
-
-
-
 import { useCallback, useMemo } from "react";
 
 import { ToolbarChip } from "@patternfly/react-core";
@@ -8,6 +5,7 @@ import { OptionWithValue } from "@project-openubl/lib-ui";
 
 import { ApplicationDto } from "@app/api/application";
 import { ALL_TECHNOLOGY_GROUPS } from "@app/api/application-technologies";
+import { ALL_APPLICATIONS_ID } from "@app/Constants";
 import { TechnologyGroupsProcessed } from "@app/models/api-enriched";
 import { useApplicationsQuery } from "@app/queries/applications";
 import { useTechnologiesQuery } from "@app/queries/technologies";
@@ -49,7 +47,7 @@ export const useTechnologiesData = ({
       }, [] as RowData[]);
     };
 
-    if (applicationId === "") {
+    if (applicationId === ALL_APPLICATIONS_ID) {
       return toRowData(allApplications.data || []);
     } else {
       const selectedApplication = allApplications.data?.find(

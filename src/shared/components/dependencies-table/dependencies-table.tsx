@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 
 import { useSelectionState } from "@migtools/lib-ui";
 import {
@@ -35,6 +35,7 @@ import {
 } from "@project-openubl/lib-ui";
 
 import { DependencyDto } from "@app/api/application-dependency";
+import { ALL_APPLICATIONS_ID } from "@app/Constants";
 import { useDependenciesQuery } from "@app/queries/dependencies";
 
 const DataKey = "DataKey";
@@ -78,7 +79,7 @@ export const DependenciesTable: React.FC<IDependenciesTableProps> = ({
   const allDependencies = useDependenciesQuery();
 
   const dependencies = useMemo(() => {
-    if (applicationId === "") {
+    if (applicationId === ALL_APPLICATIONS_ID) {
       return [...(allDependencies.data || [])].flatMap((e) => e.dependencies);
     }
 
@@ -203,6 +204,11 @@ export const DependenciesTable: React.FC<IDependenciesTableProps> = ({
 
   const rows: IRow[] = itemsToRow(pageItems);
   const actions: IAction[] = [];
+
+  // Reset pagination when application change
+  useEffect(() => {
+    onPageChange({ page: 1 });
+  }, [applicationId, onPageChange]);
 
   return (
     <ConditionalRender

@@ -160,11 +160,9 @@ export const ApplicationFilesTable: React.FC<IApplicationFilesTableProps> = ({
                               </DescriptionListTerm>
                               <DescriptionListDescription>
                                 <List isPlain>
-                                  {item.maven.organizations?.map(
-                                    (org, index) => (
-                                      <ListItem key={index}>{org}</ListItem>
-                                    )
-                                  )}
+                                  {item.maven.organizations?.map((org) => (
+                                    <ListItem key={org}>{org}</ListItem>
+                                  ))}
                                 </List>
                               </DescriptionListDescription>
                             </DescriptionListGroup>

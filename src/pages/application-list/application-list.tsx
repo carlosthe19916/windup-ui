@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import {
@@ -112,7 +112,7 @@ const getColumn = (colIndex: number): ColumnKey => {
 };
 
 export const ApplicationList: React.FC = () => {
-  const modal = useModal<
+  const applicationModal = useModal<
     "showLabel",
     { application: ApplicationDto; assessment: RuntimeAssessment }
   >();
@@ -201,8 +201,8 @@ export const ApplicationList: React.FC = () => {
                     .sort((a, b) =>
                       a.targetRuntime.name.localeCompare(b.targetRuntime.name)
                     )
-                    .map((assessment, index) => (
-                      <StackItem key={index}>
+                    .map((assessment) => (
+                      <StackItem key={assessment.targetRuntime.name}>
                         <Split>
                           <SplitItem>
                             <LabelGroup
@@ -229,7 +229,7 @@ export const ApplicationList: React.FC = () => {
                               aria-label="Details"
                               isSmall
                               onClick={() =>
-                                modal.open("showLabel", {
+                                applicationModal.open("showLabel", {
                                   application: item,
                                   assessment: assessment,
                                 })
@@ -343,6 +343,11 @@ export const ApplicationList: React.FC = () => {
 
   const rows: IRow[] = itemsToRow(pageItems);
 
+  // Reset pagination when application change
+  useEffect(() => {
+    onPageChange({ page: 1 });
+  }, [filters, onPageChange]);
+
   return (
     <>
       <PageSection variant={PageSectionVariants.light}>
@@ -453,27 +458,27 @@ export const ApplicationList: React.FC = () => {
 
         <Modal
           title="Runtime label details"
-          isOpen={modal.isOpen}
-          onClose={modal.close}
+          isOpen={applicationModal.isOpen}
+          onClose={applicationModal.close}
           variant="medium"
         >
           <DescriptionList>
             <DescriptionListGroup>
               <DescriptionListTerm>Application</DescriptionListTerm>
               <DescriptionListDescription>
-                {modal.data?.application.name}
+                {applicationModal.data?.application.name}
               </DescriptionListDescription>
             </DescriptionListGroup>
             <DescriptionListGroup>
               <DescriptionListTerm>Runtime target</DescriptionListTerm>
               <DescriptionListDescription>
-                {modal.data?.assessment.targetRuntime.name}
+                {applicationModal.data?.assessment.targetRuntime.name}
               </DescriptionListDescription>
             </DescriptionListGroup>
             <DescriptionListGroup>
               <DescriptionListTerm>Assessment</DescriptionListTerm>
               <DescriptionListDescription>
-                {modal.data?.assessment.assessmentResult}
+                {applicationModal.data?.assessment.assessmentResult}
               </DescriptionListDescription>
             </DescriptionListGroup>
 
@@ -481,7 +486,10 @@ export const ApplicationList: React.FC = () => {
               <DescriptionListTerm>Unsuitable technologies</DescriptionListTerm>
               <DescriptionListDescription>
                 <Split hasGutter isWrappable>
-                  {[...(modal.data?.assessment.assessedUnsuitableTags || [])]
+                  {[
+                    ...(applicationModal.data?.assessment
+                      .assessedUnsuitableTags || []),
+                  ]
                     .sort((a, b) => a.localeCompare(b))
                     .map((e, index) => (
                       <SplitItem key={index}>
@@ -497,7 +505,10 @@ export const ApplicationList: React.FC = () => {
               <DescriptionListTerm>Supported technologies</DescriptionListTerm>
               <DescriptionListDescription>
                 <Split hasGutter isWrappable>
-                  {[...(modal.data?.assessment.assessedSupportedTags || [])]
+                  {[
+                    ...(applicationModal.data?.assessment
+                      .assessedSupportedTags || []),
+                  ]
                     .sort((a, b) => a.localeCompare(b))
                     .map((e, index) => (
                       <SplitItem key={index}>
@@ -513,7 +524,10 @@ export const ApplicationList: React.FC = () => {
               <DescriptionListTerm>Neutral technologies</DescriptionListTerm>
               <DescriptionListDescription>
                 <Split hasGutter isWrappable>
-                  {[...(modal.data?.assessment.assessedNeutralTags || [])]
+                  {[
+                    ...(applicationModal.data?.assessment.assessedNeutralTags ||
+                      []),
+                  ]
                     .sort((a, b) => a.localeCompare(b))
                     .map((e, index) => (
                       <SplitItem key={index}>
