@@ -17,6 +17,7 @@ export const useLabelsQuery = (): UseQueryResult<LabelDto[], AxiosError> => {
       queryFn: async () => (await axios.get<LabelDto[]>("/labels")).data,
       select: sortListCallback,
     },
-    MOCK_LABELS
+    MOCK_LABELS,
+    (window as any)["labels"]
   );
 };

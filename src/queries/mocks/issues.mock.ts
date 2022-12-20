@@ -76,5 +76,5 @@ if (
     },
   };
 
-  MOCK_ISSUES = (window as any)["issues"] || [issuesApp1, issuesApp2];
+  MOCK_ISSUES = [issuesApp1, issuesApp2];
 }

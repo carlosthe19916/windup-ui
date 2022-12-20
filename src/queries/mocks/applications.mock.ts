@@ -36,8 +36,5 @@ if (
     },
   };
 
-  MOCK_APPLICATIONS = (window as any)["applications"] || [
-    application1,
-    application2,
-  ];
+  MOCK_APPLICATIONS = [application1, application2];
 }

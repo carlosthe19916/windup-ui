@@ -22,12 +22,12 @@ if (
     targetTechnology: [{ id: "target3" }],
   };
 
-  MOCK_RULES = (window as any)["rules"] || {
+  MOCK_RULES = {
     phase1: [rule1],
     phase2: [rule2],
   };
 
-  MOCK_RULES_CONTENT = (window as any)["rules_by_id"] || {
+  MOCK_RULES_CONTENT = {
     [rule1.id]: { id: rule1.id, content: "<rule></rule>" },
     [rule2.id]: { id: rule2.id, content: "<rule></rule>" },
   };

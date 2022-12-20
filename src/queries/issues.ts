@@ -57,6 +57,7 @@ export const useIssuesQuery = () => {
       },
       select: transformCallback,
     },
-    MOCK_ISSUES
+    MOCK_ISSUES,
+    (window as any)["issues"]
   );
 };

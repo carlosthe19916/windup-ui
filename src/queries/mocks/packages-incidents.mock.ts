@@ -22,8 +22,5 @@ if (
     },
   };
 
-  MOCK_PACKAGES = (window as any)["packages-incidents"] || [
-    application1Deps,
-    application2Deps,
-  ];
+  MOCK_PACKAGES = [application1Deps, application2Deps];
 }

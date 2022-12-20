@@ -28,9 +28,8 @@ if (
     classificationsAndHintsTags: [],
   };
 
-  MOCK_APP_FILES = (window as any)["files"] || [file1];
-
-  MOCK_APP_FILES_CONTENT = (window as any)["files_by_id"] || {
+  MOCK_APP_FILES = [file1];
+  MOCK_APP_FILES_CONTENT = {
     [file1.id]: { id: file1.id, content: "file content" },
   };
 }

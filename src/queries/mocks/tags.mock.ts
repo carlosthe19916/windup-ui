@@ -14,5 +14,5 @@ if (
     parentsTagNames: [],
   };
 
-  MOCK_TAGS = (window as any)["tags"] || [tag1];
+  MOCK_TAGS = [tag1];
 }

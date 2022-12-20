@@ -24,6 +24,7 @@ export const useApplicationsQuery = (): UseQueryResult<
         (await axios.get<ApplicationDto[]>("/applications")).data,
       select: sortListCallback,
     },
-    MOCK_APPLICATIONS
+    MOCK_APPLICATIONS,
+    (window as any)["applications"]
   );
 };

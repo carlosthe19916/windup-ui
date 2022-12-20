@@ -28,8 +28,5 @@ if (
     ],
   };
 
-  MOCK_IGNORED_FILES = (window as any)["ignored-files"] || [
-    application1Deps,
-    application2Deps,
-  ];
+  MOCK_IGNORED_FILES = [application1Deps, application2Deps];
 }

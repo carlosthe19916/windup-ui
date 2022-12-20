@@ -29,7 +29,8 @@ export const useRulesQuery = () => {
       queryFn: async () => (await axios.get<RuleGroupDto>("/rules")).data,
       select: transformCallback,
     },
-    MOCK_RULES
+    MOCK_RULES,
+    (window as any)["rules"]
   );
 };
 
@@ -40,6 +41,7 @@ export const useRuleQuery = (ruleId: string) => {
       queryFn: async () =>
         (await axios.get<RuleContentDto>(`/rules/${ruleId}`)).data,
     },
-    MOCK_RULES_CONTENT[ruleId]
+    MOCK_RULES_CONTENT[ruleId],
+    (window as any)["rules_by_id"][ruleId]
   );
 };

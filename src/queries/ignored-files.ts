@@ -35,6 +35,7 @@ export const useIgnoredFilesQuery = (): UseQueryResult<
       },
       select: mapCallback,
     },
-    MOCK_IGNORED_FILES
+    MOCK_IGNORED_FILES,
+    (window as any)["ignored-files"]
   );
 };

@@ -38,8 +38,5 @@ if (
     },
   };
 
-  MOCK_TECHNOLOGIES = (window as any)["technologies"] || [
-    application1Deps,
-    application2Deps,
-  ];
+  MOCK_TECHNOLOGIES = [application1Deps, application2Deps];
 }

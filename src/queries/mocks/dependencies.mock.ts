@@ -30,8 +30,5 @@ if (
     ],
   };
 
-  MOCK_DEPENDENCIES = (window as any)["dependencies"] || [
-    application1Deps,
-    application2Deps,
-  ];
+  MOCK_DEPENDENCIES = [application1Deps, application2Deps];
 }

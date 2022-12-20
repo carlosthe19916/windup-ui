@@ -13,7 +13,8 @@ export const useFilesQuery = (): UseQueryResult<FileDto[], AxiosError> => {
       queryKey: ["files"],
       queryFn: async () => (await axios.get<FileDto[]>("/files")).data,
     },
-    MOCK_APP_FILES
+    MOCK_APP_FILES,
+    (window as any)["files"]
   );
 };
 
@@ -24,6 +25,7 @@ export const useFileQuery = (fileId: string) => {
       queryFn: async () =>
         (await axios.get<FileContentDto>(`/files/${fileId}`)).data,
     },
-    MOCK_APP_FILES_CONTENT[fileId]
+    MOCK_APP_FILES_CONTENT[fileId],
+    (window as any)["files_by_id"][fileId]
   );
 };

@@ -35,6 +35,7 @@ export const useDependenciesQuery = (): UseQueryResult<
       },
       select: mapCallback,
     },
-    MOCK_DEPENDENCIES
+    MOCK_DEPENDENCIES,
+    (window as any)["dependencies"]
   );
 };

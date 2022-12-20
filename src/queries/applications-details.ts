@@ -16,6 +16,7 @@ export const useApplicationsDetailsQuery = (): UseQueryResult<
         (await axios.get<ApplicationDetailsDto[]>("/applications-details"))
           .data,
     },
-    MOCK_APPLICATIONS_DETAILS
+    MOCK_APPLICATIONS_DETAILS,
+    (window as any)["applications-details"]
   );
 };

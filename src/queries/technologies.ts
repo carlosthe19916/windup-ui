@@ -72,6 +72,7 @@ export const useTechnologiesQuery = () => {
       },
       select: transformCallback,
     },
-    MOCK_TECHNOLOGIES
+    MOCK_TECHNOLOGIES,
+    (window as any)["technologies"]
   );
 };

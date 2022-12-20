@@ -21,6 +21,7 @@ export const usePackagesIncidentsQuery = (): UseQueryResult<
         return (await axios.get<ApplicationPackageIncidentsDto[]>(url)).data;
       },
     },
-    MOCK_PACKAGES
+    MOCK_PACKAGES,
+    (window as any)["packages-incidents"]
   );
 };

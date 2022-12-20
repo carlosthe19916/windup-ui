@@ -10,6 +10,7 @@ export const useTagsQuery = () => {
       queryKey: ["tags"],
       queryFn: async () => (await axios.get<TagDto[]>("/tags")).data,
     },
-    MOCK_TAGS
+    MOCK_TAGS,
+    (window as any)["tags"]
   );
 };

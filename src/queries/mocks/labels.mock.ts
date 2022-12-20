@@ -15,5 +15,5 @@ if (
     neutral: ["tag3"],
   };
 
-  MOCK_LABELS = (window as any)["labels"] || [label1];
+  MOCK_LABELS = [label1];
 }

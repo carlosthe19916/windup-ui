@@ -62,8 +62,5 @@ if (
     ],
   };
 
-  MOCK_APPLICATIONS_DETAILS = (window as any)["applications-details"] || [
-    application1Details,
-    application2Details,
-  ];
+  MOCK_APPLICATIONS_DETAILS = [application1Details, application2Details];
 }
