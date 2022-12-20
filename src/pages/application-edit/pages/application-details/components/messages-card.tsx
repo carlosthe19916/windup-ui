@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+
 import {
   Button,
   ButtonVariant,
@@ -9,10 +10,9 @@ import {
 import { TableComposable, Tbody, Td, Tr } from "@patternfly/react-table";
 import { useModal } from "@project-openubl/lib-ui";
 
-import { useApplicationsDetailsQuery } from "queries/applications-details";
-
-import { ApplicationDto } from "api/application";
-import { RuleEditor } from "shared/components";
+import { ApplicationDto } from "@app/api/application";
+import { useApplicationsDetailsQuery } from "@app/queries/applications-details";
+import { RuleEditor } from "@app/shared/components";
 
 export interface IMessagesCardProps {
   application: ApplicationDto;

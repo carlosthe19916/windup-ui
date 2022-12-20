@@ -1,4 +1,4 @@
-import { LabelDto } from "api/label";
+import { LabelDto } from "@app/api/label";
 
 export let MOCK_LABELS: LabelDto[];
 

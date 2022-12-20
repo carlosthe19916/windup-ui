@@ -1,8 +1,10 @@
 import { useCallback } from "react";
-import axios, { AxiosError } from "axios";
-import { UseQueryResult } from "@tanstack/react-query";
 
-import { LabelDto } from "api/label";
+import { UseQueryResult } from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
+
+import { LabelDto } from "@app/api/label";
+
 import { useMockableQuery } from "./helpers";
 import { MOCK_LABELS } from "./mocks/labels.mock";
 

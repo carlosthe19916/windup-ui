@@ -1,4 +1,4 @@
-import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 
 const defaultTimeout =
   process.env.REACT_APP_DATA_SOURCE_TIMEOUT !== undefined

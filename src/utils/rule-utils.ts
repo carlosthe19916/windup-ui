@@ -1,5 +1,5 @@
-import { LinkDto } from "api/application-issues";
-import { TechnologyDto } from "api/rule";
+import { LinkDto } from "@app/api/application-issues";
+import { TechnologyDto } from "@app/api/rule";
 
 export const getMarkdown = (body: string, links: LinkDto[]): string => {
   const formattedLinks = links

@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { useNavigate, useMatch } from "react-router-dom";
+import { useMatch, useNavigate } from "react-router-dom";
 
 import {
   Bullseye,
@@ -21,38 +21,36 @@ import {
   ToolbarGroup,
   ToolbarItem,
 } from "@patternfly/react-core";
+import { ArrowUpIcon, FilterIcon } from "@patternfly/react-icons";
 import {
-  compoundExpand,
   ICell,
   IExtraData,
   IRow,
   IRowData,
-  sortable,
   TableComposable,
   Tbody,
   Td,
   Tr,
+  compoundExpand,
+  sortable,
 } from "@patternfly/react-table";
-import { ArrowUpIcon, FilterIcon } from "@patternfly/react-icons";
-
 import {
+  ConditionalRender,
+  OptionWithValue,
+  SimpleSelect,
   SimpleTableWithToolbar,
   useTable,
   useTableControls,
-  ConditionalRender,
-  SimpleSelect,
-  OptionWithValue,
 } from "@project-openubl/lib-ui";
 
-import { SimpleContextSelector, Context } from "context/simple-context";
-
-import { useCellSelectionState, useTechnologiesData } from "shared/hooks";
-import { TechnologyGroup } from "api/application-technologies";
-import { ApplicationDto } from "api/application";
+import { ApplicationDto } from "@app/api/application";
+import { TechnologyGroup } from "@app/api/application-technologies";
+import { Context, SimpleContextSelector } from "@app/context/simple-context";
 import {
-  TechnologyGroupsProcessed,
   TechnologyGroupValueProcessed,
-} from "models/api-enriched";
+  TechnologyGroupsProcessed,
+} from "@app/models/api-enriched";
+import { useCellSelectionState, useTechnologiesData } from "@app/shared/hooks";
 
 interface RowData {
   application: ApplicationDto;

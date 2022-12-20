@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+
 import {
   Badge,
   Button,
@@ -12,20 +13,19 @@ import {
   OrderType,
   Truncate,
 } from "@patternfly/react-core";
-import { cellWidth, IAction, ICell, IRow } from "@patternfly/react-table";
+import { IAction, ICell, IRow, cellWidth } from "@patternfly/react-table";
 import {
   SimpleTableWithToolbar,
   useModal,
   useTable,
   useTableControls,
 } from "@project-openubl/lib-ui";
-import { FileEditor } from "shared/components";
 
-import { useProcessedQueriesContext } from "context/processed-queries-context";
-import { useFilesQuery } from "queries/files";
-
-import { FileDto } from "api/file";
-import { ApplicationFileDto } from "api/application-details";
+import { ApplicationFileDto } from "@app/api/application-details";
+import { FileDto } from "@app/api/file";
+import { useProcessedQueriesContext } from "@app/context/processed-queries-context";
+import { useFilesQuery } from "@app/queries/files";
+import { FileEditor } from "@app/shared/components";
 
 const DataKey = "DataKey";
 

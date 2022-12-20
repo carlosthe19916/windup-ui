@@ -1,8 +1,10 @@
 import React from "react";
 import { useOutletContext } from "react-router-dom";
+
 import { PageSection } from "@patternfly/react-core";
-import { IssuesTable } from "shared/components";
-import { ApplicationDto } from "api/application";
+
+import { ApplicationDto } from "@app/api/application";
+import { IssuesTable } from "@app/shared/components";
 
 export const ApplicationIssues: React.FC = () => {
   const application = useOutletContext<ApplicationDto | null>();

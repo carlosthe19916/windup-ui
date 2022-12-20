@@ -1,8 +1,3 @@
-import {
-  ContextSelector,
-  ContextSelectorItem,
-  ContextSelectorProps,
-} from "@patternfly/react-core";
 import React, {
   createContext,
   useContext,
@@ -10,6 +5,12 @@ import React, {
   useReducer,
   useState,
 } from "react";
+
+import {
+  ContextSelector,
+  ContextSelectorItem,
+  ContextSelectorProps,
+} from "@patternfly/react-core";
 
 export interface Context {
   key: string;

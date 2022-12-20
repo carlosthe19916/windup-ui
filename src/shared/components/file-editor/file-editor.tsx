@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+
 import {
   CodeEditor,
   CodeEditorProps,
@@ -23,13 +24,11 @@ import {
 import { ConditionalRender } from "@project-openubl/lib-ui";
 import * as monacoEditor from "monaco-editor/esm/vs/editor/editor.api";
 
-import { SimpleMarkdown } from "shared/components";
-
-import { useRulesQuery } from "queries/rules";
-import { useFileQuery } from "queries/files";
-
-import { FileDto, HintDto } from "api/file";
-import { getMarkdown } from "utils/rule-utils";
+import { FileDto, HintDto } from "@app/api/file";
+import { useFileQuery } from "@app/queries/files";
+import { useRulesQuery } from "@app/queries/rules";
+import { SimpleMarkdown } from "@app/shared/components";
+import { getMarkdown } from "@app/utils/rule-utils";
 
 interface IFileEditorProps {
   file: FileDto;

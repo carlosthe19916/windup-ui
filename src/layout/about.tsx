@@ -1,5 +1,6 @@
 import React from "react";
-import * as reactCore from "@patternfly/react-core";
+
+import { AboutModal, TextContent } from "@patternfly/react-core";
 
 import { Theme } from "./theme-constants";
 
@@ -13,7 +14,7 @@ export const AboutApp: React.FC<IButtonAboutAppProps> = ({
   onClose,
 }) => {
   return (
-    <reactCore.AboutModal
+    <AboutModal
       isOpen={isOpen}
       onClose={onClose}
       brandImageAlt="Brand Image"
@@ -21,14 +22,14 @@ export const AboutApp: React.FC<IButtonAboutAppProps> = ({
       productName={Theme.name}
       className="about-app__component"
     >
-      <reactCore.TextContent className="pf-u-py-xl">
+      <TextContent className="pf-u-py-xl">
         <h4>About</h4>
         <p>
           {Theme.name} allows application architects and developers to quickly
           decompile, analyze, assess and modernize large scale application
           portfolios and migrate them to target Runtimes, cloud and containers.
         </p>
-      </reactCore.TextContent>
-    </reactCore.AboutModal>
+      </TextContent>
+    </AboutModal>
   );
 };

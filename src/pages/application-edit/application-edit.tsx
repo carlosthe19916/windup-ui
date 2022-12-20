@@ -6,17 +6,19 @@ import {
   useMatch,
   useNavigate,
 } from "react-router-dom";
+
 import {
   Breadcrumb,
   BreadcrumbItem,
   PageSection,
   Tab,
-  Tabs,
   TabTitleText,
+  Tabs,
   Text,
   TextContent,
 } from "@patternfly/react-core";
-import { useApplicationsQuery } from "queries/applications";
+
+import { useApplicationsQuery } from "@app/queries/applications";
 
 export const ApplicationEdit: React.FC = () => {
   const navigate = useNavigate();

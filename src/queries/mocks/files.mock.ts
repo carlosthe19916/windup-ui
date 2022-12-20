@@ -1,5 +1,5 @@
-import { FileDto } from "api/file";
-import { FileContentDto } from "api/file-content";
+import { FileDto } from "@app/api/file";
+import { FileContentDto } from "@app/api/file-content";
 
 export let MOCK_APP_FILES: FileDto[];
 export let MOCK_APP_FILES_CONTENT: { [id: string]: FileContentDto } = {};

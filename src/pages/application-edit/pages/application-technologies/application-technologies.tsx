@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useOutletContext } from "react-router-dom";
+
 import {
   Card,
   CardBody,
@@ -18,14 +19,13 @@ import {
   ToolbarContent,
   ToolbarItem,
 } from "@patternfly/react-core";
-import { TableComposable, Tbody, Td, Tr } from "@patternfly/react-table";
 import { FilterIcon, InfoAltIcon } from "@patternfly/react-icons";
+import { TableComposable, Tbody, Td, Tr } from "@patternfly/react-table";
 import { OptionWithValue, SimpleSelect } from "@project-openubl/lib-ui";
 
-import { useTechnologiesData } from "shared/hooks";
-
-import { TechnologyGroup } from "api/application-technologies";
-import { ApplicationDto } from "api/application";
+import { ApplicationDto } from "@app/api/application";
+import { TechnologyGroup } from "@app/api/application-technologies";
+import { useTechnologiesData } from "@app/shared/hooks";
 
 type TechnologyGroupEnricherType = {
   [key in TechnologyGroup]: {

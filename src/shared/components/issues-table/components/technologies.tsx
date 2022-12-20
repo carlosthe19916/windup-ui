@@ -1,6 +1,8 @@
 import React, { useMemo } from "react";
+
 import { Label, Split, SplitItem } from "@patternfly/react-core";
-import { useRulesQuery } from "queries/rules";
+
+import { useRulesQuery } from "@app/queries/rules";
 
 interface ITechnologiesProps {
   variant: "source" | "target";

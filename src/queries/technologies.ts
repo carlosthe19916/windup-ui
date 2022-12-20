@@ -1,14 +1,16 @@
 import { useCallback } from "react";
+
 import axios, { AxiosError } from "axios";
 
-import { ApplicationTechnologiesDto } from "api/application-technologies";
-import { useMockableQuery } from "./helpers";
-import { MOCK_TECHNOLOGIES } from "./mocks/technologies.mock";
+import { ApplicationTechnologiesDto } from "@app/api/application-technologies";
 import {
   ApplicationTechnologiesProcessed,
   TechnologyGroupsProcessed,
   TechnologyValueProcessed,
-} from "models/api-enriched";
+} from "@app/models/api-enriched";
+
+import { useMockableQuery } from "./helpers";
+import { MOCK_TECHNOLOGIES } from "./mocks/technologies.mock";
 
 export const useTechnologiesQuery = () => {
   const transformCallback = useCallback(

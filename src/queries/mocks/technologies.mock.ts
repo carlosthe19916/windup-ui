@@ -1,4 +1,4 @@
-import { ApplicationTechnologiesDto } from "api/application-technologies";
+import { ApplicationTechnologiesDto } from "@app/api/application-technologies";
 
 export let MOCK_TECHNOLOGIES: ApplicationTechnologiesDto[];
 

@@ -1,4 +1,6 @@
 import React, { useMemo, useState } from "react";
+
+import { useSelectionState } from "@migtools/lib-ui";
 import {
   Button,
   ButtonVariant,
@@ -19,22 +21,21 @@ import {
   ToolbarItem,
 } from "@patternfly/react-core";
 import {
-  cellWidth,
   IAction,
   ICell,
   IRow,
   IRowData,
+  cellWidth,
 } from "@patternfly/react-table";
 import {
   SimpleTableWithToolbar,
   useTable,
   useTableControls,
 } from "@project-openubl/lib-ui";
-import { useSelectionState } from "@migtools/lib-ui";
 
-import { useApplicationsDetailsQuery } from "queries/applications-details";
-import { ApplicationDto } from "api/application";
-import { ApplicationFileDto } from "api/application-details";
+import { ApplicationDto } from "@app/api/application";
+import { ApplicationFileDto } from "@app/api/application-details";
+import { useApplicationsDetailsQuery } from "@app/queries/applications-details";
 
 import { ApplicationFilesChildrenTable } from "./application-files-children-table";
 import { TagsChart } from "./tags-chart";

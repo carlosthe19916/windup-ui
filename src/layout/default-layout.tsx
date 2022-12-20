@@ -1,5 +1,7 @@
 import React from "react";
+
 import { Page } from "@patternfly/react-core";
+
 import { HeaderApp } from "./header";
 import { SidebarApp } from "./sidebar";
 

@@ -1,8 +1,10 @@
 import { useCallback } from "react";
-import axios, { AxiosError } from "axios";
-import { UseQueryResult } from "@tanstack/react-query";
 
-import { ApplicationDependenciesDto } from "api/application-dependency";
+import { UseQueryResult } from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
+
+import { ApplicationDependenciesDto } from "@app/api/application-dependency";
+
 import { useMockableQuery } from "./helpers";
 import { MOCK_DEPENDENCIES } from "./mocks/dependencies.mock";
 

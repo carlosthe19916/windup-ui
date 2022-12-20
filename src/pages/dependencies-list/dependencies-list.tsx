@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, useMatch } from "react-router-dom";
+import { useMatch, useNavigate } from "react-router-dom";
 
 import {
   Divider,
@@ -12,8 +12,8 @@ import {
   ToolbarItem,
 } from "@patternfly/react-core";
 
-import { SimpleContextSelector, Context } from "context/simple-context";
-import { DependenciesTable } from "shared/components";
+import { Context, SimpleContextSelector } from "@app/context/simple-context";
+import { DependenciesTable } from "@app/shared/components";
 
 export const DependenciesList: React.FC = () => {
   const matchDependenciesPage = useMatch("/dependencies");

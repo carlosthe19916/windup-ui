@@ -1,4 +1,4 @@
-import { TagDto } from "api/tag";
+import { TagDto } from "@app/api/tag";
 
 export let MOCK_TAGS: TagDto[];
 

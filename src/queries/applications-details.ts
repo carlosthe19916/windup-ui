@@ -1,7 +1,8 @@
-import axios, { AxiosError } from "axios";
 import { UseQueryResult } from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
 
-import { ApplicationDetailsDto } from "api/application-details";
+import { ApplicationDetailsDto } from "@app/api/application-details";
+
 import { useMockableQuery } from "./helpers";
 import { MOCK_APPLICATIONS_DETAILS } from "./mocks/application-details.mock";
 

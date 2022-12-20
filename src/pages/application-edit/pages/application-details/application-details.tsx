@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { useOutletContext } from "react-router-dom";
+
 import {
   Card,
   CardBody,
@@ -9,13 +10,14 @@ import {
   PageSection,
 } from "@patternfly/react-core";
 
-import { JavaIncidentsByPackage } from "shared/components";
+import { ApplicationDto } from "@app/api/application";
+import { useApplicationsDetailsQuery } from "@app/queries/applications-details";
+import { JavaIncidentsByPackage } from "@app/shared/components";
 
-import { ApplicationDto } from "api/application";
-import { MessagesCard } from "./components/messages-card";
+
 import { ApplicationFilesTable } from "./components/application-files-table";
+import { MessagesCard } from "./components/messages-card";
 import { TagsChart } from "./components/tags-chart";
-import { useApplicationsDetailsQuery } from "queries/applications-details";
 
 export const ApplicationDetails: React.FC = () => {
   const application = useOutletContext<ApplicationDto | null>();

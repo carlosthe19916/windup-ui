@@ -1,5 +1,5 @@
-import { RuleGroupDto, RuleDto } from "api/rule";
-import { RuleContentDto } from "api/rule-content";
+import { RuleDto, RuleGroupDto } from "@app/api/rule";
+import { RuleContentDto } from "@app/api/rule-content";
 
 export let MOCK_RULES: RuleGroupDto;
 export let MOCK_RULES_CONTENT: { [id: string]: RuleContentDto } = {};

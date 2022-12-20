@@ -1,8 +1,8 @@
-import axios, { AxiosError } from "axios";
 import { UseQueryResult } from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
 
-import { FileDto } from "api/file";
-import { FileContentDto } from "api/file-content";
+import { FileDto } from "@app/api/file";
+import { FileContentDto } from "@app/api/file-content";
 
 import { useMockableQuery } from "./helpers";
 import { MOCK_APP_FILES, MOCK_APP_FILES_CONTENT } from "./mocks/files.mock";

@@ -1,14 +1,16 @@
+
+
+
 import { useCallback, useMemo } from "react";
 
 import { ToolbarChip } from "@patternfly/react-core";
 import { OptionWithValue } from "@project-openubl/lib-ui";
 
-import { useTechnologiesQuery } from "queries/technologies";
-import { useApplicationsQuery } from "queries/applications";
-
-import { ALL_TECHNOLOGY_GROUPS } from "api/application-technologies";
-import { ApplicationDto } from "api/application";
-import { TechnologyGroupsProcessed } from "models/api-enriched";
+import { ApplicationDto } from "@app/api/application";
+import { ALL_TECHNOLOGY_GROUPS } from "@app/api/application-technologies";
+import { TechnologyGroupsProcessed } from "@app/models/api-enriched";
+import { useApplicationsQuery } from "@app/queries/applications";
+import { useTechnologiesQuery } from "@app/queries/technologies";
 
 interface RowData {
   application: ApplicationDto;

@@ -1,6 +1,7 @@
 import axios, { AxiosError } from "axios";
 
-import { TagDto } from "api/tag";
+import { TagDto } from "@app/api/tag";
+
 import { useMockableQuery } from "./helpers";
 import { MOCK_TAGS } from "./mocks/tags.mock";
 

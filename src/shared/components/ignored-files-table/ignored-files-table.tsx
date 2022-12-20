@@ -10,24 +10,23 @@ import {
   Title,
   ToolbarItem,
 } from "@patternfly/react-core";
+import { ArrowUpIcon } from "@patternfly/react-icons";
 import {
-  breakWord,
   IAction,
   ICell,
   IRow,
+  breakWord,
   sortable,
 } from "@patternfly/react-table";
-import { ArrowUpIcon } from "@patternfly/react-icons";
-
 import {
+  ConditionalRender,
   SimpleTableWithToolbar,
   useTable,
   useTableControls,
-  ConditionalRender,
 } from "@project-openubl/lib-ui";
 
-import { useIgnoredFilesQuery } from "queries/ignored-files";
-import { IgnoredFileDto } from "api/application-ignored-files";
+import { IgnoredFileDto } from "@app/api/application-ignored-files";
+import { useIgnoredFilesQuery } from "@app/queries/ignored-files";
 
 const DataKey = "DataKey";
 

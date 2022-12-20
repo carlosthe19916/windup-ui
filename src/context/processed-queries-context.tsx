@@ -1,12 +1,11 @@
 import { createContext, useContext, useMemo } from "react";
 
-import { useIssuesQuery } from "queries/issues";
-import { useRulesQuery } from "queries/rules";
-import { useFilesQuery } from "queries/files";
-
-import { TechnologyDto } from "api/rule";
-import { IssueProcessed, RuleProcessed } from "models/api-enriched";
-import { technologiesToArray } from "utils/rule-utils";
+import { TechnologyDto } from "@app/api/rule";
+import { IssueProcessed, RuleProcessed } from "@app/models/api-enriched";
+import { useFilesQuery } from "@app/queries/files";
+import { useIssuesQuery } from "@app/queries/issues";
+import { useRulesQuery } from "@app/queries/rules";
+import { technologiesToArray } from "@app/utils/rule-utils";
 
 interface IProcessedQueriesContext {
   rulesByIssueId: Map<string, RuleProcessed>;

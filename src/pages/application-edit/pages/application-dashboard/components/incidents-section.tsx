@@ -1,4 +1,13 @@
 import React, { useMemo } from "react";
+
+import {
+  Chart,
+  ChartAxis,
+  ChartBar,
+  ChartGroup,
+  ChartThemeColor,
+  ChartTooltip,
+} from "@patternfly/react-charts";
 import {
   Card,
   CardBody,
@@ -14,21 +23,13 @@ import {
   Thead,
   Tr,
 } from "@patternfly/react-table";
-import {
-  Chart,
-  ChartAxis,
-  ChartBar,
-  ChartGroup,
-  ChartThemeColor,
-  ChartTooltip,
-} from "@patternfly/react-charts";
-import { useIssuesQuery } from "queries/issues";
 
+import { ApplicationDto } from "@app/api/application";
 import {
   ALL_SUPPORTED_ISSUE_CATEGORY,
   IssueCategoryType,
-} from "api/application-issues";
-import { ApplicationDto } from "api/application";
+} from "@app/api/application-issues";
+import { useIssuesQuery } from "@app/queries/issues";
 
 interface IncidentsData {
   category: IssueCategoryType;

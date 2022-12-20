@@ -1,17 +1,16 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React from "react";import ReactDOM from "react-dom";
+
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-
 import { iniAxios } from "./utils/axios";
-
-import {
-  QueryClientProvider,
-  QueryClient,
-  QueryCache,
-} from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 iniAxios();
 

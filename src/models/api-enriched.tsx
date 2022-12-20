@@ -1,6 +1,6 @@
-import { RuleDto } from "../api/rule";
-import { IssueDto, IssueCategoryType } from "../api/application-issues";
-import { TechnologyGroup } from "../api/application-technologies";
+import { IssueCategoryType, IssueDto } from "@app/api/application-issues";
+import { TechnologyGroup } from "@app/api/application-technologies";
+import { RuleDto } from "@app/api/rule";
 
 export interface ApplicationIssuesProcessed {
   applicationId: string;

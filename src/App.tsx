@@ -1,15 +1,13 @@
-import React, { useEffect } from "react";
+import "./App.css";import React, { useEffect } from "react";
 import { HashRouter } from "react-router-dom";
 
-import { AppRoutes } from "./Routes";
-import "./App.css";
+import { ProcessedQueriesContextProvider } from "@app/context/processed-queries-context";
+import { SimpleContextProvider } from "@app/context/simple-context";
+import { Theme } from "@app/layout/theme-constants";
+import { useApplicationsQuery } from "@app/queries/applications";
 
 import { DefaultLayout } from "./layout";
-import { Theme } from "layout/theme-constants";
-import { useApplicationsQuery } from "queries/applications";
-
-import { ProcessedQueriesContextProvider } from "context/processed-queries-context";
-import { SimpleContextProvider } from "context/simple-context";
+import { AppRoutes } from "./Routes";
 
 const App: React.FC = () => {
   const applications = useApplicationsQuery();

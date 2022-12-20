@@ -1,4 +1,6 @@
 import React, { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+
 import {
   Button,
   DescriptionList,
@@ -25,40 +27,36 @@ import {
   ToolbarItem,
 } from "@patternfly/react-core";
 import {
-  cellWidth,
-  compoundExpand,
+  ExpandIcon,
+  FilterIcon,
+  TagIcon,
+  TaskIcon,
+} from "@patternfly/react-icons";
+import {
   ICell,
   IExtraData,
   IRow,
   IRowData,
+  cellWidth,
+  compoundExpand,
   sortable,
 } from "@patternfly/react-table";
 import {
-  TagIcon,
-  TaskIcon,
-  FilterIcon,
-  ExpandIcon,
-} from "@patternfly/react-icons";
-
-import {
+  SimpleSelect,
   SimpleTableWithToolbar,
+  useModal,
   useTable,
   useTableControls,
   useToolbar,
-  SimpleSelect,
-  useModal,
 } from "@project-openubl/lib-ui";
 
-import { useCellSelectionState } from "shared/hooks";
-
-import { useApplicationsQuery } from "queries/applications";
-import { useLabelsQuery } from "queries/labels";
-
-import { ApplicationDto } from "api/application";
-import { evaluateRuntime, RuntimeAssessment } from "utils/label-utils";
+import { ApplicationDto } from "@app/api/application";
+import { useApplicationsQuery } from "@app/queries/applications";
+import { useLabelsQuery } from "@app/queries/labels";
+import { useCellSelectionState } from "@app/shared/hooks";
+import { RuntimeAssessment, evaluateRuntime } from "@app/utils/label-utils";
 
 import "./application-list.css";
-import { Link } from "react-router-dom";
 
 const DataKey = "DataKey";
 

@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+
 import {
   Chart,
   ChartAxis,
@@ -7,12 +8,11 @@ import {
   ChartVoronoiContainer,
 } from "@patternfly/react-charts";
 
-import { useFilesQuery } from "queries/files";
-import { useTagsQuery } from "queries/tags";
-
-import { FileDto } from "api/file";
-import { TagDto } from "api/tag";
-import { ApplicationFileDto } from "api/application-details";
+import { ApplicationFileDto } from "@app/api/application-details";
+import { FileDto } from "@app/api/file";
+import { TagDto } from "@app/api/tag";
+import { useFilesQuery } from "@app/queries/files";
+import { useTagsQuery } from "@app/queries/tags";
 
 const getNearestRoots = (tags: TagDto[], tagName: string) => {
   const tag = tags.find((t) => t.name === tagName);

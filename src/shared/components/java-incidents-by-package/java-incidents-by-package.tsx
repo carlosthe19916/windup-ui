@@ -1,8 +1,10 @@
 import React, { useMemo } from "react";
-import { Bullseye, Card, CardBody, CardTitle } from "@patternfly/react-core";
+
 import { ChartDonut, ChartThemeColor } from "@patternfly/react-charts";
-import { usePackagesIncidentsQuery } from "queries/packages-incidents";
-import { ApplicationDto } from "api/application";
+import { Bullseye, Card, CardBody, CardTitle } from "@patternfly/react-core";
+
+import { ApplicationDto } from "@app/api/application";
+import { usePackagesIncidentsQuery } from "@app/queries/packages-incidents";
 
 const MAX_PACKAGES_SHOW = 9;
 

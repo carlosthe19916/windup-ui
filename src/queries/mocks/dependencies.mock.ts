@@ -1,4 +1,4 @@
-import { ApplicationDependenciesDto } from "api/application-dependency";
+import { ApplicationDependenciesDto } from "@app/api/application-dependency";
 
 export let MOCK_DEPENDENCIES: ApplicationDependenciesDto[];
 

@@ -1,4 +1,4 @@
-import { ApplicationDto } from "api/application";
+import { ApplicationDto } from "@app/api/application";
 
 export let MOCK_APPLICATIONS: ApplicationDto[];
 

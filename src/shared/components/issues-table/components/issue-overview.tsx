@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+
 import {
   Badge,
   Button,
@@ -18,11 +19,11 @@ import {
   Thead,
   Tr,
 } from "@patternfly/react-table";
-import { SimpleMarkdown } from "shared/components";
-import { useFilesQuery } from "queries/files";
 
-import { IssueDto } from "api/application-issues";
-import { getMarkdown } from "utils/rule-utils";
+import { IssueDto } from "@app/api/application-issues";
+import { useFilesQuery } from "@app/queries/files";
+import { SimpleMarkdown } from "@app/shared/components";
+import { getMarkdown } from "@app/utils/rule-utils";
 
 interface IIssueOverviewProps {
   issue: IssueDto;

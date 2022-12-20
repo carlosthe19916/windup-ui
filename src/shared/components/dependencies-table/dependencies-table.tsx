@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 
+import { useSelectionState } from "@migtools/lib-ui";
 import {
   Bullseye,
   DescriptionList,
@@ -16,27 +17,25 @@ import {
   Title,
   ToolbarItem,
 } from "@patternfly/react-core";
+import { ArrowUpIcon } from "@patternfly/react-icons";
 import {
-  cellWidth,
   IAction,
   ICell,
   IRow,
   IRowData,
+  cellWidth,
   sortable,
   truncate,
 } from "@patternfly/react-table";
-import { ArrowUpIcon } from "@patternfly/react-icons";
-
 import {
+  ConditionalRender,
   SimpleTableWithToolbar,
   useTable,
   useTableControls,
-  ConditionalRender,
 } from "@project-openubl/lib-ui";
-import { useSelectionState } from "@migtools/lib-ui";
 
-import { DependencyDto } from "api/application-dependency";
-import { useDependenciesQuery } from "queries/dependencies";
+import { DependencyDto } from "@app/api/application-dependency";
+import { useDependenciesQuery } from "@app/queries/dependencies";
 
 const DataKey = "DataKey";
 

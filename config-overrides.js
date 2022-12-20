@@ -1,3 +1,4 @@
+const path = require("path");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 module.exports = function override(config, env) {
@@ -6,5 +7,13 @@ module.exports = function override(config, env) {
       languages: ["xml", "java"],
     })
   );
+
+  config.resolve = {
+    ...config.resolve,
+    alias: {
+      ...config.alias,
+      "@app": path.resolve(__dirname, "src/"),
+    },
+  };
   return config;
 };

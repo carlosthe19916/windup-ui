@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, useMatch } from "react-router-dom";
+import { useMatch, useNavigate } from "react-router-dom";
 
 import {
   Divider,
@@ -12,9 +12,8 @@ import {
   ToolbarItem,
 } from "@patternfly/react-core";
 
-import { SimpleContextSelector, Context } from "context/simple-context";
-
-import { IssuesTable } from "shared/components";
+import { Context, SimpleContextSelector } from "@app/context/simple-context";
+import { IssuesTable } from "@app/shared/components";
 
 export const IssuesList: React.FC = () => {
   const matchIssuesPage = useMatch("/issues");

@@ -1,12 +1,11 @@
-import windupLogo from "images/windup-logo.svg";
-import windupNavBrandImage from "images/windup-logo-header.svg";
 
-import mtaLogo from "images/mta-logo.svg";
-import mtaNavBrandImage from "images/mta-logo-header.svg";
-
-import tackleLogo from "images/tackle-logo.png";
-import tackleNavBrandImage from "images/tackle-logo-header.svg";
-import tackleFavicon from "images/tackle-favicon.png";
+import mtaNavBrandImage from "@app/images/mta-logo-header.svg";
+import mtaLogo from "@app/images/mta-logo.svg";
+import tackleFavicon from "@app/images/tackle-favicon.png";
+import tackleNavBrandImage from "@app/images/tackle-logo-header.svg";
+import tackleLogo from "@app/images/tackle-logo.png";
+import windupNavBrandImage from "@app/images/windup-logo-header.svg";
+import windupLogo from "@app/images/windup-logo.svg";
 
 type ThemeType = "windup" | "mta" | "tackle";
 const defaultTheme: ThemeType = "windup";

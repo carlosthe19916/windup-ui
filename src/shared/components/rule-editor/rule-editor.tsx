@@ -1,13 +1,14 @@
 import React, { useEffect, useRef } from "react";
+
 import {
   CodeEditor,
   CodeEditorProps,
   Language,
 } from "@patternfly/react-code-editor";
-
-import * as monacoEditor from "monaco-editor/esm/vs/editor/editor.api";
-import { useRuleQuery } from "queries/rules";
 import { ConditionalRender } from "@project-openubl/lib-ui";
+import * as monacoEditor from "monaco-editor/esm/vs/editor/editor.api";
+
+import { useRuleQuery } from "@app/queries/rules";
 
 interface IRuleEditorProps {
   ruleId: string;

@@ -1,5 +1,8 @@
+
+
 import React, { useMemo, useState } from "react";
 
+import { useSelectionState } from "@migtools/lib-ui";
 import {
   Bullseye,
   Button,
@@ -17,43 +20,38 @@ import {
   ToolbarGroup,
   ToolbarItem,
 } from "@patternfly/react-core";
+import { ArrowUpIcon } from "@patternfly/react-icons";
 import {
-  cellWidth,
   IAction,
   ICell,
   IExtraData,
   IRow,
   IRowData,
+  cellWidth,
   sortable,
   truncate,
 } from "@patternfly/react-table";
-import { ArrowUpIcon } from "@patternfly/react-icons";
-
 import {
+  ConditionalRender,
+  OptionWithValue,
+  SimpleSelect,
   SimpleTableWithToolbar,
+  useModal,
   useTable,
   useTableControls,
-  ConditionalRender,
-  useModal,
-  SimpleSelect,
   useToolbar,
-  OptionWithValue,
 } from "@project-openubl/lib-ui";
-import { useSelectionState } from "@migtools/lib-ui";
 
-import { IssueProcessed } from "models/api-enriched";
+import { useProcessedQueriesContext } from "@app/context/processed-queries-context";
+import { IssueProcessed } from "@app/models/api-enriched";
+import { useApplicationsQuery } from "@app/queries/applications";
+import { useFilesQuery } from "@app/queries/files";
+import { useIssuesQuery } from "@app/queries/issues";
+import { FileEditor, RuleEditor } from "@app/shared/components";
+import { technologiesToArray } from "@app/utils/rule-utils";
 
-import { useApplicationsQuery } from "queries/applications";
-import { useFilesQuery } from "queries/files";
-import { useIssuesQuery } from "queries/issues";
-
-import { technologiesToArray } from "utils/rule-utils";
-import { useProcessedQueriesContext } from "context/processed-queries-context";
-
-import { RuleEditor, FileEditor } from "shared/components";
-
-import { Technologies } from "./components/technologies";
 import { IssueOverview } from "./components/issue-overview";
+import { Technologies } from "./components/technologies";
 
 const toOption = (option: string | ToolbarChip): OptionWithValue => {
   if (typeof option === "string") {

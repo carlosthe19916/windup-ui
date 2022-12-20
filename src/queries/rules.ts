@@ -1,9 +1,12 @@
+
 import { useCallback } from "react";
+
 import axios, { AxiosError } from "axios";
 
-import { RuleGroupDto } from "api/rule";
-import { RuleContentDto } from "api/rule-content";
-import { RuleProcessed } from "models/api-enriched";
+import { RuleGroupDto } from "@app/api/rule";
+import { RuleContentDto } from "@app/api/rule-content";
+import { RuleProcessed } from "@app/models/api-enriched";
+
 import { useMockableQuery } from "./helpers";
 import { MOCK_RULES, MOCK_RULES_CONTENT } from "./mocks/rules.mock";
 

@@ -1,7 +1,8 @@
-import { lazy, Suspense } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Suspense, lazy } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 
-const ApplicationList = lazy(() => import("./pages/application-list"));
+// At least one page should not have lazy() for not having "[mini-css-extract-plugin] Conflicting order." error
+import ApplicationList from "./pages/application-list";
 const IssuesList = lazy(() => import("./pages/issues-list"));
 const TechnologiesList = lazy(() => import("./pages/technologies-list"));
 const DependenciesList = lazy(() => import("./pages/dependencies-list"));

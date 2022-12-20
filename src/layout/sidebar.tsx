@@ -1,11 +1,13 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-import { Nav, PageSidebar, NavList } from "@patternfly/react-core";
+import { Nav, NavList, PageSidebar } from "@patternfly/react-core";
 import { css } from "@patternfly/react-styles";
 
+import { useSimpleContext } from "@app/context/simple-context";
+
+
 import { LayoutTheme } from "./layout-constants";
-import { useSimpleContext } from "context/simple-context";
 
 export const SidebarApp: React.FC = () => {
   const { currentContext } = useSimpleContext();

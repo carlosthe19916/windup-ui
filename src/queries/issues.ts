@@ -1,11 +1,13 @@
 import { useCallback } from "react";
+
 import axios, { AxiosError } from "axios";
 
-import { ApplicationIssuesDto } from "api/application-issues";
+import { ApplicationIssuesDto } from "@app/api/application-issues";
 import {
   ApplicationIssuesProcessed,
   IssueProcessed,
-} from "models/api-enriched";
+} from "@app/models/api-enriched";
+
 import { useMockableQuery } from "./helpers";
 import { MOCK_ISSUES } from "./mocks/issues.mock";
 
