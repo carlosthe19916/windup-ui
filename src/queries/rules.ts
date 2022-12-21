@@ -1,4 +1,3 @@
-
 import { useCallback } from "react";
 
 import axios, { AxiosError } from "axios";
@@ -45,6 +44,8 @@ export const useRuleQuery = (ruleId: string) => {
         (await axios.get<RuleContentDto>(`/rules/${ruleId}`)).data,
     },
     MOCK_RULES_CONTENT[ruleId],
-    (window as any)["rules_by_id"][ruleId]
+    (window as any)["rules_by_id"]
+      ? (window as any)["rules_by_id"][ruleId]
+      : undefined
   );
 };

@@ -26,6 +26,8 @@ export const useFileQuery = (fileId: string) => {
         (await axios.get<FileContentDto>(`/files/${fileId}`)).data,
     },
     MOCK_APP_FILES_CONTENT[fileId],
-    (window as any)["files_by_id"][fileId]
+    (window as any)["files_by_id"]
+      ? (window as any)["files_by_id"][fileId]
+      : undefined
   );
 };
